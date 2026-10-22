@@ -1,5 +1,8 @@
 # FileTgie v0.1.0
 
+> A lightweight, read-only, zero-dependency file statistics and search CLI written in pure C.
+> One source tree builds for Windows and Linux; every command only reads and never modifies your files.
+
 轻量、只读、零依赖的文件统计与查找辅助工具。纯 C 编写，同一套源码同时编译为
 
 **Windows** 与 **Linux** 可执行文件。
