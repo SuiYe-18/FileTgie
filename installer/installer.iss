@@ -18,7 +18,7 @@
 
 #define MyAppName "FileTgie"
 #define MyAppVersion "0.1.0"
-#define MyAppPublisher "SuiYe_TR (Suiye-18) — Single Author"
+#define MyAppPublisher "SuiYe_TR (Suiye-18) - Single Author"
 #define MyAppExe "FileTgie.exe"
 
 ; Reference the optional icon only when it actually exists, so a missing
@@ -32,7 +32,7 @@ AppId={{7C9E1A24-6B3D-4E2F-9C01-000000000001}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
-AppCopyright=SuiYe_TR (Suiye-18) — Single Author
+AppCopyright=SuiYe_TR (Suiye-18) - Single Author
 ; LGPL-3.0 license page shown during installation (relative to this .iss)
 LicenseFile=..\LICENSE
 DefaultDirName={autopf}\{#MyAppName}
