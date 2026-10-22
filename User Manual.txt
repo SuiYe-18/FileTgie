@@ -1,0 +1,700 @@
+﻿==============================================================
+ FileTgie v0.1.0 - Beginner User Manual / 新手用户手册
+==============================================================
+
+by SuiYe_TR (Suiye-18) - Single Author
+GitHub: https://github.com/Suiye-18
+License: LGPL-3.0-or-later
+Version: v0.1.0
+
+This manual is written in English with a Chinese translation under
+each paragraph. Commands, options and numbers come only from the
+project README.md and the source command table (CMD_TABLE).
+
+本手册以英文为主，每段英文后紧跟对应中文。命令、选项与数字全部来自
+项目 README.md 与源码命令表（CMD_TABLE），未作虚构。
+
+
+==============================================================
+1. What is FileTgie / 简介
+==============================================================
+
+FileTgie is a lightweight, read-only, zero-dependency command-line
+tool for file statistics and simple searching. It is written in pure
+C, and the same source code builds both a Windows executable and a
+Linux executable. It runs in a black console window; everything is
+done through command-line arguments.
+
+FileTgie 是一个轻量、只读、零依赖的命令行文件统计与查找工具。纯 C
+编写，同一套源码同时编译出 Windows 与 Linux 可执行文件。它在黑窗口
+（控制台）中运行，全部通过命令行参数执行。
+
+Its core philosophy is "step by step, slowly" (一步一步慢慢来): each
+command does one small, clear and predictable job. Its core promise
+is clean statistics and read-only safety: it never modifies, deletes
+or moves any user file, so there is no danger of an accidental
+operation.
+
+核心理念是「一步一步慢慢来」：每个命令只做一件小事，结果清晰、可预期。
+核心承诺是统计清明、只读安全：不修改、不删除、不移动任何用户文件，
+因此不会出现误操作错误。
+
+Four interface languages are available: Chinese cn, English en,
+Japanese ja, Russian ru, switched with a command-line option.
+
+界面提供四种语言：中文 cn、英文 en、日文 ja、俄文 ru，用参数切换。
+
+
+==============================================================
+2. Read-only Safety / 只读安全承诺
+==============================================================
+
+Every command only calls reading interfaces: directory enumeration,
+stat (file metadata), and fread (reading bytes). FileTgie never
+modifies, deletes or moves your files; it only inspects them.
+
+所有命令只调用读取接口：目录枚举、stat（文件元信息）、fread（读取
+字节）。FileTgie 不修改、不删除、不移动你的文件，只做查看。
+
+The only thing FileTgie ever writes is its own filetgie.log next to
+the executable. The log command prints this log, and dellog deletes
+this log only; no other file on your disk is ever touched.
+
+FileTgie 唯一写入的位置是可执行文件旁自身的 filetgie.log。log 命令
+查看该日志，dellog 只删除这一份自身日志；绝不触碰磁盘上的任何
+其他文件。
+
+
+==============================================================
+3. Installation / 安装
+==============================================================
+
+Portable edition / 绿色便携包
+
+The portable package only contains FileTgie.exe, README.md, LICENSE
+and COPYING. It is fully portable: it does not write to the registry
+and does not install into Program Files. Unzip it and use it; to
+uninstall, simply delete the folder.
+
+便携包仅含 FileTgie.exe、README.md、LICENSE、COPYING。工具完全便携：
+不写注册表、不写入 Program Files。解压即用，删除文件夹即完成卸载。
+
+The portable edition does not require administrator rights.
+
+便携版不需要管理员权限。
+
+Building from source / 从源码构建
+
+Windows (MinGW gcc), in the project root directory:
+
+  gcc -O2 -Wall -o FileTgie.exe src\main.c src\commands.c src\port.c src\util.c src\i18n.c
+
+Or just run build.bat. The build expects zero warnings with -O2 -Wall
+and produces FileTgie.exe.
+
+Windows（MinGW gcc）在项目根目录执行上述命令，或直接运行 build.bat。
+构建要求 -O2 -Wall 零警告，产出 FileTgie.exe。
+
+Linux (gcc / clang):
+
+  make
+
+This produces FileTgie. All source code lives in src/ and uses only
+the C standard library and native platform APIs, with no third-party
+dependencies.
+
+Linux（gcc / clang）执行 make，产出 FileTgie。源码全部位于 src/，
+仅使用 C 标准库与平台原生 API，无第三方依赖。
+
+
+==============================================================
+4. Quick Start / 快速上手
+==============================================================
+
+General syntax / 通用语法:
+
+  FileTgie [--lang cn|en|ja|ru] [--exclude <glob>] [--exclude-ext <ext>] <command> [args...]
+
+Language option / 语言选项
+
+--lang (also written -lang or -l; supports = notation such as
+--lang=en or -l=ja; language codes are case-insensitive) may appear
+before or after the command. An unrecognized language code prints a
+localized warning and falls back to the default cn, then continues
+running.
+
+--lang（也可写 -lang、-l，支持 --lang=en、-l=ja 等号写法，语言码
+大小写不敏感）可放在命令前或命令后。无法识别的语言码会给出本地化
+警告并回退默认 cn，程序继续运行。
+
+Exclusion options / 排除选项
+
+--exclude <glob> (or --exclude=<glob>) skips files whose basename
+matches the wildcard (* ?) during directory traversal; matching is
+case-insensitive on the basename; the option may be repeated.
+
+--exclude <通配符>（或 --exclude=<通配符>）：目录遍历时跳过 basename
+匹配通配符（* ?）的文件；basename 匹配大小写不敏感；可重复使用。
+
+--exclude-ext <ext> (or --exclude-ext=<ext>) skips files of the given
+extension; a leading dot is optional (.c and c are the same), matching
+is case-insensitive, and the option may be repeated.
+
+--exclude-ext <扩展名>（或 --exclude-ext=<扩展名>）：跳过指定扩展名的
+文件；带不带前导点等价（.c 与 c 相同），大小写不敏感；可重复。
+
+Both exclusion options only affect traversal commands. Commands that
+take an explicitly named single file (such as lines and hash) are
+not affected.
+
+两个排除参数只作用于遍历型命令；显式指定单个文件的命令（如
+lines、hash）不受影响。
+
+Help and exit codes / 帮助与退出码
+
+Running FileTgie with no arguments, or entering help, prints the full
+command table and exits with code 0. Success returns rc=0; usage
+errors, path-not-found errors and argument errors return rc=1.
+
+不带任何参数或输入 help 会显示完整命令表，退出码 0。成功返回
+rc=0；用法错误、路径未找到、参数错误返回 rc=1。
+
+
+==============================================================
+5. Command Reference / 命令参考 (57 commands / 57 条命令)
+==============================================================
+
+Each entry gives: command name, syntax, one English-purpose line,
+one Chinese meaning line, and one example.
+
+每条给出：命令名、语法、英文一句用途、中文一句释义、一个示例。
+
+--------------------------------------------------------------
+ General / 通用
+--------------------------------------------------------------
+
+1) help
+Syntax: help
+EN: Show the help command table.
+CN: 显示帮助命令表。
+Example: FileTgie help
+
+2) version
+Syntax: version
+EN: Show the program version (read from FILETGIE_VERSION).
+CN: 显示程序版本（读取自 FILETGIE_VERSION）。
+Example: FileTgie version
+
+3) langs
+Syntax: langs
+EN: List the available interface languages.
+CN: 列出可用的界面语言。
+Example: FileTgie langs
+
+4) log
+Syntax: log
+EN: Print FileTgie's own run log next to the executable.
+CN: 打印可执行文件旁 FileTgie 自身的运行日志。
+Example: FileTgie log
+
+5) dellog
+Syntax: dellog
+EN: Delete FileTgie's own run log only (never touches other files).
+CN: 只删除 FileTgie 自身运行日志（绝不触碰其他文件）。
+Example: FileTgie dellog
+
+--------------------------------------------------------------
+ Statistics / 统计
+--------------------------------------------------------------
+
+6) stat
+Syntax: stat <path>
+EN: Show detailed file/directory info: size (human form plus exact
+bytes) and modified, created and accessed times.
+CN: 显示文件/目录详细信息：大小（人类可读形式加精确字节数）与修改、
+创建、访问三个时间。
+Example: FileTgie stat D:\docs\report.txt
+
+7) count
+Syntax: count <dir>
+EN: Recursively count the number of files and folders in a directory.
+CN: 递归统计目录内的文件数与文件夹数。
+Example: FileTgie count D:\Photos
+
+8) size
+Syntax: size <file>
+EN: Show a file's human-readable size together with exact bytes.
+CN: 以人类可读形式显示文件大小，并给出精确字节数。
+Example: FileTgie size D:\Photos\a.jpg
+
+9) du
+Syntax: du <dir>
+EN: Sum the total size of all files under a directory.
+CN: 汇总目录下所有文件的总大小。
+Example: FileTgie du D:\Photos
+
+10) tree
+Syntax: tree <dir> [depth]
+EN: Print the directory tree; depth defaults to 20 and 0 is allowed.
+CN: 打印目录树；深度缺省为 20，允许填 0。
+Example: FileTgie tree D:\Projects
+Example: FileTgie tree D:\Projects 3
+
+11) list
+Syntax: list <dir>
+EN: List the contents of one directory level (size / time / name).
+CN: 单层列出目录内容（大小 / 时间 / 名称）。
+Example: FileTgie list D:\Photos
+
+12) recent
+Syntax: recent <dir> [N]
+EN: Show the N most recently modified files; N defaults to 10.
+CN: 列出最近修改的 N 个文件；N 缺省为 10。
+Example: FileTgie recent D:\Downloads 5
+
+13) extstats
+Syntax: extstats <dir>
+EN: Count files grouped by extension.
+CN: 按扩展名统计文件数量。
+Example: FileTgie extstats D:\src
+
+14) extsize
+Syntax: extsize <dir>
+EN: Sum occupied size grouped by extension.
+CN: 按扩展名汇总占用大小。
+Example: FileTgie extsize D:\src
+
+15) disk
+Syntax: disk
+EN: Show capacity, used space and free space of each drive.
+CN: 显示各磁盘的容量、已用与剩余空间。
+Example: FileTgie disk
+
+16) newest
+Syntax: newest <dir>
+EN: Show the single most recently modified file (time, size, path).
+CN: 列出最近修改（最新）的那一个文件（时间、大小、路径）。
+Example: FileTgie newest D:\Photos
+
+17) oldest
+Syntax: oldest <dir>
+EN: Show the single least recently modified file (time, size, path).
+CN: 列出最久未修改（最旧）的那一个文件（时间、大小、路径）。
+Example: FileTgie oldest D:\Photos
+
+18) avgsize
+Syntax: avgsize <dir>
+EN: Compute the average file size (total bytes divided by file count).
+CN: 计算平均文件大小（总字节数除以文件数）。
+Example: FileTgie avgsize D:\Photos
+
+19) sizesort
+Syntax: sizesort <dir> [N]
+EN: List files sorted by size descending, showing the first N;
+N defaults to 20.
+CN: 按大小降序列出前 N 个文件；N 缺省为 20。
+Example: FileTgie sizesort D:\Photos 10
+
+20) typecount
+Syntax: typecount <dir>
+EN: Count files by broad category: image / video / audio / document /
+archive / code / other.
+CN: 按大类统计数量：图片 / 视频 / 音频 / 文档 / 压缩 / 代码 / 其他。
+Example: FileTgie typecount D:\Photos
+
+21) hidden
+Syntax: hidden <dir>
+EN: List hidden files under the directory.
+CN: 列出目录下的隐藏文件。
+Example: FileTgie hidden D:\Projects
+
+22) readonly
+Syntax: readonly <dir>
+EN: List read-only files under the directory.
+CN: 列出目录下的只读文件。
+Example: FileTgie readonly D:\backups
+
+--------------------------------------------------------------
+ Text & Lines / 文本与行数
+--------------------------------------------------------------
+
+23) lines
+Syntax: lines <file>
+EN: Count the lines of a single file.
+CN: 统计单个文件的行数。
+Example: FileTgie lines ./a.txt
+
+24) linesdir
+Syntax: linesdir <dir>
+EN: Recursively count the total lines of text files in a directory.
+CN: 递归统计目录内文本文件的总行数。
+Example: FileTgie --lang en linesdir ./src
+
+25) head
+Syntax: head <file> [N]
+EN: Show the first N lines; N defaults to 10.
+CN: 显示前 N 行；N 缺省为 10。
+Example: FileTgie head README.txt
+Example: FileTgie head README.txt 20
+
+26) tail
+Syntax: tail <file> [N]
+EN: Show the last N lines; N defaults to 10.
+CN: 显示末尾 N 行；N 缺省为 10。
+Example: FileTgie tail README.txt
+
+27) wc
+Syntax: wc <file>
+EN: Count lines, words and characters.
+CN: 统计行 / 词 / 字符数。
+Example: FileTgie wc essay.txt
+
+28) chars
+Syntax: chars <file>
+EN: UTF-8-aware character count.
+CN: UTF-8 感知的字符数。
+Example: FileTgie chars essay.txt
+
+29) longest
+Syntax: longest <file>
+EN: Report the length of the longest line.
+CN: 统计最长行的长度。
+Example: FileTgie longest essay.txt
+
+30) blank
+Syntax: blank <file>
+EN: Count blank (whitespace-only) lines.
+CN: 统计空行（仅含空白字符的行）。
+Example: FileTgie blank essay.txt
+
+31) nonblank
+Syntax: nonblank <file>
+EN: Count non-blank lines (lines containing at least one non-space
+character).
+CN: 统计非空行数（至少含一个非空白字符的行）。
+Example: FileTgie nonblank essay.txt
+
+32) matchlines
+Syntax: matchlines <dir> <text>
+EN: Recursively count lines matching the given text inside text files.
+CN: 递归统计文本文件中匹配指定文本的行数。
+Example: FileTgie matchlines ./src "TODO"
+
+33) avglen
+Syntax: avglen <file>
+EN: Compute the average line length.
+CN: 计算平均行长度。
+Example: FileTgie avglen essay.txt
+
+34) findline
+Syntax: findline <file> <text>
+EN: For a single file, print the number and content of lines containing
+the text.
+CN: 对单个文件，输出含指定文本的行号与内容。
+Example: FileTgie findline essay.txt "hello"
+
+35) cjk
+Syntax: cjk <file>
+EN: Count Chinese-Japanese-Korean (CJK) characters.
+CN: 统计中日韩汉字字符数。
+Example: FileTgie cjk novel.txt
+
+--------------------------------------------------------------
+ Find / 查找
+--------------------------------------------------------------
+
+36) findname
+Syntax: findname <dir> <wildcard>
+EN: Find files by name using wildcards * and ?.
+CN: 按文件名查找，支持通配符 * 和 ?。
+Example: FileTgie findname D:\docs *.txt
+
+37) findext
+Syntax: findext <dir> <ext>
+EN: Find files by extension (for example txt).
+CN: 按扩展名查找（例如 txt）。
+Example: FileTgie findext D:\docs txt
+
+38) findcontent
+Syntax: findcontent <dir> <text>
+EN: Search text inside file contents and print file, line number and
+matching line.
+CN: 在文件内容中搜索文本，给出文件、行号与匹配行。
+Example: FileTgie findcontent ./src "TODO"
+
+39) findempty
+Syntax: findempty <dir>
+EN: Find empty (0-byte) files.
+CN: 查找空文件（0 字节）。
+Example: FileTgie findempty D:\temp
+
+40) findlarge
+Syntax: findlarge <dir> <MB>
+EN: Find files larger than the threshold in MB (decimals allowed,
+e.g. 0.5); sorted by size descending, largest first.
+CN: 查找大于阈值（MB，支持小数如 0.5）的文件，按大小降序、最大
+在前。
+Example: FileTgie findlarge D:\app\logs 50
+
+41) findold
+Syntax: findold <dir> <days>
+EN: Find files not modified for more than N days (decimals allowed).
+CN: 查找超过 N 天未修改的文件（天数支持小数）。
+Example: FileTgie findold D:\archive 30
+
+42) findnew
+Syntax: findnew <dir> <days>
+EN: Find files modified within the last N days (decimals allowed).
+CN: 查找最近 N 天内修改过的文件（天数支持小数）。
+Example: FileTgie findnew D:\Downloads 7
+
+43) findfile
+Syntax: findfile <dir> <exact-name>
+EN: Find files by exact file name (case-insensitive match).
+CN: 按精确文件名查找（大小写不敏感匹配）。
+Example: FileTgie findfile D:\Projects config.ini
+
+44) dupenames
+Syntax: dupenames <dir>
+EN: Find files that share the same name while living in different
+directories.
+CN: 查找位于不同目录下的同名文件。
+Example: FileTgie dupenames D:\Projects
+
+45) today
+Syntax: today <dir>
+EN: Find files modified today (same local calendar day).
+CN: 查找今天（本地同一日历日）修改过的文件。
+Example: FileTgie today D:\Downloads
+
+46) findrange
+Syntax: findrange <dir> <minMB> <maxMB>
+EN: Find files by size range in MB; bounds support decimals (e.g.
+0.4 0.6) and min must be <= max.
+CN: 按大小区间（MB）查找文件；边界支持小数（如 0.4 0.6），且最小
+必须小于等于最大。
+Example: FileTgie findrange D:\Photos 0.4 0.6
+
+47) findexts
+Syntax: findexts <dir> <ext1,ext2,...>
+EN: Find files matching several extensions at once, separated by
+commas.
+CN: 按多个扩展名查找，扩展名以逗号分隔。
+Example: FileTgie findexts D:\docs txt,md,log
+
+48) findpath
+Syntax: findpath <dir> <substring>
+EN: Find files whose full path contains the substring
+(case-insensitive).
+CN: 按完整路径子串查找（大小写不敏感）。
+Example: FileTgie findpath D:\Projects release
+
+--------------------------------------------------------------
+ Verify & Utilities / 校验与实用
+--------------------------------------------------------------
+
+49) hash
+Syntax: hash <file>
+EN: Compute the CRC32 checksum of a single file.
+CN: 计算单个文件的 CRC32 校验值。
+Example: FileTgie hash a.bin
+
+50) duplicates
+Syntax: duplicates <dir>
+EN: Find duplicate files by size plus CRC32.
+CN: 按大小加 CRC32 查找重复文件。
+Example: FileTgie duplicates D:\Photos
+
+51) checksum
+Syntax: checksum <dir>
+EN: List every file in the directory together with its CRC32 and size.
+CN: 列出目录内所有文件及其 CRC32 与大小。
+Example: FileTgie checksum D:\backups
+
+52) encoding
+Syntax: encoding <file>
+EN: Detect encoding: BOM / UTF-8 / UTF-16 / ANSI.
+CN: 检测编码：BOM / UTF-8 / UTF-16 / ANSI。
+Example: FileTgie encoding note.txt
+
+53) type
+Syntax: type <file>
+EN: Guess the file type from its extension.
+CN: 按扩展名猜测文件类型。
+Example: FileTgie type photo.png
+
+54) istext
+Syntax: istext <file>
+EN: Tell whether a file is text or binary.
+CN: 判断文件是文本还是二进制。
+Example: FileTgie istext script.py
+
+55) exists
+Syntax: exists <path>
+EN: Check whether a path exists: file / directory / not found.
+CN: 判断路径是否存在：文件 / 目录 / 不存在。
+Example: FileTgie exists D:\docs
+
+56) compare
+Syntax: compare <fileA> <fileB>
+EN: Compare two files byte by byte and report the first differing
+byte offset; reports equal when identical.
+CN: 逐字节比较两个文件，报告首个差异字节偏移；完全一致时报告相同。
+Example: FileTgie compare a.bin b.bin
+
+57) whereis
+Syntax: whereis <program>
+EN: Locate an executable program through the PATH environment
+variable.
+CN: 在 PATH 环境变量中查找可执行程序。
+Example: FileTgie whereis gcc
+
+
+==============================================================
+6. Languages / 语言切换
+==============================================================
+
+Four language codes are supported: cn (Chinese), en (English),
+ja (Japanese), ru (Russian). Use --lang, -lang or -l before or after
+the command; the = notation and letter case do not matter.
+
+支持四种语言码：cn（中文）、en（英文）、ja（日文）、ru（俄文）。
+在命令前或命令后使用 --lang、-lang 或 -l；等号写法与字母大小写
+均可。
+
+Examples / 示例:
+
+  FileTgie --lang en count D:\docs
+  FileTgie -lang ja lines ./a.txt
+  FileTgie -l ru disk
+
+An unrecognized language code prints a localized warning, falls back
+to cn, and keeps running.
+
+无法识别的语言码会打印本地化警告，回退到 cn 后继续运行。
+
+
+==============================================================
+7. Log / 运行日志
+==============================================================
+
+FileTgie keeps its own run log in filetgie.log next to the executable.
+Every invocation appends one record: local timestamp, language code,
+command, arguments and exit code.
+
+FileTgie 在可执行文件旁的 filetgie.log 中保存自身运行日志。每次调用
+都会追加一条记录：本地时间戳、语言码、命令、参数、退出码。
+
+Use log to print the log and dellog to clear (delete) it. The log path
+is computed inside the program, so it does not depend on the current
+working directory.
+
+用 log 查看日志，用 dellog 清空（删除）日志。日志路径在程序内统一
+计算，不依赖当前工作目录。
+
+
+==============================================================
+8. Size Units / 大小单位
+==============================================================
+
+FileTgie uses the 1024 binary standard: 1 KB = 1024 B and
+1 MB = 1024 KB, advancing B -> KB -> MB -> GB by 1024. A size that
+has not reached the next unit stays in the current unit.
+
+FileTgie 采用 1024 二进制标准：1 KB = 1024 B，1 MB = 1024 KB，
+按 1024 从 B -> KB -> MB -> GB 进位；未到上一级单位时保持当前单位。
+
+The size, stat and du commands also print the exact byte count alongside
+the human-readable size.
+
+size、stat、du 命令会在人类可读大小之外同时给出精确字节数。
+
+
+==============================================================
+9. FAQ / 常见问题
+==============================================================
+
+Q: Does the portable edition need administrator rights?
+A: No. It runs as a normal user; it writes nothing except its own
+filetgie.log next to the executable.
+
+问：便携版需要管理员权限吗？
+答：不需要。普通用户即可运行；除可执行文件旁自身的 filetgie.log 外
+不写任何位置。
+
+Q: Why won't FileTgie modify my files?
+A: By design it is read-only: it only enumerates, stats and reads. It
+never modifies, deletes or moves user files.
+
+问：为什么 FileTgie 不会修改我的文件？
+答：这是设计上的只读承诺：只枚举、stat、读取，绝不修改、删除、移动
+用户文件。
+
+Q: What happens with an unknown language code, an unknown option or
+wrong arguments?
+A: An unknown -/-- token (such as --foo or -x) is reported as an
+unknown option and points to help, rc=1. Missing option values or
+empty = values (such as --lang=) report a missing/empty option value,
+rc=1. An invalid language code warns and falls back to cn. Fixed-
+parameter commands reject extra trailing arguments; optional N values
+use defaults when omitted; numeric thresholds are strictly parsed
+(empty, non-numeric, negative, NaN/Inf and overflow all fail with a
+localized error, rc=1) instead of silently becoming 0.
+
+问：遇到未知语言码、未知选项或错误参数会怎样？
+答：不认识的 -/-- 开头 token（如 --foo、-x）按"未知选项"报错并指向
+help，rc=1；选项缺跟随值或 = 后留空（如 --lang=）报"缺少选项值 /
+值不能为空"，rc=1；无效语言码打印警告后回退 cn。固定参数命令拒绝
+多余尾随参数；可选 N 缺省时用默认值；数值阈值严格解析（空串、
+非数字、负数、NaN/Inf、溢出均报本地化错误，rc=1），绝不静默当成 0。
+
+Q: What does an empty directory, empty file or no-match result print?
+A: An empty directory is a legal input. When a traversal command finds
+no file or no match, it prints one localized "no matches found" line
+with rc=0. A 0-byte file reports line/word/character/longest-line/
+blank/CJK counts as 0 or "none" and returns normally.
+
+问：空目录、空文件、无匹配时输出什么？
+答：空目录是合法输入。遍历命令无文件或无匹配时打印一行本地化
+"未找到匹配项"，rc=0；0 字节文件的行数/词/字符/最长行/空行/CJK
+等输出 0 或"无"，正常返回。
+
+Q: The terminal says "FileTgie is not recognized as a command".
+A: Type the full path to FileTgie.exe (for example
+D:\FileTgie\FileTgie.exe) to run it. If you installed the setup
+edition, add its install directory to the PATH environment variable
+so FileTgie can be typed directly.
+
+问：终端提示"FileTgie 不是可识别的命令"怎么办？
+答：使用 FileTgie.exe 的完整路径运行（例如 D:\FileTgie\FileTgie.exe）。
+若使用安装版，可把安装目录加入 PATH 环境变量，之后即可直接输入
+FileTgie。
+
+
+==============================================================
+10. License / 许可
+==============================================================
+
+FileTgie is licensed under LGPL-3.0-or-later (GNU Lesser General
+Public License, version 3 or later). Copyright (C) 2026
+SuiYe_TR (Suiye-18). The full legal text is in LICENSE and the plain-
+language explanation is in COPYING.
+
+FileTgie 采用 LGPL-3.0-or-later（GNU 宽松通用公共许可证第 3 版或更新版）。
+版权所有 (C) 2026 SuiYe_TR (Suiye-18)。完整法律条款见 LICENSE，通俗
+说明见 COPYING。
+
+Users may freely run, study, modify and redistribute it; closed-source
+proprietary programs may use it in the dynamic-linking case. Modified
+library files must be marked as modified and keep the LGPL license;
+redistribution must attach the license text; static-link distribution
+must provide means to replace or relink the library.
+
+用户可自由运行、研究、修改与再分发；动态链接场景下闭源专有程序
+也可使用。修改过的库文件需标注修改处并继续以 LGPL 发布；再分发须
+随附许可证文本；静态链接分发须提供可替换目标文件 / 重新链接所需
+的手段。
+
+==============================================================
+ End of manual / 手册结束
+==============================================================
