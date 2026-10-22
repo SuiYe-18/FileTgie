@@ -554,17 +554,49 @@ static int cmd_findcontent(const LangPack* L, int argc, char** argv) {
     return 0;
 }
 
-typedef struct { const LangPack* L; int hits; } EmptyCtx;
+/* findempty 上下文：命中计数、递归收集到的子目录路径（用于二轮非递归判空）。
+ * findempty context: hit counter and directory paths collected during the
+ * recursive pass (used by the second, non-recursive emptiness check). */
+typedef struct { const LangPack* L; int hits; char** dirs; int dn, dcap; } EmptyCtx;
 static void cb_empty_file(const ft_entry_t* e, void* u) {
     EmptyCtx* c = (EmptyCtx*)u;
     if (!e->is_dir && e->size == 0) { printf("%s\n", e->full); c->hits++; }
+    if (e->is_dir) {
+        if (c->dn == c->dcap) {
+            c->dcap = c->dcap ? c->dcap * 2 : 32;
+            char** na = (char**)realloc(c->dirs, (size_t)c->dcap * sizeof(char*));
+            if (!na) return;
+            c->dirs = na;
+        }
+        c->dirs[c->dn++] = strdup(e->full);
+    }
 }
+/* 非递归计数回调：统计一个目录顶层条目数（0 即空目录）。
+ * Non-recursive counter: count top-level entries of one folder (0 = empty). */
+static void cb_count_one(const ft_entry_t* e, void* u) { (void)e; (*(int*)u)++; }
 static int cmd_findempty(const LangPack* L, int argc, char** argv) {
     if (need(L, argc, 2, "findempty <dir>")) return 1;
     if (check_extra(L, argc, 2, argv)) return 1;
     if (check_dir(L, argv[1])) return 1;
-    EmptyCtx c = { L, 0 };
-    if (walk_check(L, argv[1], 1, cb_empty_file, &c)) return 1;
+    EmptyCtx c = { L, 0, NULL, 0, 0 };
+    if (walk_check(L, argv[1], 1, cb_empty_file, &c)) {
+        for (int i = 0; i < c.dn; i++) free(c.dirs[i]);
+        free(c.dirs);
+        return 1;
+    }
+    /* 二轮：对收集到的每个子目录做非递归计数，0 条即空目录；根目录单独判空。
+     * Second pass: non-recursive count per collected subfolder; zero entries
+     * means empty. The root folder itself is checked separately. */
+    for (int i = 0; i < c.dn; i++) {
+        int n = 0;
+        ft_walk(c.dirs[i], 0, cb_count_one, &n);
+        if (n == 0) { printf("%s\n", c.dirs[i]); c.hits++; }
+        free(c.dirs[i]);
+    }
+    free(c.dirs);
+    int root_n = 0;
+    ft_walk(argv[1], 0, cb_count_one, &root_n);
+    if (root_n == 0) { printf("%s\n", argv[1]); c.hits++; }
     if (c.hits == 0) printf("%s\n", L->msg_no_match);
     return 0;
 }
@@ -1028,18 +1060,19 @@ static int cmd_whereis(const LangPack* L, int argc, char** argv) {
     sep = ":";
 #endif
     char* save = NULL;
+    int found = 0;
     for (char* tok = strtok_r(buf, sep, &save); tok; tok = strtok_r(NULL, sep, &save)) {
         char cand[4096];
 #ifdef _WIN32
         snprintf(cand, sizeof(cand), "%s\\%s", tok, argv[1]);
-        if (ft_is_file(cand)) { printf("%s\n", cand); continue; }
+        if (ft_is_file(cand)) { printf("%s\n", cand); found = 1; continue; }
         snprintf(cand, sizeof(cand), "%s\\%s.exe", tok, argv[1]);
 #else
         snprintf(cand, sizeof(cand), "%s/%s", tok, argv[1]);
 #endif
-        if (ft_is_file(cand)) printf("%s\n", cand);
+        if (ft_is_file(cand)) { printf("%s\n", cand); found = 1; }
     }
-    (void)L;
+    if (!found) printf("%s\n", L->msg_no_match);
     return 0;
 }
 
@@ -1305,9 +1338,33 @@ static int cmd_cjk(const LangPack* L, int argc, char** argv) {
     if (check_extra(L, argc, 2, argv)) return 1;
     FILE* f = open_read(L, argv[1]);
     if (!f) return 1;
-    long long cjk = 0; int c;
-    while ((c = fgetc(f)) != EOF)
-        if (c >= 0xE4 && c <= 0xE9) cjk++;  /* CJK Unified lead-byte heuristic */
+    /* 按 UTF-8 逐码点解码，只统计 CJK 统一表意文字 U+4E00–U+9FFF；
+     * 不再用首字节区间猜测，避免把续字节/其它文字误计。
+     * Decode UTF-8 codepoints and count only CJK Unified Ideographs
+     * U+4E00–U+9FFF; no lead-byte guessing, so continuation bytes and
+     * other scripts are not miscounted. */
+    long long cjk = 0;
+    int need = 0;        /* remaining continuation bytes for current codepoint */
+    unsigned cp = 0;
+    int c;
+    while ((c = fgetc(f)) != EOF) {
+        unsigned char b = (unsigned char)c;
+        if ((b & 0x80) == 0) { need = 0; continue; }          /* ASCII */
+        if (need == 0) {
+            if ((b & 0xE0) == 0xC0)      { need = 1; cp = b & 0x1F; }
+            else if ((b & 0xF0) == 0xE0)  { need = 2; cp = b & 0x0F; }
+            else if ((b & 0xF8) == 0xF0)  { need = 3; cp = b & 0x07; }
+            else { need = 0; }                            /* stray lead byte */
+        } else if ((b & 0xC0) == 0x80) {
+            cp = (cp << 6) | (b & 0x3F);
+            if (--need == 0) {
+                if (cp >= 0x4E00 && cp <= 0x9FFF) cjk++;
+            }
+        } else {
+            need = 0;                        /* malformed: reset, retry this byte */
+            if ((b & 0xE0) == 0xE0) { need = 2; cp = b & 0x0F; }
+        }
+    }
     fclose(f);
     printf(L->msg_cjk, cjk);
     printf("\n");

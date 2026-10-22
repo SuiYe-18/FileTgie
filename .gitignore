@@ -1,0 +1,26 @@
+# Build artifacts / compiled binaries
+*.o
+*.obj
+*.exe
+FileTgie
+FileTgie.exe
+
+# Release packages are attached to GitHub Releases, not committed
+*.zip
+*.7z
+*.rar
+*.msi
+
+# Runtime log
+filetgie.log
+*.log
+
+# Read-only test corpus (not part of the shipped project)
+src2/
+
+# Local scratch / backup / QA screenshots
+_backup/
+_tool/
+_shots/
+_stage_*/
+__pycache__/

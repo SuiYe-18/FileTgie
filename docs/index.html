@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FileTgie v0.1.0 — Read-only file statistics &amp; search CLI in pure C</title>
+<meta name="description" content="FileTgie is a lightweight, read-only, zero-dependency file statistics and search command-line tool written in pure C for Windows and Linux. LGPL-3.0-or-later.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000000'/%3E%3Ccircle cx='28' cy='28' r='14' fill='none' stroke='%23FFFFFF' stroke-width='6'/%3E%3Cline x1='38' y1='38' x2='52' y2='52' stroke='%23FFFFFF' stroke-width='7' stroke-linecap='square'/%3E%3C/svg%3E">
+<style>
+/* ===== Reset & tokens (mobile-first, 375px) ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #1A1A1A;
+  --paper: #FFFFFF;
+  --black: #000000;
+  --line: rgba(26, 26, 26, 0.14);
+  --line-strong: #1A1A1A;
+  --wash: #F4F4F4;
+  --mono: ui-monospace, "Cascadia Mono", "Cascadia Code", Consolas, "Liberation Mono", "Courier New", monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", "Noto Sans", sans-serif;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+pre, .usage-block { max-width: 100%; }
+.features-grid > *, .install-grid > *, .lang-grid > *, .footer-grid > *, .cmd-list > * { min-width: 0; }
+.wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+section { padding: 56px 0; }
+h1, h2, h3 { font-weight: 700; line-height: 1.2; }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(26,26,26,0.6);
+  margin-bottom: 10px;
+}
+.section-title { font-size: 28px; margin-bottom: 8px; }
+.section-sub { color: rgba(26,26,26,0.7); max-width: 620px; font-size: 15px; }
+
+/* ===== Header ===== */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.header-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 12px 20px; max-width: 1080px; margin: 0 auto; flex-wrap: wrap;
+}
+.brand { display: inline-flex; align-items: center; min-height: 44px; }
+.brand img { height: 30px; width: auto; }
+.nav { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.nav a {
+  font-size: 14px; text-decoration: none; color: var(--ink);
+  padding: 12px 8px; border-bottom: 1px solid transparent;
+  min-height: 44px; display: inline-flex; align-items: center;
+}
+.nav a:hover { border-bottom-color: var(--ink); }
+.nav .gh-link {
+  font-family: var(--mono); font-size: 13px;
+  border: 1px solid var(--ink); padding: 7px 14px; text-decoration: none;
+}
+.nav .gh-link:hover { background: var(--ink); color: var(--paper); }
+
+/* ===== Hero (black) ===== */
+.hero { background: var(--black); color: var(--paper); padding: 72px 0 64px; }
+.hero-logo { width: min(320px, 70%); margin: 0 auto 28px; }
+.hero-tag {
+  font-family: var(--mono); font-size: 13px; letter-spacing: 0.12em;
+  text-align: center; margin-bottom: 18px; color: rgba(255,255,255,0.75);
+}
+.hero h1 {
+  font-size: 26px; text-align: center; max-width: 640px; margin: 0 auto 16px; font-weight: 700;
+}
+.hero p.lede {
+  text-align: center; color: rgba(255,255,255,0.78); max-width: 560px; margin: 0 auto 30px; font-size: 15px;
+}
+.cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-block; text-decoration: none; font-size: 15px;
+  padding: 12px 22px; border: 1px solid var(--paper); cursor: pointer;
+  font-family: var(--sans);
+}
+.btn-solid { background: var(--paper); color: var(--black); }
+.btn-solid:hover { background: transparent; color: var(--paper); }
+.btn-ghost { background: transparent; color: var(--paper); }
+.btn-ghost:hover { background: var(--paper); color: var(--black); }
+
+/* ===== Stat strip ===== */
+.stats { background: var(--black); color: var(--paper); padding: 0 0 56px; }
+.stat-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+  background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.18);
+}
+.stat-cell { background: var(--black); padding: 22px 18px; text-align: center; }
+.stat-num { font-family: var(--mono); font-size: 26px; font-weight: 700; }
+.stat-label { font-size: 12.5px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+
+/* ===== Features ===== */
+.features-grid {
+  display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 28px;
+}
+.feature-card {
+  border: 1px solid var(--line); padding: 22px; background: var(--paper);
+}
+.feature-card svg { width: 26px; height: 26px; stroke: var(--ink); margin-bottom: 12px; }
+.feature-card h3 { font-size: 17px; margin-bottom: 6px; }
+.feature-card p { font-size: 14.5px; color: rgba(26,26,26,0.75); }
+
+/* ===== Commands ===== */
+.commands { background: var(--wash); }
+.tab-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 18px; }
+.tab-btn {
+  font-family: var(--mono); font-size: 13px; cursor: pointer;
+  background: var(--paper); color: var(--ink);
+  border: 1px solid var(--line-strong); padding: 10px 14px; min-height: 44px;
+}
+.tab-btn.active { background: var(--black); color: var(--paper); border-color: var(--black); }
+.cmd-panel { display: none; }
+.cmd-panel.active { display: block; }
+.cmd-list { display: grid; grid-template-columns: 1fr; gap: 0; border-top: 1px solid var(--line); }
+.cmd-item {
+  display: grid; grid-template-columns: 1fr; gap: 2px;
+  padding: 13px 4px; border-bottom: 1px solid var(--line);
+}
+.cmd-name { font-family: var(--mono); font-size: 14.5px; font-weight: 700; }
+.cmd-usage { font-family: var(--mono); font-size: 12.5px; color: rgba(26,26,26,0.55); }
+.cmd-desc { font-size: 14px; color: rgba(26,26,26,0.78); }
+.cmd-count-note { font-family: var(--mono); font-size: 12.5px; color: rgba(26,26,26,0.6); margin-top: 10px; }
+
+/* ===== Quick start ===== */
+.usage-block {
+  background: var(--black); color: var(--paper); padding: 18px; margin: 20px 0;
+  font-family: var(--mono); font-size: 13.5px; overflow-x: auto; white-space: nowrap;
+}
+.example { border: 1px solid var(--line); margin-bottom: 14px; background: var(--paper); }
+.example-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 14px; border-bottom: 1px solid var(--line); background: var(--wash);
+}
+.example-head .ex-desc { font-size: 13.5px; color: rgba(26,26,26,0.7); }
+.copy-btn {
+  font-family: var(--mono); font-size: 12px; cursor: pointer;
+  background: var(--paper); border: 1px solid var(--ink); padding: 10px 12px; color: var(--ink);
+  min-height: 44px;
+}
+.copy-btn:hover { background: var(--ink); color: var(--paper); }
+.example pre {
+  font-family: var(--mono); font-size: 13.5px; padding: 14px; overflow-x: auto; color: var(--ink);
+}
+.notes { margin-top: 18px; }
+.notes li { margin: 8px 0 8px 20px; font-size: 14.5px; }
+.notes code, p code, li code {
+  font-family: var(--mono); font-size: 0.92em;
+  background: var(--wash); padding: 2px 6px; border: 1px solid var(--line);
+}
+
+/* ===== Languages ===== */
+.lang-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 22px; }
+.lang-card { border: 1px solid var(--line); padding: 18px; }
+.lang-code { font-family: var(--mono); font-size: 20px; font-weight: 700; }
+.lang-name { font-size: 14px; color: rgba(26,26,26,0.7); margin-top: 2px; }
+
+/* ===== Install ===== */
+.install-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 22px; }
+.install-card { border: 1px solid var(--line); padding: 22px; }
+.install-card h3 { font-size: 17px; margin-bottom: 10px; }
+.install-card p { font-size: 14.5px; color: rgba(26,26,26,0.78); margin-bottom: 12px; }
+.install-card pre {
+  font-family: var(--mono); font-size: 13px; background: var(--black); color: var(--paper);
+  padding: 14px; overflow-x: auto; white-space: pre;
+}
+
+/* ===== Footer (black) ===== */
+.site-footer { background: var(--black); color: var(--paper); padding: 48px 0 36px; }
+.footer-logo { width: min(220px, 55%); margin-bottom: 20px; }
+.footer-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+.footer-grid h3 { font-size: 15px; margin-bottom: 8px; }
+.footer-grid p, .footer-grid a { font-size: 14px; color: rgba(255,255,255,0.78); text-decoration: none; }
+.footer-grid a:hover { text-decoration: underline; }
+.footer-bottom {
+  margin-top: 32px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.2);
+  font-family: var(--mono); font-size: 12.5px; color: rgba(255,255,255,0.6);
+}
+
+/* ===== Toast ===== */
+.toast {
+  position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px);
+  background: var(--black); color: var(--paper); font-family: var(--mono); font-size: 13px;
+  padding: 10px 18px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+  z-index: 100;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== Desktop ≥768px ===== */
+@media (min-width: 768px) {
+  section { padding: 80px 0; }
+  .hero { padding: 96px 0 80px; }
+  .hero h1 { font-size: 36px; }
+  .section-title { font-size: 34px; }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .stat-grid { grid-template-columns: repeat(4, 1fr); }
+  .cmd-list { grid-template-columns: repeat(2, 1fr); column-gap: 28px; }
+  .lang-grid { grid-template-columns: repeat(4, 1fr); }
+  .install-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1024px) {
+  .features-grid { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#top" aria-label="FileTgie home">
+      <img src="assets/logo_wide_black.png" alt="FileTgie logo">
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#commands">Commands</a>
+      <a href="#quickstart">Quick start</a>
+      <a href="#languages">Languages</a>
+      <a href="#license">License</a>
+      <a class="gh-link" href="https://github.com/suiye-18/finetgie" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ===== Hero ===== -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <img class="hero-logo" src="assets/logo_wide_white.png" alt="FileTgie white logo on black">
+    <div class="hero-tag">v0.1.0 · pure C · LGPL-3.0-or-later</div>
+    <h1>Lightweight, read-only, zero-dependency file statistics &amp; search CLI</h1>
+    <p class="lede">Written in pure C with the standard library only, one source tree builds for Windows and Linux. Every command does one small, predictable thing and never touches your files.</p>
+    <div class="cta-row">
+      <a class="btn btn-solid" href="https://github.com/suiye-18/finetgie/releases/latest/download/FileTgie.windows.0.1.0.setup.exe">Download installer (Windows)</a>
+      <a class="btn btn-ghost" href="https://github.com/suiye-18/finetgie" target="_blank" rel="noopener">GitHub repository</a>
+    </div>
+    <div class="cta-row" style="margin-top:10px;">
+      <a class="btn btn-ghost" href="https://github.com/suiye-18/finetgie/releases/latest/download/FileTgie.windows.0.1.0.portable.zip">Portable ZIP</a>
+      <a class="btn btn-ghost" href="https://github.com/suiye-18/finetgie/releases/latest/download/FileTgie.source.0.1.0.zip">Source archive</a>
+      <a class="btn btn-ghost" href="#commands">Explore 57 commands</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Stat strip ===== -->
+<div class="stats">
+  <div class="wrap">
+    <div class="stat-grid">
+      <div class="stat-cell"><div class="stat-num">57</div><div class="stat-label">built-in commands</div></div>
+      <div class="stat-cell"><div class="stat-num">4</div><div class="stat-label">interface languages</div></div>
+      <div class="stat-cell"><div class="stat-num">0</div><div class="stat-label">third-party dependencies</div></div>
+      <div class="stat-cell"><div class="stat-num">2</div><div class="stat-label">platforms: Windows + Linux</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Features ===== -->
+<section id="features">
+  <div class="wrap">
+    <div class="eyebrow">Features</div>
+    <h2 class="section-title">Small by design, safe by default</h2>
+    <p class="section-sub">Each command performs a single, clearly bounded operation. Results are clear and expected; there are no surprise side effects.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" stroke-linejoin="round"/></svg>
+        <h3>Lightweight</h3>
+        <p>A single compact executable with no runtime, no package manager and no configuration file.</p>
+      </div>
+      <div class="feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M8 6 4 12l4 6M16 6l4 6-4 6M13 4l-2 16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>Pure C, standard library only</h3>
+        <p>Built from C standard library calls and platform-native APIs; no third-party dependency anywhere in the source tree.</p>
+      </div>
+      <div class="feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3z" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>Read-only safe</h3>
+        <p>Never modifies, deletes or moves user files. The only write is its own <code>filetgie.log</code>, managed by <code>log</code> and <code>dellog</code>.</p>
+      </div>
+      <div class="feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18" stroke-linecap="round"/></svg>
+        <h3>Four switchable languages</h3>
+        <p>Interface messages switch between cn, en, ja and ru with <code>--lang</code>; unknown codes warn and fall back to cn.</p>
+      </div>
+      <div class="feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4" stroke-linecap="round"/></svg>
+        <h3>Cross-platform</h3>
+        <p><code>src/port.c</code> isolates the Windows wide-character Win32 API from POSIX; the rest of the code is platform-independent.</p>
+      </div>
+      <div class="feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5" stroke-linecap="round"/></svg>
+        <h3>LGPL-3.0-or-later</h3>
+        <p>Free to run, study, modify and redistribute; static and dynamic linking obligations are documented in LICENSE and COPYING.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Commands ===== -->
+<section class="commands" id="commands">
+  <div class="wrap">
+    <div class="eyebrow">Command overview</div>
+    <h2 class="section-title">57 commands, grouped by job</h2>
+    <p class="section-sub">Every entry below comes from the built-in command table. <code>log</code> and <code>dellog</code> read or delete FileTgie's own log; all others are strictly read-only.</p>
+    <div class="tab-row" id="tabRow" role="tablist"></div>
+    <div id="cmdPanels"></div>
+    <div class="cmd-count-note" id="cmdNote"></div>
+  </div>
+</section>
+
+<!-- ===== Quick start ===== -->
+<section id="quickstart">
+  <div class="wrap">
+    <div class="eyebrow">Quick start</div>
+    <h2 class="section-title">Usage and examples</h2>
+    <div class="usage-block">FileTgie [--lang cn|en|ja|ru] [--exclude &lt;glob&gt;] [--exclude-ext &lt;ext&gt;] &lt;command&gt; [args...]</div>
+
+    <div class="example">
+      <div class="example-head"><span class="ex-desc">Count files and folders in a folder</span><button class="copy-btn" type="button" data-copy="FileTgie count D:\Photos">Copy</button></div>
+      <pre>FileTgie count D:\Photos</pre>
+    </div>
+    <div class="example">
+      <div class="example-head"><span class="ex-desc">Sum all text-file lines in a codebase, English UI</span><button class="copy-btn" type="button" data-copy="FileTgie --lang en linesdir ./src">Copy</button></div>
+      <pre>FileTgie --lang en linesdir ./src</pre>
+    </div>
+    <div class="example">
+      <div class="example-head"><span class="ex-desc">Find log files larger than 50 MB, largest first</span><button class="copy-btn" type="button" data-copy="FileTgie findlarge D:\app\logs 50">Copy</button></div>
+      <pre>FileTgie findlarge D:\app\logs 50</pre>
+    </div>
+    <div class="example">
+      <div class="example-head"><span class="ex-desc">Search file contents for a text snippet and report line numbers</span><button class="copy-btn" type="button" data-copy="FileTgie findcontent ./src &quot;TODO&quot;">Copy</button></div>
+      <pre>FileTgie findcontent ./src "TODO"</pre>
+    </div>
+    <div class="example">
+      <div class="example-head"><span class="ex-desc">Verify two files are byte-for-byte identical</span><button class="copy-btn" type="button" data-copy="FileTgie compare a.bin b.bin">Copy</button></div>
+      <pre>FileTgie compare a.bin b.bin</pre>
+    </div>
+    <div class="example">
+      <div class="example-head"><span class="ex-desc">Show capacity, used and free space of every drive</span><button class="copy-btn" type="button" data-copy="FileTgie disk">Copy</button></div>
+      <pre>FileTgie disk</pre>
+    </div>
+
+    <ul class="notes">
+      <li><strong>Binary units (1024):</strong> B → KB → MB → GB step by 1024 (1 KB = 1024 B, 1 MB = 1024 KB); <code>size</code>, <code>stat</code> and <code>du</code> also print exact byte counts.</li>
+      <li><strong>Language option aliases:</strong> <code>--lang</code> also accepts <code>-lang</code>, <code>-l</code>, and the equals form <code>--lang=en</code> / <code>-l=ja</code>; the code is case-insensitive and may appear before or after the command.</li>
+      <li><strong>Exclusions:</strong> <code>--exclude &lt;glob&gt;</code> and <code>--exclude-ext &lt;ext&gt;</code> may be repeated; they apply only to traversal commands, not to commands that take an explicit single file such as <code>lines</code> or <code>hash</code>.</li>
+      <li>Run with no arguments or <code>help</code> to print the full command table (exit code 0).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== Languages ===== -->
+<section id="languages" style="background:var(--wash);">
+  <div class="wrap">
+    <div class="eyebrow">Interface languages</div>
+    <h2 class="section-title">Switch the UI with one flag</h2>
+    <p class="section-sub">All prompts, errors and help strings ship in four language packs inside the binary; no external locale files are needed.</p>
+    <div class="lang-grid">
+      <div class="lang-card"><div class="lang-code">cn</div><div class="lang-name">Chinese (default fallback)</div></div>
+      <div class="lang-card"><div class="lang-code">en</div><div class="lang-name">English</div></div>
+      <div class="lang-card"><div class="lang-code">ja</div><div class="lang-name">Japanese</div></div>
+      <div class="lang-card"><div class="lang-code">ru</div><div class="lang-name">Russian</div></div>
+    </div>
+    <ul class="notes">
+      <li>Examples: <code>FileTgie --lang en count D:\docs</code>, <code>FileTgie -lang ja lines ./a.txt</code>, <code>FileTgie -l ru disk</code>.</li>
+      <li>An unrecognized language code prints a localized warning, falls back to <code>cn</code>, and the program keeps running.</li>
+      <li><code>langs</code> lists the available language codes at runtime.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== Install ===== -->
+<section id="install">
+  <div class="wrap">
+    <div class="eyebrow">Get FileTgie</div>
+    <h2 class="section-title">Portable package or build from source</h2>
+    <div class="install-grid">
+      <div class="install-card">
+        <h3>Windows portable package</h3>
+        <p>The green portable package contains only <code>FileTgie.exe</code>, README, LICENSE and COPYING. It writes no registry keys and nothing outside the folder; unzip and run, delete the folder to uninstall. The only file written next to the executable is its own <code>filetgie.log</code>.</p>
+      </div>
+      <div class="install-card">
+        <h3>Build from source — Windows (MinGW gcc)</h3>
+        <p>Run <code>build.bat</code> in the project root, equivalent to the command below; the build target <code>-O2 -Wall</code> must compile with zero warnings.</p>
+        <pre>gcc -O2 -Wall -o FileTgie.exe src\main.c src\commands.c src\port.c src\util.c src\i18n.c</pre>
+      </div>
+      <div class="install-card">
+        <h3>Build from source — Linux</h3>
+        <p>Run <code>make</code> to produce the <code>FileTgie</code> binary. The Makefile is structurally correct; per the README it has not been machine-verified on real Linux hardware.</p>
+        <pre>make</pre>
+      </div>
+      <div class="install-card">
+        <h3>Source code</h3>
+        <p>All sources live under <code>src/</code> and use only the C standard library and native platform APIs. Visit the repository for the latest source and releases:</p>
+        <p><a href="https://github.com/suiye-18/finetgie" target="_blank" rel="noopener" style="font-family:var(--mono);text-decoration:underline;">github.com/suiye-18/finetgie</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Footer / Author / License ===== -->
+<footer class="site-footer" id="license">
+  <div class="wrap">
+    <img class="footer-logo" src="assets/logo_wide_white.png" alt="FileTgie white logo">
+    <div class="footer-grid">
+      <div>
+        <h3>Author</h3>
+        <p>SuiYe_TR (single author)</p>
+        <p><a href="https://github.com/suiye-18/finetgie" target="_blank" rel="noopener">github.com/suiye-18/finetgie</a></p>
+      </div>
+      <div>
+        <h3>License</h3>
+        <p>LGPL-3.0-or-later (GNU Lesser General Public License, version 3 or later). Full legal text in LICENSE; plain-language linking notes in COPYING.</p>
+      </div>
+      <div>
+        <h3>Version</h3>
+        <p>v0.1.0 — first release after the version numbering reset. The single source of truth for the version is <code>src/commands.h</code> (FILETGIE_VERSION).</p>
+      </div>
+    </div>
+    <div class="footer-bottom">Copyright (C) 2026 SuiYe_TR · FileTgie v0.1.0 · read-only file statistics &amp; search CLI</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Copied to clipboard</div>
+
+<script>
+(function () {
+  // ===== Command data: names and English descriptions from README, names verified against CMD_TABLE (57) =====
+  var GROUPS = [
+    {
+      id: "all", label: "All",
+      items: [
+        ["help", "help", "Show the full command table."],
+        ["version", "version", "Print the FileTgie version from FILETGIE_VERSION."],
+        ["langs", "langs", "List the available interface language codes."],
+        ["log", "log", "Print FileTgie's own run log (filetgie.log next to the executable)."],
+        ["dellog", "dellog", "Delete only FileTgie's own run log; touches nothing else."],
+        ["stat", "stat <path>", "Detailed file or directory info: size and three timestamps."],
+        ["count", "count <dir>", "Recursively count files and folders."],
+        ["lines", "lines <file>", "Count the lines of a single file."],
+        ["linesdir", "linesdir <dir>", "Recursively sum the lines of text files."],
+        ["size", "size <file>", "Human-readable file size (1024 units) plus exact bytes."],
+        ["du", "du <dir>", "Total summed size of a directory."],
+        ["tree", "tree <dir> [depth]", "Print a directory tree; default depth 20, depth 0 allowed."],
+        ["findname", "findname <dir> <glob>", "Search by filename with wildcards * and ?."],
+        ["findext", "findext <dir> <ext>", "Search by extension, e.g. txt."],
+        ["findcontent", "findcontent <dir> <text>", "Search file contents for text and report line numbers."],
+        ["findempty", "findempty <dir>", "Find empty files."],
+        ["findlarge", "findlarge <dir> <MB>", "Find files larger than threshold MB (decimals allowed), largest first."],
+        ["findold", "findold <dir> <days>", "Find files not modified for more than N days (decimals allowed)."],
+        ["findnew", "findnew <dir> <days>", "Find files modified within the last N days (decimals allowed)."],
+        ["hash", "hash <file>", "Compute the CRC32 checksum of a file."],
+        ["duplicates", "duplicates <dir>", "Find duplicate files by size plus CRC32."],
+        ["encoding", "encoding <file>", "Detect encoding: BOM / UTF-8 / UTF-16 / ANSI."],
+        ["type", "type <file>", "Guess the file type from its extension."],
+        ["list", "list <dir>", "List directory contents: size, time, name."],
+        ["compare", "compare <fileA> <fileB>", "Byte-by-byte compare; report the first differing offset."],
+        ["head", "head <file> [N]", "Show the first N lines; default 10."],
+        ["tail", "tail <file> [N]", "Show the last N lines; default 10."],
+        ["wc", "wc <file>", "Count lines, words and characters."],
+        ["disk", "disk", "Capacity, used and free space of each drive."],
+        ["recent", "recent <dir> [N]", "N most recently modified files; default 10."],
+        ["extstats", "extstats <dir>", "Count files grouped by extension."],
+        ["extsize", "extsize <dir>", "Summarize occupied size grouped by extension."],
+        ["checksum", "checksum <dir>", "List every file in a directory with its CRC32."],
+        ["exists", "exists <path>", "Report whether a path exists: file, directory or missing."],
+        ["istext", "istext <file>", "Decide whether a file is text or binary."],
+        ["longest", "longest <file>", "Report the longest line length."],
+        ["blank", "blank <file>", "Count blank lines."],
+        ["chars", "chars <file>", "UTF-8-aware character count."],
+        ["whereis", "whereis <program>", "Locate an executable program in PATH."],
+        ["newest", "newest <dir>", "List the most recently modified file(s)."],
+        ["oldest", "oldest <dir>", "List the least recently modified file(s)."],
+        ["avgsize", "avgsize <dir>", "Average file size in a directory."],
+        ["sizesort", "sizesort <dir> [N]", "List the N largest files, descending by size."],
+        ["typecount", "typecount <dir>", "Count by broad category: image, video, audio, document, archive, code."],
+        ["hidden", "hidden <dir>", "List hidden files."],
+        ["readonly", "readonly <dir>", "List read-only files."],
+        ["nonblank", "nonblank <file>", "Count non-blank lines."],
+        ["matchlines", "matchlines <dir> <text>", "Recursively count lines matching the text."],
+        ["avglen", "avglen <file>", "Average line length."],
+        ["findline", "findline <file> <text>", "Print line numbers and content containing the text."],
+        ["cjk", "cjk <file>", "Count CJK (Chinese/Japanese/Korean) characters."],
+        ["findfile", "findfile <dir> <name>", "Search by exact filename."],
+        ["dupenames", "dupenames <dir>", "Find same-named files living in different directories."],
+        ["today", "today <dir>", "Find files modified today."],
+        ["findrange", "findrange <dir> <minMB> <maxMB>", "Find files in a size range (MB); min must not exceed max."],
+        ["findexts", "findexts <dir> <ext1,ext2,...>", "Search by multiple comma-separated extensions."],
+        ["findpath", "findpath <dir> <substring>", "Search by substring in the full path."]
+      ]
+    },
+    {
+      id: "system", label: "System & Log",
+      items: [
+        ["help", "help", "Show the full command table."],
+        ["version", "version", "Print the FileTgie version from FILETGIE_VERSION."],
+        ["langs", "langs", "List the available interface language codes."],
+        ["log", "log", "Print FileTgie's own run log (filetgie.log next to the executable)."],
+        ["dellog", "dellog", "Delete only FileTgie's own run log; touches nothing else."]
+      ]
+    },
+    {
+      id: "stats", label: "Statistics",
+      items: [
+        ["stat", "stat <path>", "Detailed file or directory info: size and three timestamps."],
+        ["count", "count <dir>", "Recursively count files and folders."],
+        ["size", "size <file>", "Human-readable file size (1024 units) plus exact bytes."],
+        ["du", "du <dir>", "Total summed size of a directory."],
+        ["disk", "disk", "Capacity, used and free space of each drive."],
+        ["recent", "recent <dir> [N]", "N most recently modified files; default 10."],
+        ["extstats", "extstats <dir>", "Count files grouped by extension."],
+        ["extsize", "extsize <dir>", "Summarize occupied size grouped by extension."],
+        ["newest", "newest <dir>", "List the most recently modified file(s)."],
+        ["oldest", "oldest <dir>", "List the least recently modified file(s)."],
+        ["avgsize", "avgsize <dir>", "Average file size in a directory."],
+        ["sizesort", "sizesort <dir> [N]", "List the N largest files, descending by size."],
+        ["typecount", "typecount <dir>", "Count by broad category: image, video, audio, document, archive, code."],
+        ["hidden", "hidden <dir>", "List hidden files."],
+        ["readonly", "readonly <dir>", "List read-only files."]
+      ]
+    },
+    {
+      id: "text", label: "Text & Lines",
+      items: [
+        ["lines", "lines <file>", "Count the lines of a single file."],
+        ["linesdir", "linesdir <dir>", "Recursively sum the lines of text files."],
+        ["head", "head <file> [N]", "Show the first N lines; default 10."],
+        ["tail", "tail <file> [N]", "Show the last N lines; default 10."],
+        ["wc", "wc <file>", "Count lines, words and characters."],
+        ["chars", "chars <file>", "UTF-8-aware character count."],
+        ["longest", "longest <file>", "Report the longest line length."],
+        ["blank", "blank <file>", "Count blank lines."],
+        ["nonblank", "nonblank <file>", "Count non-blank lines."],
+        ["matchlines", "matchlines <dir> <text>", "Recursively count lines matching the text."],
+        ["avglen", "avglen <file>", "Average line length."],
+        ["findline", "findline <file> <text>", "Print line numbers and content containing the text."],
+        ["cjk", "cjk <file>", "Count CJK (Chinese/Japanese/Korean) characters."],
+        ["encoding", "encoding <file>", "Detect encoding: BOM / UTF-8 / UTF-16 / ANSI."],
+        ["istext", "istext <file>", "Decide whether a file is text or binary."],
+        ["type", "type <file>", "Guess the file type from its extension."]
+      ]
+    },
+    {
+      id: "search", label: "Search & Find",
+      items: [
+        ["tree", "tree <dir> [depth]", "Print a directory tree; default depth 20, depth 0 allowed."],
+        ["list", "list <dir>", "List directory contents: size, time, name."],
+        ["findname", "findname <dir> <glob>", "Search by filename with wildcards * and ?."],
+        ["findext", "findext <dir> <ext>", "Search by extension, e.g. txt."],
+        ["findcontent", "findcontent <dir> <text>", "Search file contents for text and report line numbers."],
+        ["findempty", "findempty <dir>", "Find empty files."],
+        ["findlarge", "findlarge <dir> <MB>", "Find files larger than threshold MB (decimals allowed), largest first."],
+        ["findold", "findold <dir> <days>", "Find files not modified for more than N days (decimals allowed)."],
+        ["findnew", "findnew <dir> <days>", "Find files modified within the last N days (decimals allowed)."],
+        ["findfile", "findfile <dir> <name>", "Search by exact filename."],
+        ["dupenames", "dupenames <dir>", "Find same-named files living in different directories."],
+        ["today", "today <dir>", "Find files modified today."],
+        ["findrange", "findrange <dir> <minMB> <maxMB>", "Find files in a size range (MB); min must not exceed max."],
+        ["findexts", "findexts <dir> <ext1,ext2,...>", "Search by multiple comma-separated extensions."],
+        ["findpath", "findpath <dir> <substring>", "Search by substring in the full path."],
+        ["whereis", "whereis <program>", "Locate an executable program in PATH."]
+      ]
+    },
+    {
+      id: "verify", label: "Verify & Integrity",
+      items: [
+        ["hash", "hash <file>", "Compute the CRC32 checksum of a file."],
+        ["duplicates", "duplicates <dir>", "Find duplicate files by size plus CRC32."],
+        ["checksum", "checksum <dir>", "List every file in a directory with its CRC32."],
+        ["compare", "compare <fileA> <fileB>", "Byte-by-byte compare; report the first differing offset."],
+        ["exists", "exists <path>", "Report whether a path exists: file, directory or missing."]
+      ]
+    }
+  ];
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  var tabRow = document.getElementById("tabRow");
+  var panels = document.getElementById("cmdPanels");
+  var note = document.getElementById("cmdNote");
+
+  GROUPS.forEach(function (g, idx) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tab-btn" + (idx === 0 ? " active" : "");
+    btn.setAttribute("role", "tab");
+    btn.textContent = g.label + " (" + g.items.length + ")";
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".tab-btn").forEach(function (b) { b.classList.remove("active"); });
+      document.querySelectorAll(".cmd-panel").forEach(function (p) { p.classList.remove("active"); });
+      btn.classList.add("active");
+      var panel = document.getElementById("panel-" + g.id);
+      panel.classList.add("active");
+      note.textContent = g.id === "all"
+        ? "Showing all " + g.items.length + " commands from CMD_TABLE."
+        : "Showing " + g.items.length + " commands in this group.";
+    });
+    tabRow.appendChild(btn);
+
+    var panel = document.createElement("div");
+    panel.className = "cmd-panel" + (idx === 0 ? " active" : "");
+    panel.id = "panel-" + g.id;
+    var list = document.createElement("div");
+    list.className = "cmd-list";
+    g.items.forEach(function (it) {
+      var row = document.createElement("div");
+      row.className = "cmd-item";
+      row.innerHTML =
+        '<div class="cmd-name">' + escapeHtml(it[0]) + '</div>' +
+        '<div class="cmd-usage">' + escapeHtml(it[1]) + '</div>' +
+        '<div class="cmd-desc">' + escapeHtml(it[2]) + '</div>';
+      list.appendChild(row);
+    });
+    panel.appendChild(list);
+    panels.appendChild(panel);
+  });
+  note.textContent = "Showing all " + GROUPS[0].items.length + " commands from CMD_TABLE.";
+
+  // ===== Copy buttons =====
+  var toast = document.getElementById("toast");
+  var toastTimer = null;
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 1600);
+  }
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var text = btn.getAttribute("data-copy") || "";
+      function fallback() {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); } catch (e) {}
+        document.body.removeChild(ta);
+        showToast("Copied to clipboard");
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () {
+          showToast("Copied to clipboard");
+        }).catch(fallback);
+      } else {
+        fallback();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
