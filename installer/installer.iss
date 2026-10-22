@@ -85,8 +85,12 @@ const
   SMTO_ABORTIFHUNG = $0002;
   EnvSubKey = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
 
-function SendMessageTimeoutW(hWnd: LongInt; Msg: DWORD; wParam: DWORD;
-  lParam: string; fuFlags: DWORD; uTimeout: DWORD): LongInt;
+// Correct WinAPI signature: lParam carries a pointer-sized value (LongInt in
+// this 32-bit installer), not a string. Declaring it as string mismatches the
+// stdcall stack and causes an access violation (0xC0000005) after file copying.
+function SendMessageTimeoutW(hWnd: LongInt; Msg: LongInt; wParam: LongInt;
+  lParam: LongInt; fuFlags: LongInt; uTimeout: LongInt;
+  var lResult: LongInt): LongInt;
   external 'SendMessageTimeoutW@user32.dll stdcall';
 
 function NormalizePathEntry(const S: string): string;
@@ -125,9 +129,14 @@ begin
 end;
 
 procedure BroadcastEnvironmentChange;
+var
+  EnvName: string;
+  Res: LongInt;
 begin
-  SendMessageTimeoutW(HWND_BROADCAST, WM_SETTINGCHANGE, 0,
-    'Environment', SMTO_ABORTIFHUNG, 5000);
+  EnvName := 'Environment';
+  // HWND_BROADCAST = $FFFF; lParam is the pointer to 'Environment'.
+  SendMessageTimeoutW($FFFF, WM_SETTINGCHANGE, 0,
+    LongInt(EnvName), SMTO_ABORTIFHUNG, 5000, Res);
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
@@ -158,8 +167,12 @@ begin
     end;
     if not Already then
       List.Add(AppDir);
-    WriteSystemEnvironmentPath(JoinPath(List));
-    BroadcastEnvironmentChange;
+    // Never let a PATH broadcast failure abort an otherwise finished install.
+    try
+      WriteSystemEnvironmentPath(JoinPath(List));
+      BroadcastEnvironmentChange;
+    except
+    end;
   finally
     List.Free;
   end;
@@ -187,8 +200,11 @@ begin
       if NormalizePathEntry(Entry) = NormalizePathEntry(AppDir) then
         List.Delete(I);
     end;
-    WriteSystemEnvironmentPath(JoinPath(List));
-    BroadcastEnvironmentChange;
+    try
+      WriteSystemEnvironmentPath(JoinPath(List));
+      BroadcastEnvironmentChange;
+    except
+    end;
   finally
     List.Free;
   end;
