@@ -179,6 +179,11 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
   font-family: var(--mono); font-size: 13px; background: var(--black); color: var(--paper);
   padding: 14px; overflow-x: auto; white-space: pre;
 }
+.install-card .btn-ghost {
+  display: inline-block; margin-top: 12px; color: var(--black);
+  border: 1px solid var(--black); background: transparent;
+}
+.install-card .btn-ghost:hover { background: var(--black); color: var(--paper); }
 
 /* ===== Footer (black) ===== */
 .site-footer { background: var(--black); color: var(--paper); padding: 48px 0 36px; }
@@ -250,7 +255,8 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       <a class="btn btn-ghost" href="https://github.com/SuiYe-18/FileTgie" target="_blank" rel="noopener">GitHub repository</a>
     </div>
     <div class="cta-row" style="margin-top:10px;">
-      <a class="btn btn-ghost" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.0.portable.zip">Portable ZIP</a>
+      <a class="btn btn-ghost" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.0.portable.zip">Windows portable ZIP</a>
+      <a class="btn btn-ghost" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz">Linux tarball</a>
       <a class="btn btn-ghost" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.1.0.zip">Source archive</a>
       <a class="btn btn-ghost" href="#commands">Explore 57 commands</a>
     </div>
@@ -399,9 +405,10 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         <pre>gcc -O2 -Wall -o FileTgie.exe src\main.c src\commands.c src\port.c src\util.c src\i18n.c</pre>
       </div>
       <div class="install-card">
-        <h3>Build from source — Linux</h3>
-        <p>Run <code>make</code> to produce the <code>FileTgie</code> binary. The Makefile is structurally correct; per the README it has not been machine-verified on real Linux hardware.</p>
+        <h3>Linux — portable tarball or build from source</h3>
+        <p>Extract <code>FileTgie.linux.0.1.0.tar.gz</code> and run <code>./FileTgie --lang en help</code>; optionally copy the binary into <code>PATH</code>. No installer, administrator rights, or network access are required. To build from source, run <code>make</code>. Tested on GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc); C99/GNU99/C11/GNU11/GNU17 build clean, and a C99-capable GCC 5+ on modern glibc is expected to compile. The prebuilt tarball targets x86_64 glibc (Debian/Ubuntu family), not musl/Alpine; Clang was not verified in this release.</p>
         <pre>make</pre>
+        <a class="btn btn-ghost" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz">Download Linux tarball</a>
       </div>
       <div class="install-card">
         <h3>Source code</h3>
