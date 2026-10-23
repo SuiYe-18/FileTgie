@@ -83,6 +83,17 @@ The portable edition does not require administrator rights.
 
 便携版不需要管理员权限。
 
+Linux portable tarball / Linux 便携包
+
+The Linux tarball contains a stripped x86_64 glibc binary, README, LICENSE,
+COPYING and this manual. Extract it, run ./FileTgie --lang en help, and
+optionally copy FileTgie into a directory in PATH. No installer, administrator
+rights or network access is required.
+
+Linux 便携包含剥离符号的 x86_64 glibc 可执行文件、README、LICENSE、COPYING
+与本手册。解压后运行 ./FileTgie --lang en help；如需全局使用，可把 FileTgie
+复制到 PATH 中的目录。不需要安装程序、管理员权限或网络。
+
 Building from source / 从源码构建
 
 Windows (MinGW gcc), in the project root directory:
@@ -105,6 +116,22 @@ dependencies.
 
 Linux（gcc / clang）执行 make，产出 FileTgie。源码全部位于 src/，
 仅使用 C 标准库与平台原生 API，无第三方依赖。
+
+Linux toolchain support / Linux 工具链支持
+
+Verified on GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc) with -O2 -Wall -Wextra
+clean. The same tree also builds clean under -std=c99, -std=gnu99, -std=c11,
+-std=gnu11 and -std=gnu17, so it does not require C11-only syntax. A C99-capable
+GCC 5+ on modern glibc is expected to build from source; older versions were not
+tested one by one. The prebuilt tarball targets x86_64 glibc (Debian/Ubuntu
+family), not musl/Alpine; use make on another distribution. Clang is not
+verified in this release.
+
+已在 GCC 11.4.0（Ubuntu 22.04，x86_64，glibc）以 -O2 -Wall -Wextra 零警告
+验证；同一源码在 -std=c99、-std=gnu99、-std=c11、-std=gnu11、-std=gnu17 下
+也均零警告，不依赖 C11 专属语法。现代 glibc 上具备 C99 能力的 GCC 5+ 预期可从
+源码构建，更低版本未逐版本实测。预编译包面向 x86_64 glibc（Debian/Ubuntu 系），
+不保证 musl/Alpine；其他发行版建议执行 make。Clang 本版未验证。
 
 
 ==============================================================

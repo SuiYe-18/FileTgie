@@ -64,9 +64,20 @@ gcc -O2 -Wall -o FileTgie.exe src\main.c src\commands.c src\port.c src\util.c sr
 make
 ```
 
-产出 `FileTgie`。`Makefile` 仅保持结构正确，未在本机 Linux 实机编译验证。
+产出 `FileTgie`。已在 Debian/Ubuntu x86_64 Linux 上以 `gcc -Wall -Wextra`
+实机编译零警告，并完成全部命令回归。
 
 源码全部位于 `src/`，仅使用 C 标准库与平台原生 API，无第三方依赖。
+
+#### Linux 工具链口径
+
+* 已实机验证：GCC 11.4.0（Ubuntu 22.04 / x86_64 / glibc），
+  `-O2 -Wall -Wextra` 零警告。
+* 同机补充验证：`-std=c99`、`-std=gnu99`、`-std=c11`、`-std=gnu11`、
+  `-std=gnu17` 均可零警告编译；代码不依赖 C11 专属语法。
+* 预期可编译：支持 C99 的 GCC 5+ 与现代 glibc；本发布未逐版本实测更低版本。
+* 预编译 tarball 面向 x86_64 glibc（Debian/Ubuntu 系），不保证 musl/Alpine；
+  其他发行版建议直接 `make` 从源码构建。Clang 本次未实测。
 
 ## 通用用法
 
@@ -239,10 +250,15 @@ FileTgie disk
 
 ## 便携包与安装程序
 
-* **绿色便携包**（`FileTgie.windows.0.1.0.portable.zip`）：仅含
+* **Windows 绿色便携包**（`FileTgie.windows.0.1.0.portable.zip`）：仅含
   `FileTgie.exe`、`README.md`、`LICENSE`、`COPYING`。工具本身完全便携：
   不写注册表、不写入 Program Files，除 exe 旁自身的 `filetgie.log` 外不写
   任何位置，解压即用、删文件夹即卸载。
+
+* **Linux 便携包**（`FileTgie.linux.0.1.0.tar.gz`）：含剥离符号的 x86_64
+  glibc 可执行文件、README、LICENSE、COPYING 与 User Manual。解压后运行
+  `./FileTgie --lang en help`；需要全局使用时把二进制复制到 `PATH` 中的目录，
+  不安装、不写系统注册表、不需要管理员权限。
 
 * **安装程序**：提供 Inno Setup 6 脚本 `installer\installer.iss`，本发布已用
   Inno Setup 6.7.3 编译出真实安装包 `FileTgie.windows.0.1.0.setup.exe`。脚本含
@@ -292,7 +308,7 @@ FileTgie 采用 **LGPL-3.0-or-later**（GNU Lesser General Public License
 ```
 FileTgie/
 ├─ build.bat          # Windows 构建脚本
-├─ Makefile          # Linux 构建（结构保留，未在 Linux 实机验证）
+├─ Makefile          # Linux 构建（gcc -Wall -Wextra，已实机验证）
 ├─ README.md
 ├─ LICENSE           # LGPL-3.0 完整官方文本
 ├─ COPYING           # LGPL 通俗中文说明（动态/静态链接）

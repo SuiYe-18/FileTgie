@@ -9,6 +9,9 @@
  * validation helpers first, cmd_* handlers grouped by feature, then the
  * table mapping each command name to its handler.
  */
+#ifndef _WIN32
+#define _POSIX_C_SOURCE 200809L
+#endif
 #include "commands.h"
 #include "port.h"
 #include "util.h"
@@ -797,7 +800,7 @@ static int cmd_exists(const LangPack* L, int argc, char** argv) {
     if (check_extra(L, argc, 2, argv)) return 1;
     if (ft_is_dir(argv[1])) printf("%s (%s)\n", argv[1], L->lbl_dir);
     else if (ft_is_file(argv[1])) printf("%s (%s)\n", argv[1], L->lbl_file);
-    else { printf(L->lbl_none); printf(": %s\n", argv[1]); return 1; }
+    else { printf("%s", L->lbl_none); printf(": %s\n", argv[1]); return 1; }
     return 0;
 }
 
@@ -1428,13 +1431,14 @@ static int cmd_dupenames(const LangPack* L, int argc, char** argv) {
 }
 static int same_day(long long mtime) {
     time_t now = time(NULL);
+    time_t mt = (time_t)mtime;
     struct tm a, b;
 #ifdef _WIN32
     localtime_s(&a, &now);
-    localtime_s(&b, &mtime);
+    localtime_s(&b, &mt);
 #else
     localtime_r(&now, &a);
-    localtime_r(&mtime, &b);
+    localtime_r(&mt, &b);
 #endif
     return a.tm_year == b.tm_year && a.tm_yday == b.tm_yday;
 }

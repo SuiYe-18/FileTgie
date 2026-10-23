@@ -17,7 +17,11 @@
  *   --exclude-ext <ext>  | --exclude-ext=<ext>   (dot optional, case-insens.)
  * Everything else is <command> [args...].
  */
+#ifndef _WIN32
+#define _POSIX_C_SOURCE 200809L
+#endif
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
@@ -76,6 +80,7 @@ int main(int argc_raw, char** argv_raw) {
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
 #endif
+    (void)argc_raw;  /* argc is rebuilt by ft_argv_utf8 after wide-char conversion. */
     int argc = 0;
     char** argv = ft_argv_utf8(&argc, argv_raw);
 

@@ -10,6 +10,9 @@
  * Chinese / Japanese / Russian file names resolve correctly.
  * Linux branch uses the POSIX equivalents directly.
  */
+#ifndef _WIN32
+#define _POSIX_C_SOURCE 200809L
+#endif
 #include "port.h"
 #include <stdlib.h>
 #include <string.h>
