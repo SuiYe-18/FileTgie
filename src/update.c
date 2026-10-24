@@ -448,7 +448,7 @@ int cmd_update(const LangPack* L, int argc, char** argv) {
     printf("\n");
 
     HINSTANCE h = ShellExecuteA(NULL, "runas", dest,
-        "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /CLOSEAPPLICATIONS /FORCECLOSEAPPLICATIONS /OVERWRITE=1",
+        "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /CLOSEAPPLICATIONS /FORCECLOSEAPPLICATIONS /MERGETASKS=overwrite",
         NULL, SW_SHOWNORMAL);
     if ((INT_PTR)h <= 32) {
         printf(L->upd_network);

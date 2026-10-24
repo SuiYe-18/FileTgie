@@ -156,8 +156,8 @@ begin
     ExistingInstallDir := ResidualDir;
   end;
 
-  // The overwrite task is checked by default; /OVERWRITE=1 is accepted as a
-  // silent-install compatibility flag and does not need extra state changes.
+  // The overwrite task is checked by default. Silent upgrades use Inno's
+  // /MERGETASKS=overwrite so the .old backup/replacement path stays explicit.
 end;
 
 function NextButtonClick(CurPageID: Integer): Boolean;
@@ -188,6 +188,14 @@ begin
   if (Result = '') or (Result[Length(Result)] = '\') then
     Exit;
   Result := Result + '\';
+end;
+
+function HasActiveProgramFiles(const AppDir: string): Boolean;
+begin
+  Result := FileExists(AddBackslash(AppDir) + 'FileTgie.exe') or
+    FileExists(AddBackslash(AppDir) + 'FileTgieUpdater.exe') or
+    FileExists(AddBackslash(AppDir) + 'README.md') or
+    FileExists(AddBackslash(AppDir) + 'User Manual.txt');
 end;
 
 // Before Inno copies the new files, move the previous program files into
@@ -239,8 +247,12 @@ begin
   Result := '';
   NeedsRestart := False;
   AppDir := ExpandConstant('{app}');
-  if DirExists(AppDir) then
-    BackupExistingToOld(AppDir);
+  if not DirExists(AppDir) then Exit;
+
+  if WizardIsTaskSelected('overwrite') then
+    BackupExistingToOld(AppDir)
+  else if HasActiveProgramFiles(AppDir) then
+    Result := 'Unchecking overwrite keeps the current files. Choose an empty folder or another directory instead of replacing this installation.';
 end;
 
 // Correct WinAPI signature: lParam carries a pointer-sized value (LongInt in

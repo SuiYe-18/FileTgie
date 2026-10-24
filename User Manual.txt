@@ -638,6 +638,7 @@ CN: Windows 端启动同目录的 FileTgieUpdater.exe；它同时检查 GitHub �
 Example: FileTgie --lang en update
 Standalone updater: FileTgieUpdater.exe --check
 Background mode:    FileTgieUpdater.exe --background --current=0.2.0
+Silent upgrade task: the installer uses /MERGETASKS=overwrite for the .old backup/replacement path.
 
 
 ==============================================================

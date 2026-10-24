@@ -366,7 +366,7 @@ int main(int argc, char** argv) {
 
     if (!background) printf("Launching silent overwrite installer...\n");
     HINSTANCE h = ShellExecuteA(NULL, "runas", dest,
-        "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /CLOSEAPPLICATIONS /FORCECLOSEAPPLICATIONS /OVERWRITE=1",
+        "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /CLOSEAPPLICATIONS /FORCECLOSEAPPLICATIONS /MERGETASKS=overwrite",
         NULL, SW_HIDE);
     buf_free(&gh); buf_free(&site);
     if ((INT_PTR)h <= 32) {
