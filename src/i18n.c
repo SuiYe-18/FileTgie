@@ -154,7 +154,18 @@ static const LangPack ZH = {
     "安装器已启动；完成后请打开新终端运行 version 查看版本。",
     "Linux 不自动替换二进制：请下载源码包执行 make，并手动替换。",
     "发布页: %s",
-    "Linux 需要 curl 才能检查更新。"
+    "Linux 需要 curl 才能检查更新。",
+    /* v0.3.0 scheduled reminder */
+    "开启/关闭定时更新检查提醒",
+    "用法: reminder on [daily HH:MM|hourly] | off | status",
+    "已开启每日更新提醒，时间: %s。",
+    "已开启每小时更新提醒。",
+    "已关闭并删除更新提醒。",
+    "更新提醒处于开启状态。",
+    "更新提醒未开启。",
+    "定时格式无效：reminder on [daily HH:MM|hourly] | off | status",
+    "无法配置 Windows 计划任务。",
+    "Linux 不自动管理 crontab；请手动添加定时任务运行 checkupdate。"
 };
 
 /* ------------------------------------------------------------------ */
@@ -296,7 +307,18 @@ static const LangPack EN = {
     "Installer launched; after it finishes, open a new terminal and run version.",
     "Linux does not self-replace: download the source package, run make, and replace the binary manually.",
     "Release: %s",
-    "curl is required for Linux update checks."
+    "curl is required for Linux update checks.",
+    /* v0.3.0 scheduled reminder */
+    "Enable or disable a scheduled update-check reminder",
+    "Usage: reminder on [daily HH:MM|hourly] | off | status",
+    "Daily update reminder enabled at %s.",
+    "Hourly update reminder enabled.",
+    "Update reminder disabled and removed.",
+    "Update reminder is enabled.",
+    "Update reminder is not enabled.",
+    "Invalid schedule: reminder on [daily HH:MM|hourly] | off | status",
+    "Could not configure the Windows scheduled task.",
+    "Linux does not manage crontab; add a cron job to run checkupdate manually."
 };
 
 /* ------------------------------------------------------------------ */
@@ -438,7 +460,18 @@ static const LangPack JA = {
     "インストーラを起動しました。完了後、新しいターミナルで version を実行してください。",
     "Linux では自己置換しません。ソースをダウンロードして make し、手動で置換してください。",
     "リリース: %s",
-    "Linux の更新確認には curl が必要です。"
+    "Linux の更新確認には curl が必要です。",
+    /* v0.3.0 scheduled reminder */
+    "定期更新チェック通知を有効/無効にする",
+    "使い方: reminder on [daily HH:MM|hourly] | off | status",
+    "毎日 %s に更新通知を有効にしました。",
+    "毎時の更新通知を有効にしました。",
+    "更新通知を無効にして削除しました。",
+    "更新通知は有効です。",
+    "更新通知は無効です。",
+    "スケジュールが不正です: reminder on [daily HH:MM|hourly] | off | status",
+    "Windows タスクを設定できませんでした。",
+    "Linux は crontab を管理しません。手動で cron ジョブを追加し checkupdate を実行してください。"
 };
 
 /* ------------------------------------------------------------------ */
@@ -580,7 +613,18 @@ static const LangPack RU = {
     "Установщик запущен. После завершения откройте новый терминал и выполните version.",
     "Linux не заменяет бинарник: скачайте исходники, выполните make и замените файл вручную.",
     "Релиз: %s",
-    "Для проверки обновлений в Linux нужен curl."
+    "Для проверки обновлений в Linux нужен curl.",
+    /* v0.3.0 scheduled reminder */
+    "Включить или отключить напоминание о проверке обновлений",
+    "Использование: reminder on [daily HH:MM|hourly] | off | status",
+    "Ежедневное напоминание об обновлении включено в %s.",
+    "Ежечасное напоминание об обновлении включено.",
+    "Напоминание об обновлении отключено и удалено.",
+    "Напоминание об обновлении включено.",
+    "Напоминание об обновлении не включено.",
+    "Неверное расписание: reminder on [daily HH:MM|hourly] | off | status",
+    "Не удалось настроить задачу Windows.",
+    "Linux не управляет crontab; добавьте задачу cron для ручного запуска checkupdate."
 };
 
 /* 全部语言包的注册表，顺序即 lang_list_all 的输出顺序。

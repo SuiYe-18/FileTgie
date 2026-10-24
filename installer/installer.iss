@@ -4,7 +4,7 @@
 ; Prerequisite: install Inno Setup 6 (https://jrsoftware.org/isdl.php), then
 ; compile by right-clicking this file -> Compile, or on the command line:
 ;     iscc installer\installer.iss
-; which produces FileTgie.windows.0.2.0.setup.exe.
+; which produces FileTgie.windows.0.3.0.setup.exe.
 ;
 ; The optional application icon lives at assets\icon.ico (placeholder path).
 ; When the file is absent the script still compiles cleanly: the icon
@@ -17,7 +17,7 @@
 ; ======================================================================
 
 #define MyAppName "FileTgie"
-#define MyAppVersion "0.2.0"
+#define MyAppVersion "0.3.0"
 #define MyAppPublisher "SuiYe_TR (Suiye-18) - Single Author"
 #define MyAppExe "FileTgie.exe"
 
@@ -39,7 +39,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=".."
-OutputBaseFilename=FileTgie.windows.0.2.0.setup
+OutputBaseFilename=FileTgie.windows.0.3.0.setup
 UninstallDisplayIcon={app}\{#MyAppExe}
 Compression=lzma2
 SolidCompression=yes

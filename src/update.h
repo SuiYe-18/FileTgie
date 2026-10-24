@@ -22,6 +22,7 @@ extern "C" {
 
 int cmd_checkupdate(const LangPack* L, int argc, char** argv);
 int cmd_update(const LangPack* L, int argc, char** argv);
+int cmd_reminder(const LangPack* L, int argc, char** argv);
 
 #ifdef __cplusplus
 }

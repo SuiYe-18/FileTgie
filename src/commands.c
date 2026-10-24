@@ -1635,6 +1635,7 @@ const CommandEntry CMD_TABLE[] = {
     { "dellog",      cmd_dellog,     OFF(h_dellog) },
     { "checkupdate", cmd_checkupdate, OFF(h_checkupdate) },
     { "update",      cmd_update,      OFF(h_update) },
+    { "reminder",    cmd_reminder,    OFF(h_reminder) },
     { "stat",        cmd_stat,       OFF(h_stat) },
     { "count",       cmd_count,       OFF(h_count) },
     { "lines",       cmd_lines,       OFF(h_lines) },

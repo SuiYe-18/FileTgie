@@ -1,11 +1,11 @@
 ﻿==============================================================
- FileTgie v0.2.0 - Beginner User Manual / 新手用户手册
+ FileTgie v0.3.0 - Beginner User Manual / 新手用户手册
 ==============================================================
 
 by SuiYe_TR (Suiye-18) - Single Author
 GitHub: https://github.com/Suiye-18
 License: LGPL-3.0-or-later
-Version: v0.2.0
+Version: v0.3.0
 
 This manual is written in English with a Chinese translation under
 each paragraph. Commands, options and numbers come only from the
@@ -63,13 +63,16 @@ launches the bundled FileTgieUpdater.exe, which checks GitHub and the
 website and starts the newer silent installer. During an overwrite, the
 previous program files are moved to a disabled .old backup folder before
 the new files take over; on Linux it prints manual source-build steps
-and never replaces the binary.
+and never replaces the binary. The optional reminder command only creates
+or removes the FileTgieReminder user-level scheduled task; it does not
+scan, modify or delete your files.
 
 常规使用中，FileTgie 只写入可执行文件旁自身的 filetgie.log：log 查看，
 dellog 只删除这一份自身日志。显式 update 命令只更新 FileTgie 自身：
 Windows 启动同目录 FileTgieUpdater.exe，由它检查 GitHub 与官网并启动
 新版静默安装；覆盖时旧程序文件先移动到禁用的 .old 备份文件夹，再由新文件
-接管；Linux 只打印源码构建的手动升级步骤，不替换二进制。
+接管；Linux 只打印源码构建的手动升级步骤，不替换二进制。可选的 reminder
+命令只创建或删除 FileTgieReminder 用户级计划任务，不扫描、修改或删除你的文件。
 
 
 ==============================================================
@@ -218,7 +221,7 @@ rc=0；用法错误、路径未找到、参数错误返回 rc=1。
 
 
 ==============================================================
-5. Command Reference / 命令参考 (60 commands / 60 条命令)
+5. Command Reference / 命令参考 (61 commands / 61 条命令)
 ==============================================================
 
 Each entry gives: command name, syntax, one English-purpose line,
@@ -637,8 +640,25 @@ CN: Windows 端启动同目录的 FileTgieUpdater.exe；它同时检查 GitHub �
 再由新文件接管。Linux 端只打印源码构建的手动升级步骤，不替换二进制。
 Example: FileTgie --lang en update
 Standalone updater: FileTgieUpdater.exe --check
-Background mode:    FileTgieUpdater.exe --background --current=0.2.0
+Background mode:    FileTgieUpdater.exe --background --current=0.3.0
 Silent upgrade task: the installer uses /MERGETASKS=overwrite for the .old backup/replacement path.
+
+61) reminder
+Syntax: reminder on [daily HH:MM|hourly] | reminder status | reminder off
+EN: On Windows, optionally create or remove the FileTgieReminder user-level
+scheduled task. Daily uses an optional HH:MM time (default 09:00); hourly
+runs once an hour. The task prefers FileTgieUpdater.exe --check and falls
+back to FileTgie.exe checkupdate when the updater is absent. status reports
+whether the task exists; off deletes it. On Linux, only manual cron guidance
+is printed and crontab is never changed.
+CN: Windows 端可选创建或删除 FileTgieReminder 用户级计划任务。daily 可带
+HH:MM 时间（缺省 09:00），hourly 每小时运行一次；任务优先使用
+FileTgieUpdater.exe --check，缺少更新器时回退 FileTgie.exe checkupdate。
+status 查看任务是否存在，off 删除任务。Linux 只打印手动 cron 说明，不修改
+crontab。
+Example: FileTgie --lang en reminder on daily 09:00
+Status:   FileTgie --lang en reminder status
+Disable:  FileTgie --lang en reminder off
 
 
 ==============================================================
@@ -688,13 +708,14 @@ compares the local version with the latest release and reports status.
 update performs the same check first; on Windows it launches the bundled
 FileTgieUpdater.exe, which checks GitHub and the official website,
 downloads the newer installer, and starts the silent overwrite install.
-Linux only prints manual upgrade commands. Nothing checks automatically
-on startup.
+Linux only prints manual upgrade commands. The program never checks on
+startup; reminder only runs when the user explicitly enables a task.
 
 checkupdate 是手动、只读的网络检查：查询 GitHub，比较本地版本与最新
 Release 并报告状态。update 先执行同样检查；Windows 随后启动同目录的
 FileTgieUpdater.exe，由它同时检查 GitHub 与官网、下载新版安装包并启动
-静默覆盖安装；Linux 只打印手动升级命令。程序启动时不会自动检查。
+静默覆盖安装；Linux 只打印手动升级命令。程序启动时不会自动检查；只有用户显式
+开启 reminder 后，计划任务才会按设定时间运行。
 
 The installer detects an installed FileTgie, App Paths registration, or
 leftover files after a non-official deletion. The "overwrite installation"

@@ -466,3 +466,149 @@ int cmd_update(const LangPack* L, int argc, char** argv) {
     return 0;
 #endif
 }
+
+#ifdef _WIN32
+/* Run a short scheduler command and return its exit code. The task name is a
+ * fixed FileTgie-owned user-level task; no administrator rights are required. */
+static int reminder_run(const char* cmdline) {
+    STARTUPINFOA si;
+    PROCESS_INFORMATION pi;
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&pi, sizeof(pi));
+    const char* schtasks = "C:\\Windows\\System32\\schtasks.exe";
+    if (!CreateProcessA(schtasks, (LPSTR)cmdline, NULL, NULL, FALSE, 0,
+                        NULL, NULL, &si, &pi))
+        return 1;
+    WaitForSingleObject(pi.hProcess, INFINITE);
+    DWORD code = 1;
+    GetExitCodeProcess(pi.hProcess, &code);
+    CloseHandle(pi.hThread);
+    CloseHandle(pi.hProcess);
+    return (int)code;
+}
+
+/* Prefer the bundled read-only updater, which checks GitHub and the website;
+ * fall back to this executable's GitHub-only checkupdate when the updater is
+ * absent (for example in a slim portable layout). */
+static int reminder_action(char* exe, size_t exe_len, char* args, size_t args_len) {
+    char self[MAX_PATH], updater[MAX_PATH + 32];
+    if (GetModuleFileNameA(NULL, self, MAX_PATH) == 0) return 0;
+    char* slash = strrchr(self, '\\');
+    if (slash) *slash = '\0';
+    snprintf(updater, sizeof(updater), "%s\\FileTgieUpdater.exe", self);
+    if (GetFileAttributesA(updater) != INVALID_FILE_ATTRIBUTES) {
+        snprintf(exe, exe_len, "%s", updater);
+        snprintf(args, args_len, "--check");
+        return 1;
+    }
+    snprintf(exe, exe_len, "%s", self);
+    snprintf(args, args_len, "checkupdate");
+    return GetFileAttributesA(exe) != INVALID_FILE_ATTRIBUTES;
+}
+
+static int reminder_task_exists(void) {
+    FILE* f = _popen("schtasks.exe /Query /TN FileTgieReminder /FO LIST 2>NUL", "r");
+    if (!f) return 0;
+    char line[512];
+    while (fgets(line, sizeof(line), f)) {}
+    int code = _pclose(f);
+    return code == 0;
+}
+
+static int reminder_valid_time(const char* s) {
+    int hh = -1, mm = -1;
+    if (strlen(s) != 5 || s[2] != ':') return 0;
+    if (sscanf(s, "%d:%d", &hh, &mm) != 2) return 0;
+    return hh >= 0 && hh <= 23 && mm >= 0 && mm <= 59;
+}
+#endif
+
+int cmd_reminder(const LangPack* L, int argc, char** argv) {
+#ifndef _WIN32
+    (void)argc; (void)argv;
+    printf(L->rem_linux_manual);
+    printf("\n");
+    return 0;
+#else
+    if (argc < 2) {
+        printf(L->rem_usage);
+        printf("\n");
+        return 1;
+    }
+
+    const char* action = argv[1];
+    if (ft_strcase_eq(action, "off")) {
+        if (reminder_task_exists()) {
+            int rc = reminder_run("schtasks.exe /Delete /TN FileTgieReminder /F");
+            if (rc != 0) {
+                printf(L->rem_scheduler_failed);
+                printf("\n");
+                return 1;
+            }
+        }
+        printf(L->rem_off);
+        printf("\n");
+        return 0;
+    }
+
+    if (ft_strcase_eq(action, "status")) {
+        printf(reminder_task_exists() ? L->rem_status_on : L->rem_status_off);
+        printf("\n");
+        return 0;
+    }
+
+    if (!ft_strcase_eq(action, "on")) {
+        printf(L->rem_bad_schedule);
+        printf("\n");
+        return 1;
+    }
+
+    const char* mode = argc >= 3 ? argv[2] : "daily";
+    const char* time = argc >= 4 ? argv[3] : "09:00";
+    if (argc >= 5) {
+        printf(L->rem_bad_schedule);
+        printf("\n");
+        return 1;
+    }
+
+    char exe[MAX_PATH + 64], args[64];
+    if (!reminder_action(exe, sizeof(exe), args, sizeof(args))) {
+        printf(L->rem_scheduler_failed);
+        printf("\n");
+        return 1;
+    }
+
+    char cmdline[8192];
+    int built = 0;
+    if (ft_strcase_eq(mode, "daily")) {
+        if (!reminder_valid_time(time)) {
+            printf(L->rem_bad_schedule);
+            printf("\n");
+            return 1;
+        }
+        built = snprintf(cmdline, sizeof(cmdline),
+            "schtasks.exe /Create /TN FileTgieReminder "
+            "/TR \"\\\"%s\\\" %s\" /SC DAILY /ST %s /F", exe, args, time) > 0;
+    } else if (ft_strcase_eq(mode, "hourly")) {
+        built = snprintf(cmdline, sizeof(cmdline),
+            "schtasks.exe /Create /TN FileTgieReminder "
+            "/TR \"\\\"%s\\\" %s\" /SC HOURLY /MO 1 /F", exe, args) > 0;
+    } else {
+        printf(L->rem_bad_schedule);
+        printf("\n");
+        return 1;
+    }
+
+    if (!built || reminder_run(cmdline) != 0) {
+        printf(L->rem_scheduler_failed);
+        printf("\n");
+        return 1;
+    }
+
+    if (ft_strcase_eq(mode, "daily")) printf(L->rem_on_daily, time);
+    else printf(L->rem_on_hourly);
+    printf("\n");
+    return 0;
+#endif
+}

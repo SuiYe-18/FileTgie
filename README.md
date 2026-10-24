@@ -1,4 +1,4 @@
-# FileTgie v0.2.0
+# FileTgie v0.3.0
 
 > A lightweight, read-only, zero-dependency file statistics and search CLI written in pure C.
 > One source tree builds for Windows and Linux; every command only reads and never modifies your files.
@@ -12,15 +12,15 @@
 | Package | Link |
 | --- | --- |
 | Official website | https://suiye-18.github.io/filetgie-official-website/ |
-| Windows installer | [FileTgie.windows.0.2.0.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.2.0.setup.exe) |
-| Windows portable ZIP | [FileTgie.windows.0.2.0.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.2.0.portable.zip) |
-| Linux tarball | [FileTgie.linux.0.1.0.tar.gz](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz) (prebuilt 0.1.0; source 0.2.0 builds with `make`) |
-| Source archive | [FileTgie.source.0.2.0.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.2.0.zip) |
+| Windows installer | [FileTgie.windows.0.3.0.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.3.0.setup.exe) |
+| Windows portable ZIP | [FileTgie.windows.0.3.0.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.3.0.portable.zip) |
+| Linux tarball | [FileTgie.linux.0.1.0.tar.gz](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz) (prebuilt 0.1.0; source 0.3.0 builds with `make`) |
+| Source archive | [FileTgie.source.0.3.0.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.3.0.zip) |
 
 ## Highlights
 
-- **60 built-in commands** for counting, line statistics, directory comparison, file search, checksums, encoding checks, duplicates, disk space, verification and manual update checks.
-- **Read-only by default:** every inspection command only reads files; it never modifies, deletes or moves user data. The explicit `update` command and bundled `FileTgieUpdater.exe` only upgrade FileTgie itself; on Linux they print manual steps and never replace the binary.
+- **61 built-in commands** for counting, line statistics, directory comparison, file search, checksums, encoding checks, duplicates, disk space, verification and optional update reminders.
+- **Read-only by default:** every inspection command only reads files; it never modifies, deletes or moves user data. The explicit `update` command and bundled `FileTgieUpdater.exe` only upgrade FileTgie itself; `reminder` creates or removes one FileTgie-owned scheduled task; on Linux they print manual steps and never replace the binary.
 - **Pure C, zero third-party dependency:** C standard library plus native Windows/POSIX APIs only.
 - **Four interface languages:** switch messages with `--lang cn|en|ja|ru`.
 - **Portable and small:** no runtime package, no configuration file, and no required network access.
@@ -35,6 +35,9 @@ FileTgie findlarge ./logs 50
 FileTgie compare a.bin b.bin
 FileTgie --lang en checkupdate
 FileTgie --lang en update
+FileTgie --lang en reminder on daily 09:00
+FileTgie --lang en reminder status
+FileTgie --lang en reminder off
 ```
 
 * 核心理念：**一步一步慢慢来** —— 每个命令只做一件小事，结果清晰、可预期。
@@ -60,13 +63,17 @@ FileTgie --lang en update
 * **patch（.x）**：只用于小补丁、小插曲（修小问题、文案微调），不进入
   minor 的进位序列。
 
-当前开发版本为 `0.2.0`：在 `0.1.1` 基础上新增手动更新检测 `checkupdate`、
-手动更新 `update` 与独立 `FileTgieUpdater.exe`。`checkupdate` 只查询 GitHub
-Release 并比较版本；Windows 的 `update` 调用独立更新器，同时检查 GitHub 与官网，
-后台下载新版安装包并静默覆盖；Linux 只给出手动源码升级命令，不替换二进制。
-安装包会检测已安装 FileTgie 或旧版残留，并提供“覆盖安装”勾选；覆盖前把旧的
-主程序、更新器和文档移动到安装目录的 `.old` 备份文件夹，新文件留在根目录，
-`.old` 不注册 PATH、不进入快捷方式，也不会被启动。
+当前版本为 `0.3.0`：在 `0.2.0` 的手动更新检测、独立 `FileTgieUpdater.exe` 与
+`.old` 备份覆盖安装基础上，新增可选 `reminder` 定时更新提醒。Windows 用户级计划
+任务默认不创建；执行 `reminder on daily HH:MM`（缺省 09:00）或 `reminder on
+hourly` 才创建唯一的 `FileTgieReminder` 任务，优先运行同目录更新器的只读 `--check`，
+缺少更新器时回退主程序 `checkupdate`；`reminder status` 查询，`reminder off`
+删除任务。Linux 不修改 crontab，只打印手动 cron 说明。
+`checkupdate` 只查询 GitHub Release 并比较版本；Windows 的 `update` 调用独立更新器，
+同时检查 GitHub 与官网，后台下载新版安装包并静默覆盖；Linux 只给出手动源码升级
+命令，不替换二进制。安装包会检测已安装 FileTgie 或旧版残留，并提供“覆盖安装”勾选；
+覆盖前把旧的主程序、更新器和文档移动到安装目录的 `.old` 备份文件夹，新文件留在
+根目录，`.old` 不注册 PATH、不进入快捷方式，也不会被启动。
 版本号唯一来源是源码 `src/commands.h` 中的 `FILETGIE_VERSION`，`version`
 命令与帮助横幅都读取它，不在其他位置硬编码。
 
@@ -142,7 +149,7 @@ FileTgie -lang ja lines ./a.txt
 FileTgie -l ru disk
 ```
 
-## 命令一览（60 个；检查/统计类命令只读；`log` / `dellog` 只读写 FileTgie 自身日志；`update` 仅按用户显式触发更新 FileTgie 自身）
+## 命令一览（61 个；检查/统计类命令只读；`log` / `dellog` 只读写 FileTgie 自身日志；`update` 仅按用户显式触发更新 FileTgie 自身；`reminder` 只创建/删除 FileTgie 自己的计划任务）
 
 
 
@@ -155,6 +162,7 @@ FileTgie -l ru disk
 | dellog      | `dellog`                | 删除 FileTgie 自身运行日志(只删本工具日志) |
 | checkupdate | `checkupdate`           | 查询 GitHub 最新 Release 并比较版本，只报告不安装 |
 | update      | `update`                | Windows 调用独立更新器检查 GitHub/官网并后台覆盖；Linux 只打印手动升级步骤 |
+| reminder    | `reminder on [daily HH:MM|hourly]` / `reminder status` / `reminder off` | Windows 开启/查询/删除可选的用户级定时更新检查提醒；Linux 只打印手动 cron 说明 |
 | stat        | `stat <路径>`             | 文件 / 目录详细信息（大小、三个时间）        |
 | count       | `count <目录>`            | 递归统计文件数与文件夹数                |
 | lines       | `lines <文件>`            | 统计单个文件行数                    |
@@ -304,17 +312,17 @@ Use `fd -u` when the candidate set must include hidden files and paths ignored b
 
 ## 便携包与安装程序
 
-* **Windows 绿色便携包**（`FileTgie.windows.0.2.0.portable.zip`）：含
+* **Windows 绿色便携包**（`FileTgie.windows.0.3.0.portable.zip`）：含
   `FileTgie.exe`、`FileTgieUpdater.exe`、`README.md`、`User Manual.txt`、`LICENSE`、
   `COPYING`。便携模式不写注册表、不写入 Program Files，除 exe 旁自身的
   `filetgie.log` 外不写用户位置，解压即用、删文件夹即卸载。
 
 * **Linux 预编译包**（`FileTgie.linux.0.1.0.tar.gz`）：保留上一轮已验证的
-  x86_64 glibc 二进制、README、LICENSE、COPYING 与 User Manual；0.2.0 源码可直接
+  x86_64 glibc 二进制、README、LICENSE、COPYING 与 User Manual；0.3.0 源码可直接
   用 `make` 构建，当前环境未重新生成 Linux ELF。
 
 * **安装程序**：提供 Inno Setup 6 脚本 `installer\installer.iss`，编译出
-  `FileTgie.windows.0.2.0.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
+  `FileTgie.windows.0.3.0.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
   /桌面（默认不勾选）快捷方式、标准卸载项，以及默认勾选的“覆盖安装”选项；安装前
   检测已注册的 FileTgie、App Paths 与旧版残留文件，不勾选覆盖时需另选目录。覆盖时
   先把旧的 `FileTgie.exe`、`FileTgieUpdater.exe` 和文档移动到安装目录 `.old` 备份，
@@ -327,7 +335,7 @@ Use `fd -u` when the candidate set must include hidden files and paths ignored b
 
 
 
-* **只读安全**：检查与统计命令只调用读取接口（枚举、stat、fread），不修改、删除、移动用户文件；`log` / `dellog` 只追加与删除可执行文件旁 `filetgie.log`（FileTgie 自身日志）。显式 `update` 只更新 FileTgie 自身：Windows 下载并启动安装包，旧程序文件备份到 `.old` 后由新文件接管，Linux 只打印手动升级步骤、不替换二进制。
+* **只读安全**：检查与统计命令只调用读取接口（枚举、stat、fread），不修改、删除、移动用户文件；`log` / `dellog` 只追加与删除可执行文件旁 `filetgie.log`（FileTgie 自身日志）。显式 `update` 只更新 FileTgie 自身：Windows 下载并启动安装包，旧程序文件备份到 `.old` 后由新文件接管，Linux 只打印手动升级步骤、不替换二进制。`reminder` 只创建或删除名为 `FileTgieReminder` 的用户级计划任务，不修改用户文件；`reminder off` 会移除该任务。
 
 * **运行日志**：每次调用都会向 exe 旁的 `filetgie.log` 追加一条记录（本地时间戳、语言码、命令、参数、退出码）；`log` 查看、`dellog` 清空。日志路径在程序内统一计算，不依赖当前工作目录。
 
@@ -370,9 +378,9 @@ FileTgie/
 │  └─ installer.iss  # Inno Setup 6 脚本（缺图标容错）
 └─ src/
    ├─ main.c         # 入口、--lang/--exclude 参数解析、分发、运行日志
-   ├─ commands.c    # 60 个子命令实现（含 log / dellog / checkupdate / update）
+   ├─ commands.c    # 61 个子命令实现（含 log / dellog / checkupdate / update / reminder）
    ├─ commands.h    # 命令表与 FILETGIE_VERSION 唯一版本来源
-   ├─ update.c      # GitHub Release 手动更新检测与 Windows 安装包更新
+   ├─ update.c      # GitHub Release 手动更新检测、Windows 安装包更新与可选提醒任务
    ├─ update.h
    ├─ updater_main.c # 独立 Windows 更新器：GitHub/官网双检测、后台静默覆盖
    ├─ i18n.c        # cn/en/ja/ru 四语言字符串包

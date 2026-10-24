@@ -202,6 +202,18 @@ typedef struct {
     const char* upd_linux_manual;  /* Linux manual upgrade note          */
     const char* upd_release_url;   /* release URL line, %s               */
     const char* upd_curl_missing;  /* Linux curl unavailable             */
+
+    /* --- v0.3.0: scheduled update reminder (appended; keep 4 packs in sync) --- */
+    const char* h_reminder;        /* reminder help text                 */
+    const char* rem_usage;         /* reminder syntax                    */
+    const char* rem_on_daily;      /* daily reminder enabled, %s time    */
+    const char* rem_on_hourly;     /* hourly reminder enabled            */
+    const char* rem_off;           /* reminder disabled                  */
+    const char* rem_status_on;      /* reminder enabled status             */
+    const char* rem_status_off;    /* reminder disabled status           */
+    const char* rem_bad_schedule;  /* invalid schedule syntax             */
+    const char* rem_scheduler_failed; /* Windows task configuration failed */
+    const char* rem_linux_manual;  /* Linux cron guidance                */
 } LangPack;
 
 /* 按语言码（cn/en/ja/ru）返回对应包，无法识别时回退到 cn。
