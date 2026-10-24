@@ -173,6 +173,17 @@ typedef struct {
     const char* err_need_dir;    /* expected dir, got file: %s          */
     const char* err_need_file;   /* expected file, got dir: %s          */
     const char* msg_no_match;    /* nothing matched / empty result      */
+
+    /* --- v0.1.1: directory comparison (appended; keep 4 packs in sync) --- */
+    const char* h_dirdiff;       /* dirdiff help text                   */
+    const char* cmp_metric;      /* comparison metric column header      */
+    const char* cmp_title;       /* comparison report title              */
+    const char* cmp_col_a;       /* first directory column header        */
+    const char* cmp_col_b;      /* second directory column header      */
+    const char* cmp_col_delta;   /* B-A delta column header             */
+    const char* cmp_text_files;  /* text files row label                */
+    const char* cmp_hidden;      /* hidden files row label              */
+    const char* cmp_avg_size;    /* average file size row label         */
 } LangPack;
 
 /* 按语言码（cn/en/ja/ru）返回对应包，无法识别时回退到 cn。

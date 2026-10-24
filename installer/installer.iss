@@ -4,7 +4,7 @@
 ; Prerequisite: install Inno Setup 6 (https://jrsoftware.org/isdl.php), then
 ; compile by right-clicking this file -> Compile, or on the command line:
 ;     iscc installer\installer.iss
-; which produces FileTgie.windows.0.1.0.setup.exe.
+; which produces FileTgie.windows.0.1.1.setup.exe.
 ;
 ; The optional application icon lives at assets\icon.ico (placeholder path).
 ; When the file is absent the script still compiles cleanly: the icon
@@ -17,7 +17,7 @@
 ; ======================================================================
 
 #define MyAppName "FileTgie"
-#define MyAppVersion "0.1.0"
+#define MyAppVersion "0.1.1"
 #define MyAppPublisher "SuiYe_TR (Suiye-18) - Single Author"
 #define MyAppExe "FileTgie.exe"
 
@@ -39,7 +39,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=".."
-OutputBaseFilename=FileTgie.windows.0.1.0.setup
+OutputBaseFilename=FileTgie.windows.0.1.1.setup
 UninstallDisplayIcon={app}\{#MyAppExe}
 Compression=lzma2
 SolidCompression=yes
@@ -66,7 +66,7 @@ Source: "..\assets\icon.ico"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExe}"; IconFilename: "{app}\icon.ico"; Tasks: startmenuicon
-Name: "{userdesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExe}"; IconFilename: "{app}\icon.ico"; Tasks: desktopicon
+Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExe}"; IconFilename: "{app}\icon.ico"; Tasks: desktopicon
 
 [Registry]
 ; Machine-wide App Paths registration so "FileTgie" resolves from any new

@@ -242,6 +242,7 @@ int ft_list_roots(const char** out, int max) {
 }
 
 char** ft_argv_utf8(int* argc_out, char** argv) {
+    (void)argv; /* Windows parses the wide command line directly below. */
     int n = 0;
     LPWSTR* wargv = CommandLineToArgvW(GetCommandLineW(), &n);
     if (!wargv) { *argc_out = 0; return NULL; }

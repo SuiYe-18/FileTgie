@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FileTgie v0.1.0 — Read-only file statistics &amp; search CLI in pure C</title>
+<title>FileTgie v0.1.1 — Read-only file statistics &amp; search CLI in pure C</title>
 <meta name="description" content="FileTgie is a lightweight, read-only, zero-dependency file statistics and search command-line tool written in pure C for Windows and Linux. LGPL-3.0-or-later.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000000'/%3E%3Ccircle cx='28' cy='28' r='14' fill='none' stroke='%23FFFFFF' stroke-width='6'/%3E%3Cline x1='38' y1='38' x2='52' y2='52' stroke='%23FFFFFF' stroke-width='7' stroke-linecap='square'/%3E%3C/svg%3E">
 <style>
@@ -260,18 +260,18 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <section class="hero" id="top">
   <div class="wrap">
     <img class="hero-logo" src="assets/logo_wide_white.png" alt="FileTgie white logo on black">
-    <div class="hero-tag">v0.1.0 · pure C · LGPL-3.0-or-later</div>
+    <div class="hero-tag">v0.1.1 · pure C · LGPL-3.0-or-later</div>
     <h1 data-i18n="hero.title">Lightweight, read-only, zero-dependency file statistics &amp; search CLI</h1>
     <p class="lede" data-i18n="hero.lede">Written in pure C with the standard library only, one source tree builds for Windows and Linux. Every command does one small, predictable thing and never touches your files.</p>
     <div class="cta-row">
-      <a class="btn btn-solid" data-i18n="hero.installer" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.0.setup.exe">Download installer (Windows)</a>
+      <a class="btn btn-solid" data-i18n="hero.installer" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.1.setup.exe">Download installer (Windows)</a>
       <a class="btn btn-ghost" data-i18n="hero.repo" href="https://github.com/SuiYe-18/FileTgie" target="_blank" rel="noopener">GitHub repository</a>
     </div>
     <div class="cta-row" style="margin-top:10px;">
-      <a class="btn btn-ghost" data-i18n="hero.portable" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.0.portable.zip">Windows portable ZIP</a>
+      <a class="btn btn-ghost" data-i18n="hero.portable" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.1.portable.zip">Windows portable ZIP</a>
       <a class="btn btn-ghost" data-i18n="hero.linux" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz">Linux tarball</a>
-      <a class="btn btn-ghost" data-i18n="hero.source" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.1.0.zip">Source archive</a>
-      <a class="btn btn-ghost" data-i18n="hero.explore" href="#commands">Explore 57 commands</a>
+      <a class="btn btn-ghost" data-i18n="hero.source" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.1.1.zip">Source archive</a>
+      <a class="btn btn-ghost" data-i18n="hero.explore" href="#commands">Explore 58 commands</a>
     </div>
   </div>
 </section>
@@ -280,7 +280,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <div class="stats">
   <div class="wrap">
     <div class="stat-grid">
-      <div class="stat-cell"><div class="stat-num">57</div><div class="stat-label" data-i18n="stat.commands">built-in commands</div></div>
+      <div class="stat-cell"><div class="stat-num">58</div><div class="stat-label" data-i18n="stat.commands">built-in commands</div></div>
       <div class="stat-cell"><div class="stat-num">4</div><div class="stat-label" data-i18n="stat.langs">interface languages</div></div>
       <div class="stat-cell"><div class="stat-num">0</div><div class="stat-label" data-i18n="stat.deps">third-party dependencies</div></div>
       <div class="stat-cell"><div class="stat-num">2</div><div class="stat-label" data-i18n="stat.platforms">platforms: Windows + Linux</div></div>
@@ -333,7 +333,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <section class="commands" id="commands">
   <div class="wrap">
     <div class="eyebrow" data-i18n="commands.eyebrow">Command overview</div>
-    <h2 class="section-title" data-i18n="commands.title">57 commands, grouped by job</h2>
+    <h2 class="section-title" data-i18n="commands.title">58 commands, grouped by job</h2>
     <p class="section-sub" data-i18n-html="commands.sub">Every entry below comes from the built-in command table. <code>log</code> and <code>dellog</code> read or delete FileTgie's own log; all others are strictly read-only.</p>
     <div class="tab-row" id="tabRow" role="tablist"></div>
     <div id="cmdPanels"></div>
@@ -410,7 +410,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
     <div class="install-grid">
       <div class="install-card">
         <h3 data-i18n="install.winTitle">Windows portable package</h3>
-        <p data-i18n-html="install.winText">The green portable package contains only <code>FileTgie.exe</code>, README, LICENSE and COPYING. It writes no registry keys and nothing outside the folder; unzip and run, delete the folder to uninstall. The only file written next to the executable is its own <code>filetgie.log</code>.</p>
+        <p data-i18n-html="install.winText">The green portable package contains <code>FileTgie.exe</code>, README, User Manual, LICENSE and COPYING. It writes no registry keys and nothing outside the folder; unzip and run, delete the folder to uninstall. The only file written next to the executable is its own <code>filetgie.log</code>.</p>
       </div>
       <div class="install-card">
         <h3 data-i18n="install.winBuildTitle">Build from source — Windows (MinGW gcc)</h3>
@@ -419,7 +419,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       </div>
       <div class="install-card">
         <h3 data-i18n="install.linuxTitle">Linux — portable tarball or build from source</h3>
-        <p data-i18n-html="install.linuxText">Extract <code>FileTgie.linux.0.1.0.tar.gz</code> and run <code>./FileTgie --lang en help</code>; optionally copy the binary into <code>PATH</code>. No installer, administrator rights, or network access are required. To build from source, run <code>make</code>. Tested on GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc); C99/GNU99/C11/GNU11/GNU17 build clean, and a C99-capable GCC 5+ on modern glibc is expected to compile. The prebuilt tarball targets x86_64 glibc (Debian/Ubuntu family), not musl/Alpine; Clang was not verified in this release.</p>
+        <p data-i18n-html="install.linuxText">The Linux prebuilt tarball remains 0.1.0; use the 0.1.1 source archive and run <code>make</code> for current features. Extract the tarball and run <code>./FileTgie --lang en help</code>; optionally copy the binary into <code>PATH</code>. No installer, administrator rights, or network access are required. The verified build used GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc); C99/GNU99/C11/GNU11/GNU17 build clean, and a C99-capable GCC 5+ on modern glibc is expected to compile. The prebuilt tarball targets x86_64 glibc (Debian/Ubuntu family), not musl/Alpine; Clang was not verified.</p>
         <pre>make</pre>
         <a class="btn btn-ghost" data-i18n="install.linuxButton" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz">Download Linux tarball</a>
       </div>
@@ -448,10 +448,10 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       </div>
       <div>
         <h3 data-i18n="footer.version">Version</h3>
-        <p data-i18n-html="footer.versionText">v0.1.0 — first release after the version numbering reset. The single source of truth for the version is <code>src/commands.h</code> (FILETGIE_VERSION).</p>
+        <p data-i18n-html="footer.versionText">v0.1.1 adds the grouped <code>dirdiff</code> directory comparison and clearer +/−/=0 deltas. The single source of truth for the version is <code>src/commands.h</code> (FILETGIE_VERSION).</p>
       </div>
     </div>
-    <div class="footer-bottom">Copyright (C) 2026 SuiYe_TR · FileTgie v0.1.0 · read-only file statistics &amp; search CLI</div>
+    <div class="footer-bottom">Copyright (C) 2026 SuiYe_TR · FileTgie v0.1.1 · read-only file statistics &amp; search CLI</div>
   </div>
 </footer>
 
@@ -461,14 +461,14 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 (function () {
   var SITE_I18N = {
     en: {
-      "meta.title": "FileTgie v0.1.0 — Read-only file statistics & search CLI in pure C",
+      "meta.title": "FileTgie v0.1.1 — Read-only file statistics & search CLI in pure C",
       "nav.features": "Features", "nav.commands": "Commands", "nav.quickstart": "Quick start",
       "nav.languages": "Languages", "nav.license": "License",
       "hero.title": "Lightweight, read-only, zero-dependency file statistics & search CLI",
       "hero.lede": "Written in pure C with the standard library only, one source tree builds for Windows and Linux. Every command does one small, predictable thing and never touches your files.",
       "hero.installer": "Download installer (Windows)", "hero.repo": "GitHub repository",
       "hero.portable": "Windows portable ZIP", "hero.linux": "Linux tarball", "hero.source": "Source archive",
-      "hero.explore": "Explore 57 commands",
+      "hero.explore": "Explore 58 commands",
       "stat.commands": "built-in commands", "stat.langs": "interface languages",
       "stat.deps": "third-party dependencies", "stat.platforms": "platforms: Windows + Linux",
       "features.eyebrow": "Features", "features.title": "Small by design, safe by default",
@@ -479,7 +479,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "f.lang.title": "Four switchable languages", "f.lang.text": "Interface messages switch between cn, en, ja and ru with <code>--lang</code>; unknown codes warn and fall back to cn.",
       "f.cross.title": "Cross-platform", "f.cross.text": "<code>src/port.c</code> isolates the Windows wide-character Win32 API from POSIX; the rest of the code is platform-independent.",
       "f.license.title": "LGPL-3.0-or-later", "f.license.text": "Free to run, study, modify and redistribute; static and dynamic linking obligations are documented in LICENSE and COPYING.",
-      "commands.eyebrow": "Command overview", "commands.title": "57 commands, grouped by job",
+      "commands.eyebrow": "Command overview", "commands.title": "58 commands, grouped by job",
       "commands.sub": "Every entry below comes from the built-in command table. <code>log</code> and <code>dellog</code> read or delete FileTgie's own log; all others are strictly read-only.",
       "quick.eyebrow": "Quick start", "quick.title": "Usage and examples",
       "ex1.desc": "Count files and folders in a folder", "ex2.desc": "Sum all text-file lines in a codebase, English UI",
@@ -498,28 +498,28 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "langs.note3": "<code>langs</code> lists the available language codes at runtime.",
       "install.eyebrow": "Get FileTgie", "install.title": "Portable package or build from source",
       "install.winTitle": "Windows portable package",
-      "install.winText": "The green portable package contains only <code>FileTgie.exe</code>, README, LICENSE and COPYING. It writes no registry keys and nothing outside the folder; unzip and run, delete the folder to uninstall. The only file written next to the executable is its own <code>filetgie.log</code>.",
+      "install.winText": "The green portable package contains <code>FileTgie.exe</code>, README, User Manual, LICENSE and COPYING. It writes no registry keys and nothing outside the folder; unzip and run, delete the folder to uninstall. The only file written next to the executable is its own <code>filetgie.log</code>.",
       "install.winBuildTitle": "Build from source — Windows (MinGW gcc)",
       "install.winBuildText": "Run <code>build.bat</code> in the project root, equivalent to the command below; the build target <code>-O2 -Wall</code> must compile with zero warnings.",
       "install.linuxTitle": "Linux — portable tarball or build from source",
-      "install.linuxText": "Extract <code>FileTgie.linux.0.1.0.tar.gz</code> and run <code>./FileTgie --lang en help</code>; optionally copy the binary into <code>PATH</code>. No installer, administrator rights, or network access are required. To build from source, run <code>make</code>. Tested on GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc); C99/GNU99/C11/GNU11/GNU17 build clean, and a C99-capable GCC 5+ on modern glibc is expected to compile. The prebuilt tarball targets x86_64 glibc (Debian/Ubuntu family), not musl/Alpine; Clang was not verified in this release.",
+      "install.linuxText": "The Linux prebuilt tarball remains 0.1.0; use the 0.1.1 source archive and run <code>make</code> for current features. Extract the tarball and run <code>./FileTgie --lang en help</code>; optionally copy the binary into <code>PATH</code>. No installer, administrator rights, or network access are required. The verified build used GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc); C99/GNU99/C11/GNU11/GNU17 build clean, and a C99-capable GCC 5+ on modern glibc is expected to compile. The prebuilt tarball targets x86_64 glibc (Debian/Ubuntu family), not musl/Alpine; Clang was not verified.",
       "install.linuxButton": "Download Linux tarball", "install.srcTitle": "Source code",
       "install.srcText": "All sources live under <code>src/</code> and use only the C standard library and native platform APIs. Visit the repository for the latest source and releases:",
       "footer.author": "Author", "footer.license": "License",
       "footer.licenseText": "LGPL-3.0-or-later (GNU Lesser General Public License, version 3 or later). Full legal text in LICENSE; plain-language linking notes in COPYING.",
       "footer.version": "Version",
-      "footer.versionText": "v0.1.0 — first release after the version numbering reset. The single source of truth for the version is <code>src/commands.h</code> (FILETGIE_VERSION).",
+      "footer.versionText": "v0.1.1 adds the grouped <code>dirdiff</code> directory comparison and clearer +/−/=0 deltas. The single source of truth for the version is <code>src/commands.h</code> (FILETGIE_VERSION).",
       "groups.all": "All", "groups.system": "System & Log", "groups.stats": "Statistics",
       "groups.text": "Text & Lines", "groups.search": "Search & Find", "groups.verify": "Verify & Integrity",
       "note.all": "Showing all {n} commands from CMD_TABLE.", "note.group": "Showing {n} commands in this group."
     },
     cn: {
-      "meta.title": "FileTgie v0.1.0 — 纯 C 只读文件统计与搜索命令行工具",
+      "meta.title": "FileTgie v0.1.1 — 纯 C 只读文件统计与搜索命令行工具",
       "nav.features": "功能", "nav.commands": "命令", "nav.quickstart": "快速开始", "nav.languages": "界面语言", "nav.license": "许可证",
       "hero.title": "轻量、只读、零依赖的文件统计与搜索命令行工具",
       "hero.lede": "纯 C 仅用标准库编写，同一套源码可构建 Windows 与 Linux 版本。每条命令只做一件小而确定的事，绝不触碰你的文件。",
       "hero.installer": "下载安装程序（Windows）", "hero.repo": "GitHub 仓库",
-      "hero.portable": "Windows 便携 ZIP", "hero.linux": "Linux 压缩包", "hero.source": "源码包", "hero.explore": "查看 57 条命令",
+      "hero.portable": "Windows 便携 ZIP", "hero.linux": "Linux 压缩包", "hero.source": "源码包", "hero.explore": "查看 58 条命令",
       "stat.commands": "内置命令", "stat.langs": "界面语言", "stat.deps": "第三方依赖", "stat.platforms": "平台：Windows + Linux",
       "features.eyebrow": "功能", "features.title": "小而克制，默认安全", "features.sub": "每条命令只执行一个边界清晰的操作；结果明确可预期，不会出现意外副作用。",
       "f.light.title": "轻量", "f.light.text": "单个紧凑可执行文件，无需运行时、包管理器或配置文件。",
@@ -528,7 +528,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "f.lang.title": "四种可切换语言", "f.lang.text": "界面信息通过 <code>--lang</code> 在 cn、en、ja、ru 间切换；未知语言码会警告并回退到 cn。",
       "f.cross.title": "跨平台", "f.cross.text": "<code>src/port.c</code> 隔离 Windows 宽字符 Win32 API 与 POSIX，其余代码与平台无关。",
       "f.license.title": "LGPL-3.0-or-later", "f.license.text": "可自由运行、研究、修改和再分发；静态与动态链接义务见 LICENSE 和 COPYING。",
-      "commands.eyebrow": "命令概览", "commands.title": "57 条命令，按用途分组",
+      "commands.eyebrow": "命令概览", "commands.title": "58 条命令，按用途分组",
       "commands.sub": "以下条目来自内置命令表。<code>log</code> 与 <code>dellog</code> 读取或删除 FileTgie 自身日志，其余全部严格只读。",
       "quick.eyebrow": "快速开始", "quick.title": "用法与示例",
       "ex1.desc": "统计文件夹中的文件和文件夹数量", "ex2.desc": "在代码库中汇总所有文本文件行数，英文界面",
@@ -546,28 +546,28 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "langs.note3": "<code>langs</code> 在运行时列出可用语言码。",
       "install.eyebrow": "获取 FileTgie", "install.title": "便携包或从源码构建",
       "install.winTitle": "Windows 便携包",
-      "install.winText": "便携包只包含 <code>FileTgie.exe</code>、README、LICENSE、COPYING；不写注册表，也不写文件夹外内容；解压运行，删除文件夹即卸载。可执行文件旁唯一写入的是自身 <code>filetgie.log</code>。",
+      "install.winText": "便携包包含 <code>FileTgie.exe</code>、README、User Manual、LICENSE、COPYING；不写注册表，也不写文件夹外内容；解压运行，删除文件夹即卸载。可执行文件旁唯一写入的是自身 <code>filetgie.log</code>。",
       "install.winBuildTitle": "从源码构建 — Windows（MinGW gcc）",
       "install.winBuildText": "在项目根目录运行 <code>build.bat</code>，等价于下面命令；构建目标 <code>-O2 -Wall</code> 必须零警告。",
       "install.linuxTitle": "Linux — 便携压缩包或从源码构建",
-      "install.linuxText": "解压 <code>FileTgie.linux.0.1.0.tar.gz</code> 后运行 <code>./FileTgie --lang en help</code>；可选择把二进制复制到 <code>PATH</code>。不需要安装程序、管理员权限或网络。从源码构建运行 <code>make</code>。已在 GCC 11.4.0（Ubuntu 22.04，x86_64，glibc）验证；C99/GNU99/C11/GNU11/GNU17 均零警告，现代 glibc 上具备 C99 能力的 GCC 5+ 预期可编译。预编译包面向 x86_64 glibc（Debian/Ubuntu 系），不保证 musl/Alpine；本版未验证 Clang。",
+      "install.linuxText": "Linux 预编译包仍为 0.1.0；当前功能请使用 0.1.1 源码包并运行 <code>make</code> 构建。解压 <code>FileTgie.linux.0.1.0.tar.gz</code> 后运行 <code>./FileTgie --lang en help</code>；可选择把二进制复制到 <code>PATH</code>。不需要安装程序、管理员权限或网络。已在 GCC 11.4.0（Ubuntu 22.04，x86_64，glibc）验证；C99/GNU99/C11/GNU11/GNU17 均零警告，现代 glibc 上具备 C99 能力的 GCC 5+ 预期可编译。预编译包面向 x86_64 glibc（Debian/Ubuntu 系），不保证 musl/Alpine；未验证 Clang。",
       "install.linuxButton": "下载 Linux 压缩包", "install.srcTitle": "源代码",
       "install.srcText": "所有源码位于 <code>src/</code>，仅使用 C 标准库与平台原生 API。访问仓库获取最新源码与发布：",
       "footer.author": "作者", "footer.license": "许可证",
       "footer.licenseText": "LGPL-3.0-or-later（GNU 宽通用公共许可证，第 3 版或更新）。完整法律文本见 LICENSE，通俗链接说明见 COPYING。",
       "footer.version": "版本",
-      "footer.versionText": "v0.1.0 — 版本号重置后的首个发布。版本唯一事实来源是 <code>src/commands.h</code>（FILETGIE_VERSION）。",
+      "footer.versionText": "v0.1.1 新增分组式 <code>dirdiff</code> 目录对比，并清晰显示 <code>+/-/=0</code> 差值。版本唯一事实来源是 <code>src/commands.h</code>（FILETGIE_VERSION）。",
       "groups.all": "全部", "groups.system": "系统与日志", "groups.stats": "统计",
       "groups.text": "文本与行数", "groups.search": "搜索与查找", "groups.verify": "校验与完整性",
       "note.all": "显示 CMD_TABLE 中的全部 {n} 条命令。", "note.group": "显示该组中的 {n} 条命令。"
     },
     ja: {
-      "meta.title": "FileTgie v0.1.0 — 純粋なC製の読み取り専用ファイル統計・検索CLI",
+      "meta.title": "FileTgie v0.1.1 — 純粋なC製の読み取り専用ファイル統計・検索CLI",
       "nav.features": "機能", "nav.commands": "コマンド", "nav.quickstart": "クイックスタート", "nav.languages": "言語", "nav.license": "ライセンス",
       "hero.title": "軽量・読み取り専用・非依存のファイル統計＆検索 CLI",
       "hero.lede": "純粋な C と標準ライブラリだけで書かれ、同一ソースから Windows と Linux をビルドできます。各コマンドは小さく予測可能な1操作だけを行い、ファイルを変更しません。",
       "hero.installer": "インストーラをダウンロード（Windows）", "hero.repo": "GitHub リポジトリ",
-      "hero.portable": "Windows ポータブル ZIP", "hero.linux": "Linux tarball", "hero.source": "ソースアーカイブ", "hero.explore": "57コマンドを見る",
+      "hero.portable": "Windows ポータブル ZIP", "hero.linux": "Linux tarball", "hero.source": "ソースアーカイブ", "hero.explore": "58コマンドを見る",
       "stat.commands": "内蔵コマンド", "stat.langs": "対応言語", "stat.deps": "サードパーティ依存", "stat.platforms": "対応: Windows + Linux",
       "features.eyebrow": "機能", "features.title": "設計は小さく、既定で安全", "features.sub": "各コマンドは範囲の明確な単一操作を行い、結果は分かりやすく予測でき、予期しない副作用はありません。",
       "f.light.title": "軽量", "f.light.text": "単一のコンパクトな実行ファイル。ランタイム、パッケージマネージャ、設定ファイルは不要です。",
@@ -576,7 +576,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "f.lang.title": "切り替え可能な4言語", "f.lang.text": "<code>--lang</code> で cn/en/ja/ru を切り替えます。未知の言語コードは警告して cn に戻ります。",
       "f.cross.title": "クロスプラットフォーム", "f.cross.text": "<code>src/port.c</code> が Windows のワイド文字 Win32 API と POSIX を分離し、他のコードはプラットフォーム非依存です。",
       "f.license.title": "LGPL-3.0-or-later", "f.license.text": "実行・研究・改変・再配布が自由。静的/動的リンク条項は LICENSE と COPYING に記載されています。",
-      "commands.eyebrow": "コマンド概要", "commands.title": "57コマンドを用途別に整理",
+      "commands.eyebrow": "コマンド概要", "commands.title": "58コマンドを用途別に整理",
       "commands.sub": "以下は内蔵コマンド表から。<code>log</code> と <code>dellog</code> は FileTgie 自身のログを読む/消すだけで、他はすべて読み取り専用です。",
       "quick.eyebrow": "クイックスタート", "quick.title": "使い方と例",
       "ex1.desc": "フォルダ内のファイルとフォルダを数える", "ex2.desc": "コードベースのテキストファイル行数を合計（英語UI）",
@@ -594,28 +594,28 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "langs.note3": "<code>langs</code> は実行時に利用可能な言語コードを列挙します。",
       "install.eyebrow": "FileTgieを入手", "install.title": "ポータブルパッケージまたはソースビルド",
       "install.winTitle": "Windowsポータブルパッケージ",
-      "install.winText": "同梱は <code>FileTgie.exe</code>/README/LICENSE/COPYING のみ。レジストリやフォルダ外へ書き込みせず、展開して実行、フォルダ削除でアンインストール。実行ファイルの横に書くのは自身の <code>filetgie.log</code> だけです。",
+      "install.winText": "同梱は <code>FileTgie.exe</code>/README/User Manual/LICENSE/COPYING。レジストリやフォルダ外へ書き込みせず、展開して実行、フォルダ削除でアンインストール。実行ファイルの横に書くのは自身の <code>filetgie.log</code> だけです。",
       "install.winBuildTitle": "ソースからビルド — Windows (MinGW gcc)",
       "install.winBuildText": "ルートで <code>build.bat</code> を実行。下記コマンドと等価。ビルドは <code>-O2 -Wall</code> で警告ゼロが必要です。",
       "install.linuxTitle": "Linux — ポータブルtarballまたはソースビルド",
-      "install.linuxText": "<code>FileTgie.linux.0.1.0.tar.gz</code> を展開し <code>./FileTgie --lang en help</code> を実行。必要ならバイナリを <code>PATH</code> にコピー。インストーラ・管理者権限・ネットは不要。ソースビルドは <code>make</code>。GCC 11.4.0（Ubuntu 22.04, x86_64, glibc）で検証済み。C99/GNU99/C11/GNU11/GNU17 はクリーン、C99対応 GCC 5+ の現代 glibc でビルド期待。プレビルドは x86_64 glibc（Debian/Ubuntu系）、musl/Alpine 非保証、Clang未検証。",
+      "install.linuxText": "Linux プレビルドは 0.1.0 のままです。最新機能は 0.1.1 ソースアーカイブを展開し <code>make</code> でビルドしてください。<code>FileTgie.linux.0.1.0.tar.gz</code> を展開し <code>./FileTgie --lang en help</code> を実行。必要ならバイナリを <code>PATH</code> にコピー。インストーラ・管理者権限・ネットは不要。GCC 11.4.0（Ubuntu 22.04, x86_64, glibc）で検証済み。C99/GNU99/C11/GNU11/GNU17 はクリーン、C99対応 GCC 5+ の現代 glibc でビルド期待。プレビルドは x86_64 glibc（Debian/Ubuntu系）、musl/Alpine 非保証、Clang未検証。",
       "install.linuxButton": "Linux tarballをダウンロード", "install.srcTitle": "ソースコード",
       "install.srcText": "全ソースは <code>src/</code> にあり、C標準ライブラリとネイティブAPIだけを使用。最新ソースとリリースはリポジトリへ:",
       "footer.author": "作者", "footer.license": "ライセンス",
       "footer.licenseText": "LGPL-3.0-or-later（GNU劣等一般公衆利用許諾書第3版以降）。完全な法的文面はLICENSE、平易なリンク説明はCOPYING。",
       "footer.version": "バージョン",
-      "footer.versionText": "v0.1.0 — 番号リセット後の初リリース。バージョンの唯一の基準は <code>src/commands.h</code>（FILETGIE_VERSION）。",
+      "footer.versionText": "v0.1.1 はグループ化された <code>dirdiff</code> 比較を追加し、<code>+/-/=0</code> の差を明確に表示します。バージョンの唯一の基準は <code>src/commands.h</code>（FILETGIE_VERSION）。",
       "groups.all": "すべて", "groups.system": "システムとログ", "groups.stats": "統計",
       "groups.text": "テキストと行数", "groups.search": "検索", "groups.verify": "検証と整合性",
       "note.all": "CMD_TABLE の全 {n} コマンドを表示。", "note.group": "このグループの {n} コマンドを表示。"
     },
     ru: {
-      "meta.title": "FileTgie v0.1.0 — Лёгкая утилита статистики и поиска файлов на чистом C",
+      "meta.title": "FileTgie v0.1.1 — Лёгкая утилита статистики и поиска файлов на чистом C",
       "nav.features": "Возможности", "nav.commands": "Команды", "nav.quickstart": "Быстрый старт", "nav.languages": "Языки", "nav.license": "Лицензия",
       "hero.title": "Лёгкий инструмент статистики и поиска файлов только для чтения",
       "hero.lede": "Чистый C, только стандартная библиотека; один исходник собирается для Windows и Linux. Каждая команда делает одно предсказуемое действие и не меняет ваши файлы.",
       "hero.installer": "Скачать установщик (Windows)", "hero.repo": "Репозиторий GitHub",
-      "hero.portable": "Портативный ZIP для Windows", "hero.linux": "tar.gz для Linux", "hero.source": "Архив с исходниками", "hero.explore": "Посмотреть 57 команд",
+      "hero.portable": "Портативный ZIP для Windows", "hero.linux": "tar.gz для Linux", "hero.source": "Архив с исходниками", "hero.explore": "Посмотреть 58 команд",
       "stat.commands": "встроенных команд", "stat.langs": "языков интерфейса", "stat.deps": "сторонних зависимостей", "stat.platforms": "платформы: Windows + Linux",
       "features.eyebrow": "Возможности", "features.title": "Мал по замыслу, безопасен по умолчанию", "features.sub": "Каждая команда выполняет одну четко ограниченную операцию. Результаты ясны; неожиданных побочных эффектов нет.",
       "f.light.title": "Лёгкость", "f.light.text": "Один компактный исполняемый файл: без среды выполнения, менеджера пакетов и конфигурации.",
@@ -624,7 +624,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "f.lang.title": "Четыре переключаемых языка", "f.lang.text": "Интерфейс переключается между cn, en, ja, ru через <code>--lang</code>; неизвестный код предупреждает и возвращается к cn.",
       "f.cross.title": "Кроссплатформенность", "f.cross.text": "<code>src/port.c</code> отделяет широкие символы Win32 API от POSIX; остальной код не зависит от платформы.",
       "f.license.title": "LGPL-3.0-or-later", "f.license.text": "Свободно запускать, изучать, изменять и распространять; обязательства линковки описаны в LICENSE и COPYING.",
-      "commands.eyebrow": "Обзор команд", "commands.title": "57 команд по группам",
+      "commands.eyebrow": "Обзор команд", "commands.title": "58 команд по группам",
       "commands.sub": "Ниже таблица встроенных команд. <code>log</code> и <code>dellog</code> читают/удаляют собственный журнал FileTgie; остальные только чтение.",
       "quick.eyebrow": "Быстрый старт", "quick.title": "Использование и примеры",
       "ex1.desc": "Посчитать файлы и папки в каталоге", "ex2.desc": "Суммировать строки текстовых файлов в кодовой базе, английский UI",
@@ -642,24 +642,24 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "langs.note3": "<code>langs</code> выводит доступные коды языков во время выполнения.",
       "install.eyebrow": "Получить FileTgie", "install.title": "Портативный пакет или сборка из исходников",
       "install.winTitle": "Портативный пакет Windows",
-      "install.winText": "Содержит только <code>FileTgie.exe</code>, README, LICENSE, COPYING. Не пишет реестр и файлы вне папки; распакуйте и запустите, удаление папки удаляет программу. Рядом записывается только собственный <code>filetgie.log</code>.",
+      "install.winText": "Содержит <code>FileTgie.exe</code>, README, User Manual, LICENSE, COPYING. Не пишет реестр и файлы вне папки; распакуйте и запустите, удаление папки удаляет программу. Рядом записывается только собственный <code>filetgie.log</code>.",
       "install.winBuildTitle": "Сборка из исходников — Windows (MinGW gcc)",
       "install.winBuildText": "Запустите <code>build.bat</code> в корне; цель <code>-O2 -Wall</code> должна собираться без предупреждений.",
       "install.linuxTitle": "Linux — tarball или сборка из исходников",
-      "install.linuxText": "Распакуйте <code>FileTgie.linux.0.1.0.tar.gz</code> и запустите <code>./FileTgie --lang en help</code>; при желании скопируйте бинарник в <code>PATH</code>. Без установщика, прав администратора и сети. Сборка из исходников: <code>make</code>. Проверено GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc); C99/GNU99/C11/GNU11/GNU17 чисто, C99 GCC 5+ на современной glibc ожидаемо собирается. Готовый пакет для x86_64 glibc (Debian/Ubuntu), не musl/Alpine; Clang не проверялся.",
+      "install.linuxText": "Готовый Linux-пакет пока остаётся 0.1.0; для текущих функций используйте исходники 0.1.1 и выполните <code>make</code>. Распакуйте <code>FileTgie.linux.0.1.0.tar.gz</code> и запустите <code>./FileTgie --lang en help</code>; при желании скопируйте бинарник в <code>PATH</code>. Без установщика, прав администратора и сети. Проверено GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc); C99/GNU99/C11/GNU11/GNU17 чисто, C99 GCC 5+ на современной glibc ожидаемо собирается. Пакет для x86_64 glibc (Debian/Ubuntu), не musl/Alpine; Clang не проверялся.",
       "install.linuxButton": "Скачать tarball Linux", "install.srcTitle": "Исходный код",
       "install.srcText": "Все исходники в <code>src/</code>; только стандартная библиотека C и родные API. Актуальные исходники и релизы в репозитории:",
       "footer.author": "Автор", "footer.license": "Лицензия",
       "footer.licenseText": "LGPL-3.0-or-later (GNU LGPL, версия 3 или позже). Полный юридический текст в LICENSE, пояснение линковки в COPYING.",
       "footer.version": "Версия",
-      "footer.versionText": "v0.1.0 — первый релиз после сброса нумерации. Единственный источник версии: <code>src/commands.h</code> (FILETGIE_VERSION).",
+      "footer.versionText": "v0.1.1 добавляет групповое сравнение каталогов <code>dirdiff</code> и понятные дельты <code>+/-/=0</code>. Единственный источник версии: <code>src/commands.h</code> (FILETGIE_VERSION).",
       "groups.all": "Все", "groups.system": "Система и журнал", "groups.stats": "Статистика",
       "groups.text": "Текст и строки", "groups.search": "Поиск", "groups.verify": "Проверка и целостность",
       "note.all": "Показаны все {n} команд из CMD_TABLE.", "note.group": "Показаны {n} команд этой группы."
     }
   };
 
-  // ===== Command data: names and English descriptions from README, names verified against CMD_TABLE (57) =====
+  // ===== Command data: names and English descriptions from README, names verified against CMD_TABLE (58) =====
   var GROUPS = [
     {
       id: "all", label: "All",
@@ -675,6 +675,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         ["linesdir", "linesdir <dir>", "Recursively sum the lines of text files."],
         ["size", "size <file>", "Human-readable file size (1024 units) plus exact bytes."],
         ["du", "du <dir>", "Total summed size of a directory."],
+        ["dirdiff", "dirdiff <dirA> <dirB>", "Grouped A/B comparison of files, size, text lines and hidden files; +, - and =0 show B-A."],
         ["tree", "tree <dir> [depth]", "Print a directory tree; default depth 20, depth 0 allowed."],
         ["findname", "findname <dir> <glob>", "Search by filename with wildcards * and ?."],
         ["findext", "findext <dir> <ext>", "Search by extension, e.g. txt."],
@@ -740,6 +741,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         ["count", "count <dir>", "Recursively count files and folders."],
         ["size", "size <file>", "Human-readable file size (1024 units) plus exact bytes."],
         ["du", "du <dir>", "Total summed size of a directory."],
+        ["dirdiff", "dirdiff <dirA> <dirB>", "Grouped A/B comparison of files, size, text lines and hidden files; +, - and =0 show B-A."],
         ["disk", "disk", "Capacity, used and free space of each drive."],
         ["recent", "recent <dir> [N]", "N most recently modified files; default 10."],
         ["extstats", "extstats <dir>", "Count files grouped by extension."],

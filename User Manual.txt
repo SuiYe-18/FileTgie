@@ -1,11 +1,11 @@
 ﻿==============================================================
- FileTgie v0.1.0 - Beginner User Manual / 新手用户手册
+ FileTgie v0.1.1 - Beginner User Manual / 新手用户手册
 ==============================================================
 
 by SuiYe_TR (Suiye-18) - Single Author
 GitHub: https://github.com/Suiye-18
 License: LGPL-3.0-or-later
-Version: v0.1.0
+Version: v0.1.1
 
 This manual is written in English with a Chinese translation under
 each paragraph. Commands, options and numbers come only from the
@@ -188,7 +188,7 @@ rc=0；用法错误、路径未找到、参数错误返回 rc=1。
 
 
 ==============================================================
-5. Command Reference / 命令参考 (57 commands / 57 条命令)
+5. Command Reference / 命令参考 (58 commands / 58 条命令)
 ==============================================================
 
 Each entry gives: command name, syntax, one English-purpose line,
@@ -576,6 +576,17 @@ variable.
 CN: 在 PATH 环境变量中查找可执行程序。
 Example: FileTgie whereis gcc
 
+58) dirdiff
+Syntax: dirdiff <dirA> <dirB>
+EN: Compare two directories in grouped rows: file count, directory
+count, total size, exact bytes, average file size, text files, text
+lines and hidden files. The last column is B minus A: + means B has
+more, - means B has fewer, and =0 means unchanged.
+CN: 分组对比两个目录：文件数、目录数、总大小、精确字节数、平均文件大小、
+文本文件数、文本行数与隐藏文件数。最后一列是 B 减 A：+ 表示 B 更多，
+- 表示 B 更少，=0 表示没有变化。
+Example: FileTgie --lang en dirdiff ./old ./new
+
 
 ==============================================================
 6. Languages / 语言切换
@@ -631,10 +642,10 @@ has not reached the next unit stays in the current unit.
 FileTgie 采用 1024 二进制标准：1 KB = 1024 B，1 MB = 1024 KB，
 按 1024 从 B -> KB -> MB -> GB 进位；未到上一级单位时保持当前单位。
 
-The size, stat and du commands also print the exact byte count alongside
-the human-readable size.
+The size, stat, du and dirdiff commands also print the exact byte
+count alongside the human-readable size.
 
-size、stat、du 命令会在人类可读大小之外同时给出精确字节数。
+size、stat、du、dirdiff 命令会在人类可读大小之外同时给出精确字节数。
 
 
 ==============================================================
@@ -656,6 +667,18 @@ never modifies, deletes or moves user files.
 问：为什么 FileTgie 不会修改我的文件？
 答：这是设计上的只读承诺：只枚举、stat、读取，绝不修改、删除、移动
 用户文件。
+
+Q: Can fd be used together with FileTgie?
+A: Yes, as a separate external companion. fd quickly locates candidate
+files and can run batch delete/move operations through its own -x/-X
+options; those actions belong to fd or the shell. FileTgie does not
+call or bundle fd, and it only performs read-only statistics, checksums,
+encoding detection and comparison.
+
+问：fd 可以和 FileTgie 一起使用吗？
+答：可以，把它当作独立的外部搭配工具。fd 负责快速定位候选文件，并可
+通过自己的 -x/-X 选项执行批量删除、移动；这些操作属于 fd 或 shell。
+FileTgie 不调用、不打包 fd，只做只读统计、校验、编码检测与对比。
 
 Q: What happens with an unknown language code, an unknown option or
 wrong arguments?

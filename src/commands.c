@@ -2,10 +2,10 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  * Copyright (C) 2026 SuiYe_TR (https://github.com/Suiye-18)
  *
- * 【本文件】全部 57 个子命令的实现与命令表 CMD_TABLE：先定义参数/路径校验等
+ * 【本文件】全部 58 个子命令的实现与命令表 CMD_TABLE：先定义参数/路径校验等
  * 内部助手，再按功能分组实现各 cmd_*，最后由 CMD_TABLE 把命令名接到处理函数。
  *
- * All 57 subcommand implementations and the CMD_TABLE registry: internal
+ * All 58 subcommand implementations and the CMD_TABLE registry: internal
  * validation helpers first, cmd_* handlers grouped by feature, then the
  * table mapping each command name to its handler.
  */
@@ -359,6 +359,107 @@ static int cmd_du(const LangPack* L, int argc, char** argv) {
     if (walk_check(L, argv[1], 1, cb_du, &c)) return 1;
     char h[32]; human_size(c.bytes, h, sizeof(h));
     printf("%s: %s (%lld %s)\n", L->lbl_total, h, c.bytes, L->lbl_bytes);
+    return 0;
+}
+
+/* Directory comparison accumulator: counts, bytes, text files/lines and
+ * hidden files. It only reads metadata and text bytes; it never writes. */
+typedef struct {
+    long long files;
+    long long dirs;
+    long long bytes;
+    long long text_files;
+    long long text_lines;
+    long long hidden;
+} DirCompareStat;
+
+static void cb_dirstat(const ft_entry_t* e, void* u) {
+    DirCompareStat* s = (DirCompareStat*)u;
+    if (e->is_dir) { s->dirs++; return; }
+    s->files++;
+    s->bytes += e->size;
+    if (e->hidden) s->hidden++;
+    if (!looks_text(e->full)) return;
+    s->text_files++;
+    FILE* f = ft_fopen(e->full, "rb");
+    if (!f) return;
+    int ch, prev = '\n';
+    while ((ch = fgetc(f)) != EOF) {
+        if (ch == '\n') s->text_lines++;
+        prev = ch;
+    }
+    if (prev != '\n' && prev != EOF) s->text_lines++;
+    fclose(f);
+}
+
+static int collect_dirstat(const LangPack* L, const char* path, DirCompareStat* s) {
+    memset(s, 0, sizeof(*s));
+    if (check_dir(L, path)) return 1;
+    return walk_check(L, path, 1, cb_dirstat, s);
+}
+
+/* Format a signed count for the comparison table; "=0" marks an unchanged row. */
+static void fmt_signed_long(long long v, char* out, size_t n) {
+    if (v == 0) snprintf(out, n, "=0");
+    else snprintf(out, n, "%+lld", v);
+}
+
+/* Format a signed human-readable size; "=0 B" marks an unchanged row. */
+static void fmt_signed_size(long long v, char* out, size_t n) {
+    char h[32];
+    human_size(v < 0 ? -v : v, h, sizeof(h));
+    if (v == 0) snprintf(out, n, "=%s", h);
+    else snprintf(out, n, "%c%s", v < 0 ? '-' : '+', h);
+}
+
+static int cmd_dirdiff(const LangPack* L, int argc, char** argv) {
+    if (need(L, argc, 3, "dirdiff <dirA> <dirB>")) return 1;
+    if (check_extra(L, argc, 3, argv)) return 1;
+    DirCompareStat a, b;
+    if (collect_dirstat(L, argv[1], &a)) return 1;
+    if (collect_dirstat(L, argv[2], &b)) return 1;
+
+    char sa[32], sb[32];
+    human_size(a.bytes, sa, sizeof(sa));
+    human_size(b.bytes, sb, sizeof(sb));
+
+    long long avg_a = a.files ? a.bytes / a.files : 0;
+    long long avg_b = b.files ? b.bytes / b.files : 0;
+    char aa[32], ab[32];
+    human_size(avg_a, aa, sizeof(aa));
+    human_size(avg_b, ab, sizeof(ab));
+
+    char d_files[16], d_dirs[16], d_size[64], d_bytes[16];
+    char d_text[16], d_lines[16], d_hidden[16], d_avg[64];
+    fmt_signed_long(b.files - a.files, d_files, sizeof(d_files));
+    fmt_signed_long(b.dirs - a.dirs, d_dirs, sizeof(d_dirs));
+    fmt_signed_size(b.bytes - a.bytes, d_size, sizeof(d_size));
+    fmt_signed_long(b.bytes - a.bytes, d_bytes, sizeof(d_bytes));
+    fmt_signed_long(b.text_files - a.text_files, d_text, sizeof(d_text));
+    fmt_signed_long(b.text_lines - a.text_lines, d_lines, sizeof(d_lines));
+    fmt_signed_long(b.hidden - a.hidden, d_hidden, sizeof(d_hidden));
+    fmt_signed_size(avg_b - avg_a, d_avg, sizeof(d_avg));
+
+    printf("%s\n", L->cmp_title);
+    printf("A: %s\n", argv[1]);
+    printf("B: %s\n\n", argv[2]);
+    printf("%-20s %14s %14s %12s\n", L->cmp_metric, "A", "B", L->cmp_col_delta);
+    printf("----------------------------------------------------------------\n");
+
+    printf("%-20s %14lld %14lld %12s\n", L->lbl_file, a.files, b.files, d_files);
+    printf("%-20s %14lld %14lld %12s\n", L->lbl_dir, a.dirs, b.dirs, d_dirs);
+
+    printf("\n");
+    printf("%-20s %14s %14s %12s\n", L->lbl_size, sa, sb, d_size);
+    printf("%-20s %14lld %14lld %12s\n", L->lbl_bytes, a.bytes, b.bytes, d_bytes);
+    printf("%-20s %14s %14s %12s\n", L->cmp_avg_size, aa, ab, d_avg);
+
+    printf("\n");
+    printf("%-20s %14lld %14lld %12s\n", L->cmp_text_files, a.text_files, b.text_files, d_text);
+    printf("%-20s %14lld %14lld %12s\n", L->lbl_lines, a.text_lines, b.text_lines, d_lines);
+
+    printf("\n");
+    printf("%-20s %14lld %14lld %12s\n", L->cmp_hidden, a.hidden, b.hidden, d_hidden);
     return 0;
 }
 
@@ -1538,6 +1639,7 @@ const CommandEntry CMD_TABLE[] = {
     { "linesdir",    cmd_linesdir,    OFF(h_linesdir) },
     { "size",        cmd_size,        OFF(h_size) },
     { "du",          cmd_du,          OFF(h_du) },
+    { "dirdiff",     cmd_dirdiff,     OFF(h_dirdiff) },
     { "tree",        cmd_tree,        OFF(h_tree) },
     { "findname",    cmd_findname,    OFF(h_findname) },
     { "findext",     cmd_findext,    OFF(h_findext) },

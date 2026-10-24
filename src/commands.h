@@ -41,7 +41,7 @@ extern int g_dellog_cleared;
 
 /* 版本号唯一来源，version 命令与帮助横幅都读取它，不在别处硬编码。
  * Single source of truth for the version; read by version and the help banner. */
-#define FILETGIE_VERSION "0.1.0"
+#define FILETGIE_VERSION "0.1.1"
 
 #ifdef __cplusplus
 }

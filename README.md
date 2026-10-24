@@ -1,4 +1,4 @@
-# FileTgie v0.1.0
+# FileTgie v0.1.1
 
 > A lightweight, read-only, zero-dependency file statistics and search CLI written in pure C.
 > One source tree builds for Windows and Linux; every command only reads and never modifies your files.
@@ -12,14 +12,14 @@
 | Package | Link |
 | --- | --- |
 | Official website | https://suiye-18.github.io/filetgie-official-website/ |
-| Windows installer | [FileTgie.windows.0.1.0.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.0.setup.exe) |
-| Windows portable ZIP | [FileTgie.windows.0.1.0.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.0.portable.zip) |
-| Linux tarball | [FileTgie.linux.0.1.0.tar.gz](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz) |
-| Source archive | [FileTgie.source.0.1.0.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.1.0.zip) |
+| Windows installer | [FileTgie.windows.0.1.1.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.1.setup.exe) |
+| Windows portable ZIP | [FileTgie.windows.0.1.1.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.1.portable.zip) |
+| Linux tarball | [FileTgie.linux.0.1.0.tar.gz](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz) (prebuilt 0.1.0; source 0.1.1 builds with `make`) |
+| Source archive | [FileTgie.source.0.1.1.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.1.1.zip) |
 
 ## Highlights
 
-- **57 built-in commands** for counting, line statistics, file search, checksums, encoding checks, duplicates, disk space and verification.
+- **58 built-in commands** for counting, line statistics, directory comparison, file search, checksums, encoding checks, duplicates, disk space and verification.
 - **Read-only by default:** every inspection command only reads files; it never modifies, deletes or moves user data.
 - **Pure C, zero third-party dependency:** C standard library plus native Windows/POSIX APIs only.
 - **Four interface languages:** switch messages with `--lang cn|en|ja|ru`.
@@ -58,9 +58,9 @@ FileTgie compare a.bin b.bin
 * **patch（.x）**：只用于小补丁、小插曲（修小问题、文案微调），不进入
   minor 的进位序列。
 
-本次 `0.1.0` 是重新计数后的**首个版本**。版本号唯一来源是源码
-`src/commands.h` 中的 `FILETGIE_VERSION`，`version` 命令与帮助横幅都读取
-它，不在其他位置硬编码。
+当前发布为 `0.1.1`：在 `0.1.0` 基础上新增 `dirdiff` 目录对比命令，并优化
+对比表的分组与正负差值显示。版本号唯一来源是源码 `src/commands.h` 中的
+`FILETGIE_VERSION`，`version` 命令与帮助横幅都读取它，不在其他位置硬编码。
 
 ## 构建
 
@@ -133,7 +133,7 @@ FileTgie -lang ja lines ./a.txt
 FileTgie -l ru disk
 ```
 
-## 命令一览（57 个；除 `log` / `dellog` 只读写 FileTgie 自身日志外，全部只读）
+## 命令一览（58 个；除 `log` / `dellog` 只读写 FileTgie 自身日志外，全部只读）
 
 
 
@@ -150,6 +150,7 @@ FileTgie -l ru disk
 | linesdir    | `linesdir <目录>`         | 递归统计文本文件总行数                 |
 | size        | `size <文件>`             | 人类可读文件大小                    |
 | du          | `du <目录>`               | 汇总目录总大小                     |
+| dirdiff     | `dirdiff <目录A> <目录B>`    | 分组对比两个目录的文件数、目录数、大小、文本文件数、文本行数、隐藏文件数与平均文件大小；差值列为 B-A，`+` 更多、`-` 更少、`=0` 无变化 |
 | tree        | `tree <目录> [深度]`        | 打印目录树（深度缺省 20，允许 0）         |
 | list        | `list <目录>`             | 列出目录内容（大小 / 时间 / 名称）        |
 | findname    | `findname <目录> <通配符>`   | 按文件名查找，支持 `*` `?`           |
@@ -232,12 +233,28 @@ FileTgie findcontent ./src "TODO"
 # 统计时跳过所有 .o 文件与 .c 源文件
 FileTgie count ./src --exclude=*.o --exclude-ext c
 
+# 比较两个目录的文件数、大小与文本行数
+FileTgie --lang en dirdiff ./old ./new
+
 # 校验两个文件是否完全一致
 FileTgie compare a.bin b.bin
 
 # 看磁盘空间
 FileTgie disk
 ```
+
+## Optional companion: fd
+
+FileTgie does not call, bundle or depend on fd. fd is a separate fast filename-search tool that can locate candidates and use its own `-x` / `-X` options for batch execution, including delete/move operations. Those actions belong to fd or the shell; FileTgie itself remains read-only and never deletes or moves user files.
+
+Safe inspection pairs fd with FileTgie after the candidates are located:
+
+```bash
+fd -e c -x FileTgie hash
+fd -e txt -x FileTgie lines
+```
+
+Use `fd -u` when the candidate set must include hidden files and paths ignored by `.gitignore`; FileTgie's own traversal still applies its read-only statistics independently.
 
 ## 健壮性与边界处理
 
@@ -276,25 +293,23 @@ FileTgie disk
 
 ## 便携包与安装程序
 
-* **Windows 绿色便携包**（`FileTgie.windows.0.1.0.portable.zip`）：仅含
-  `FileTgie.exe`、`README.md`、`LICENSE`、`COPYING`。工具本身完全便携：
-  不写注册表、不写入 Program Files，除 exe 旁自身的 `filetgie.log` 外不写
-  任何位置，解压即用、删文件夹即卸载。
+* **Windows 绿色便携包**（`FileTgie.windows.0.1.1.portable.zip`）：含
+  `FileTgie.exe`、`README.md`、`User Manual.txt`、`LICENSE`、`COPYING`。工具本身
+  完全便携：不写注册表、不写入 Program Files，除 exe 旁自身的 `filetgie.log` 外
+  不写任何位置，解压即用、删文件夹即卸载。
 
-* **Linux 便携包**（`FileTgie.linux.0.1.0.tar.gz`）：含剥离符号的 x86_64
-  glibc 可执行文件、README、LICENSE、COPYING 与 User Manual。解压后运行
-  `./FileTgie --lang en help`；需要全局使用时把二进制复制到 `PATH` 中的目录，
-  不安装、不写系统注册表、不需要管理员权限。
+* **Linux 预编译包**（`FileTgie.linux.0.1.0.tar.gz`）：保留上一轮已验证的
+  x86_64 glibc 二进制、README、LICENSE、COPYING 与 User Manual；0.1.1 源码可直接
+  用 `make` 构建，当前环境未重新生成 Linux ELF。
 
 * **安装程序**：提供 Inno Setup 6 脚本 `installer\installer.iss`，本发布已用
-  Inno Setup 6.7.3 编译出真实安装包 `FileTgie.windows.0.1.0.setup.exe`。脚本含
+  Inno Setup 6 编译出真实安装包 `FileTgie.windows.0.1.1.setup.exe`。脚本含
   LGPL 许可页（`LicenseFile=..\LICENSE`）、可选开始菜单（默认勾选）/桌面（默认
   不勾选）快捷方式复选框与标准卸载项；默认安装目录 `{autopf}\FileTgie`，单文件
-  exe 部署；图标占位 `assets\icon.ico`，用 `#if FileExists` 条件包裹，文件缺失时
-  脚本自动跳过图标引用，仍可直接编译。需要自行重建时，先安装
+  exe 部署，并注册 App Paths 与系统 PATH。需要自行重建时，先安装
   [Inno Setup 6](https://jrsoftware.org/isdl.php)，右键 `installer\installer.iss`
   编译，或命令行执行 `iscc installer\installer.iss`，即可重新产出
-  `FileTgie.windows.0.1.0.setup.exe`。
+  `FileTgie.windows.0.1.1.setup.exe`。
 
 ## 设计说明
 
@@ -304,7 +319,7 @@ FileTgie disk
 
 * **运行日志**：每次调用都会向 exe 旁的 `filetgie.log` 追加一条记录（本地时间戳、语言码、命令、参数、退出码）；`log` 查看、`dellog` 清空。日志路径在程序内统一计算，不依赖当前工作目录。
 
-* **大小单位（1024 二进制标准）**：B → KB → MB → GB 均按 1024 进位（1 KB = 1024 B，1 MB = 1024 KB），未到上一级单位时保持当前单位；`size/stat/du` 同时给出精确字节数。
+* **大小单位（1024 二进制标准）**：B → KB → MB → GB 均按 1024 进位（1 KB = 1024 B，1 MB = 1024 KB），未到上一级单位时保持当前单位；`size/stat/du/dirdiff` 同时给出精确字节数。
 
 * **跨平台**：`src/port.c` 隔离 Windows（宽字符 Win32 API，正确处理中日俄文件名）与 Linux（POSIX）差异；其余代码平台无关。
 
@@ -343,7 +358,7 @@ FileTgie/
 │  └─ installer.iss  # Inno Setup 6 脚本（缺图标容错）
 └─ src/
    ├─ main.c         # 入口、--lang/--exclude 参数解析、分发、运行日志
-   ├─ commands.c    # 57 个子命令实现（含 log / dellog）
+   ├─ commands.c    # 58 个子命令实现（含 log / dellog）
    ├─ commands.h    # 命令表与 FILETGIE_VERSION 唯一版本来源
    ├─ i18n.c        # cn/en/ja/ru 四语言字符串包
    ├─ i18n.h
