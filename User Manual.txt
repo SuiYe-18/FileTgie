@@ -1,11 +1,11 @@
 ﻿==============================================================
- FileTgie v0.3.0 - Beginner User Manual / 新手用户手册
+ FileTgie v0.4.0 - Beginner User Manual / 新手用户手册
 ==============================================================
 
 by SuiYe_TR (Suiye-18) - Single Author
 GitHub: https://github.com/Suiye-18
 License: LGPL-3.0-or-later
-Version: v0.3.0
+Version: v0.4.0
 
 This manual is written in English with a Chinese translation under
 each paragraph. Commands, options and numbers come only from the
@@ -113,18 +113,18 @@ FileTgieUpdater.exe 与文档会移动到安装目录旁的 .old 备份文件夹
 PATH 与快捷方式始终指向根目录新文件，.old 只是禁用备份，不会被启动。注册与
 PATH 修改需要管理员权限。
 
-Linux portable tarball / Linux 便携包
+Linux build / Linux 构建
 
-The v0.3.0 Linux tarball contains a stripped x86_64 glibc binary, README,
-LICENSE, COPYING, LINUX.txt and this manual. Extract it, run
-./FileTgie --lang en help, and optionally copy FileTgie into a directory in
-PATH. Inspection commands need no installer, administrator rights or network;
-checkupdate uses curl to query GitHub.
+This v0.4.0 release supplies Linux-compatible source code; build on Linux with
+`make`, then run `./FileTgie --lang en help` and optionally copy FileTgie into a
+directory in PATH. Inspection commands need no installer, administrator rights
+or network; checkupdate uses curl to query GitHub. The last verified x86_64
+glibc prebuilt tarball remains in the v0.3.0 Release.
 
-v0.3.0 Linux 便携包含剥离符号的 x86_64 glibc 可执行文件、README、LICENSE、
-COPYING、LINUX.txt 与本手册。解压后运行 ./FileTgie --lang en help；如需全局
-使用，可把 FileTgie 复制到 PATH 中的目录。检查类命令不需要安装程序、管理员
-权限或网络；checkupdate 通过 curl 查询 GitHub。
+v0.4.0 提供兼容 Linux 的源码；在 Linux 上执行 `make` 构建，然后运行
+`./FileTgie --lang en help`，也可按需把 FileTgie 复制到 PATH 目录。检查类
+命令不需要安装程序、管理员权限或网络；checkupdate 通过 curl 查询 GitHub。
+最后一个已验证的 x86_64 glibc 预编译 tarball 保留在 v0.3.0 Release。
 
 Building from source / 从源码构建
 
@@ -154,19 +154,18 @@ Linux（gcc / clang）执行 make，产出 FileTgie。源码全部位于 src/，
 
 Linux toolchain support / Linux 工具链支持
 
-Verified on GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc) with -O2 -Wall -Wextra
-clean. The same tree also builds clean under -std=c99, -std=gnu99, -std=c11,
--std=gnu11 and -std=gnu17, so it does not require C11-only syntax. A C99-capable
-GCC 5+ on modern glibc is expected to build from source; older versions were not
-tested one by one. The prebuilt tarball targets x86_64 glibc (Debian/Ubuntu
-family), not musl/Alpine; use make on another distribution. Clang is not
-verified in this release.
+The Linux source tree was previously verified on GCC 11.4.0 (Ubuntu 22.04,
+x86_64, glibc) with -O2 -Wall -Wextra clean. The same tree also builds clean
+under -std=c99, -std=gnu99, -std=c11, -std=gnu11 and -std=gnu17, so it does
+not require C11-only syntax. A C99-capable GCC 5+ on modern glibc is expected
+to build from source; older versions were not tested one by one. musl/Alpine is
+not guaranteed; use make on the target distribution. Clang is not verified.
 
-已在 GCC 11.4.0（Ubuntu 22.04，x86_64，glibc）以 -O2 -Wall -Wextra 零警告
-验证；同一源码在 -std=c99、-std=gnu99、-std=c11、-std=gnu11、-std=gnu17 下
-也均零警告，不依赖 C11 专属语法。现代 glibc 上具备 C99 能力的 GCC 5+ 预期可从
-源码构建，更低版本未逐版本实测。预编译包面向 x86_64 glibc（Debian/Ubuntu 系），
-不保证 musl/Alpine；其他发行版建议执行 make。Clang 本版未验证。
+Linux 源码树曾在 GCC 11.4.0（Ubuntu 22.04，x86_64，glibc）以
+-O2 -Wall -Wextra 零警告验证；同一源码在 -std=c99、-std=gnu99、-std=c11、
+-std=gnu11、-std=gnu17 下也均零警告，不依赖 C11 专属语法。现代 glibc 上具备
+C99 能力的 GCC 5+ 预期可从源码构建，更低版本未逐版本实测。不保证
+musl/Alpine；请在目标发行版执行 make。Clang 本版未验证。
 
 
 ==============================================================
@@ -625,9 +624,11 @@ Example: FileTgie --lang en dirdiff ./old ./new
 59) checkupdate
 Syntax: checkupdate
 EN: Query the GitHub latest release and compare it with the local
-version; it only reports current/latest status and never installs.
+version; it only reports current/latest status and never installs. Use
+`update` when you want the bundled updater to compare GitHub and the
+official website as well.
 CN: 查询 GitHub 最新 Release 并与本地版本比较；只报告当前/最新状态，
-不执行安装。
+不执行安装。需要同时检查 GitHub 与官网时使用 `update`。
 Example: FileTgie --lang en checkupdate
 
 60) update
@@ -641,26 +642,35 @@ CN: Windows 端启动同目录的 FileTgieUpdater.exe；它同时检查 GitHub �
 官网，下载新版安装包并启动静默覆盖安装。安装器会先把旧程序文件移入 .old，
 再由新文件接管。Linux 端只打印源码构建的手动升级步骤，不替换二进制。
 Example: FileTgie --lang en update
-Standalone updater: FileTgieUpdater.exe --check
-Background mode:    FileTgieUpdater.exe --background --current=0.3.0
+Standalone check:   FileTgieUpdater.exe --check
+Notify-only check:  FileTgieUpdater.exe --check --notify
+Background mode:    FileTgieUpdater.exe --background --current=0.4.0
 Silent upgrade task: the installer uses /MERGETASKS=overwrite for the .old backup/replacement path.
 
 61) reminder
-Syntax: reminder on [daily HH:MM|hourly] | reminder status | reminder off
+Syntax: reminder on [every N|daily HH:MM|hourly] | reminder status | reminder off
 EN: On Windows, optionally create or remove the FileTgieReminder user-level
-scheduled task. Daily uses an optional HH:MM time (default 09:00); hourly
-runs once an hour. The task prefers FileTgieUpdater.exe --check and falls
-back to FileTgie.exe checkupdate when the updater is absent. status reports
-whether the task exists; off deletes it. On Linux, only manual cron guidance
-is printed and crontab is never changed.
-CN: Windows 端可选创建或删除 FileTgieReminder 用户级计划任务。daily 可带
-HH:MM 时间（缺省 09:00），hourly 每小时运行一次；任务优先使用
-FileTgieUpdater.exe --check，缺少更新器时回退 FileTgie.exe checkupdate。
-status 查看任务是否存在，off 删除任务。Linux 只打印手动 cron 说明，不修改
+scheduled task. With no schedule, it checks every 1 minute; `every N` sets a
+read-only interval from 1 to 1439 minutes; `daily HH:MM` defaults to 09:00;
+`hourly` runs once an hour. The task runs FileTgieUpdater.exe --check --notify
+and falls back to FileTgie.exe checkupdate when the updater is absent. A new
+release shows one notification toast; the same version is not repeated.
+status reports whether the task exists; off deletes it. On Linux, only manual
+cron guidance is printed and crontab is never changed.
+CN: Windows 端可选创建或删除 FileTgieReminder 用户级计划任务。不带时间时
+缺省每 1 分钟只读检查；`every N` 可设置 1 到 1439 分钟间隔；`daily HH:MM`
+缺省 09:00；`hourly` 每小时运行一次。任务优先运行
+FileTgieUpdater.exe --check --notify，缺少更新器时回退 FileTgie.exe
+checkupdate。发现新版本时只弹出一次通知，同一版本不重复提示。status
+查看任务是否存在，off 删除任务。Linux 只打印手动 cron 说明，不修改
 crontab。
-Example: FileTgie --lang en reminder on daily 09:00
+Example: FileTgie --lang en reminder on
+Every 5:  FileTgie --lang en reminder on every 5
+Daily:    FileTgie --lang en reminder on daily 09:00
 Status:   FileTgie --lang en reminder status
 Disable:  FileTgie --lang en reminder off
+Standalone updater: FileTgieUpdater.exe --check --notify
+Background mode:    FileTgieUpdater.exe --background --current=0.4.0
 
 
 ==============================================================

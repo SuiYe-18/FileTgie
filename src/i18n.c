@@ -157,13 +157,14 @@ static const LangPack ZH = {
     "Linux 需要 curl 才能检查更新。",
     /* v0.3.0 scheduled reminder */
     "开启/关闭定时更新检查提醒",
-    "用法: reminder on [daily HH:MM|hourly] | off | status",
+    "用法: reminder on [every N|daily HH:MM|hourly] | off | status（缺省每 1 分钟）",
     "已开启每日更新提醒，时间: %s。",
     "已开启每小时更新提醒。",
+    "已开启每 %d 分钟更新检查；发现新版本时只显示一次通知。",
     "已关闭并删除更新提醒。",
     "更新提醒处于开启状态。",
     "更新提醒未开启。",
-    "定时格式无效：reminder on [daily HH:MM|hourly] | off | status",
+    "定时格式无效：reminder on [every 1-1439|daily HH:MM|hourly] | off | status",
     "无法配置 Windows 计划任务。",
     "Linux 不自动管理 crontab；请手动添加定时任务运行 checkupdate。"
 };
@@ -310,13 +311,14 @@ static const LangPack EN = {
     "curl is required for Linux update checks.",
     /* v0.3.0 scheduled reminder */
     "Enable or disable a scheduled update-check reminder",
-    "Usage: reminder on [daily HH:MM|hourly] | off | status",
+    "Usage: reminder on [every N|daily HH:MM|hourly] | off | status (default: every 1 minute)",
     "Daily update reminder enabled at %s.",
     "Hourly update reminder enabled.",
+    "Update check enabled every %d minute(s); one notification is shown when a newer version appears.",
     "Update reminder disabled and removed.",
     "Update reminder is enabled.",
     "Update reminder is not enabled.",
-    "Invalid schedule: reminder on [daily HH:MM|hourly] | off | status",
+    "Invalid schedule: reminder on [every 1-1439|daily HH:MM|hourly] | off | status",
     "Could not configure the Windows scheduled task.",
     "Linux does not manage crontab; add a cron job to run checkupdate manually."
 };
@@ -463,13 +465,14 @@ static const LangPack JA = {
     "Linux の更新確認には curl が必要です。",
     /* v0.3.0 scheduled reminder */
     "定期更新チェック通知を有効/無効にする",
-    "使い方: reminder on [daily HH:MM|hourly] | off | status",
+    "使い方: reminder on [every N|daily HH:MM|hourly] | off | status（既定は1分ごと）",
     "毎日 %s に更新通知を有効にしました。",
     "毎時の更新通知を有効にしました。",
+    "%d 分ごとに更新確認を有効にしました。新しいバージョン時に通知を1回表示します。",
     "更新通知を無効にして削除しました。",
     "更新通知は有効です。",
     "更新通知は無効です。",
-    "スケジュールが不正です: reminder on [daily HH:MM|hourly] | off | status",
+    "スケジュールが不正です: reminder on [every 1-1439|daily HH:MM|hourly] | off | status",
     "Windows タスクを設定できませんでした。",
     "Linux は crontab を管理しません。手動で cron ジョブを追加し checkupdate を実行してください。"
 };
@@ -616,13 +619,14 @@ static const LangPack RU = {
     "Для проверки обновлений в Linux нужен curl.",
     /* v0.3.0 scheduled reminder */
     "Включить или отключить напоминание о проверке обновлений",
-    "Использование: reminder on [daily HH:MM|hourly] | off | status",
+    "Использование: reminder on [every N|daily HH:MM|hourly] | off | status (по умолчанию каждые 1 мин.)",
     "Ежедневное напоминание об обновлении включено в %s.",
     "Ежечасное напоминание об обновлении включено.",
+    "Проверка обновлений включена каждые %d мин.; при новой версии показывается одно уведомление.",
     "Напоминание об обновлении отключено и удалено.",
     "Напоминание об обновлении включено.",
     "Напоминание об обновлении не включено.",
-    "Неверное расписание: reminder on [daily HH:MM|hourly] | off | status",
+    "Неверное расписание: reminder on [every 1-1439|daily HH:MM|hourly] | off | status",
     "Не удалось настроить задачу Windows.",
     "Linux не управляет crontab; добавьте задачу cron для ручного запуска checkupdate."
 };

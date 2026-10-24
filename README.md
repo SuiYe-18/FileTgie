@@ -1,4 +1,4 @@
-# FileTgie v0.3.0
+# FileTgie v0.4.0
 
 > A lightweight, read-only, zero-dependency file statistics and search CLI written in pure C.
 > One source tree builds for Windows and Linux; every command only reads and never modifies your files.
@@ -12,10 +12,10 @@
 | Package | Link |
 | --- | --- |
 | Official website | https://suiye-18.github.io/filetgie-official-website/ |
-| Windows installer | [FileTgie.windows.0.3.0.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.3.0.setup.exe) |
-| Windows portable ZIP | [FileTgie.windows.0.3.0.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.3.0.portable.zip) |
-| Linux tarball | [FileTgie.linux.0.3.0.tar.gz](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.3.0.tar.gz) (x86_64 glibc; build other systems from source with `make`) |
-| Source archive | [FileTgie.source.0.3.0.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.3.0.zip) |
+| Windows installer | [FileTgie.windows.0.4.0.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.4.0.setup.exe) |
+| Windows portable ZIP | [FileTgie.windows.0.4.0.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.4.0.portable.zip) |
+| Linux | Build from the source archive with `make`; the last verified x86_64 glibc prebuilt package remains in the [v0.3.0 Release](https://github.com/SuiYe-18/FileTgie/releases/download/v0.3.0/FileTgie.linux.0.3.0.tar.gz) |
+| Source archive | [FileTgie.source.0.4.0.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.4.0.zip) |
 
 ## Highlights
 
@@ -35,7 +35,8 @@ FileTgie findlarge ./logs 50
 FileTgie compare a.bin b.bin
 FileTgie --lang en checkupdate
 FileTgie --lang en update
-FileTgie --lang en reminder on daily 09:00
+FileTgie --lang en reminder on
+FileTgie --lang en reminder on every 5
 FileTgie --lang en reminder status
 FileTgie --lang en reminder off
 ```
@@ -63,12 +64,13 @@ FileTgie --lang en reminder off
 * **patch（.x）**：只用于小补丁、小插曲（修小问题、文案微调），不进入
   minor 的进位序列。
 
-当前版本为 `0.3.0`：在 `0.2.0` 的手动更新检测、独立 `FileTgieUpdater.exe` 与
-`.old` 备份覆盖安装基础上，新增可选 `reminder` 定时更新提醒。Windows 用户级计划
-任务默认不创建；执行 `reminder on daily HH:MM`（缺省 09:00）或 `reminder on
-hourly` 才创建唯一的 `FileTgieReminder` 任务，优先运行同目录更新器的只读 `--check`，
-缺少更新器时回退主程序 `checkupdate`；`reminder status` 查询，`reminder off`
-删除任务。Linux 不修改 crontab，只打印手动 cron 说明。
+当前版本为 `0.4.0`：在 `0.4.0` 可选 `reminder` 的基础上，把 Windows 默认检查间隔
+改为每 1 分钟只读检查，并支持 `reminder on every N`（1–1439 分钟自定义间隔）；
+`daily HH:MM`（缺省 09:00）与 `hourly` 保持兼容。任务运行
+`FileTgieUpdater.exe --check --notify`，同时检查 GitHub Release 与官网版本；
+发现新版本时按版本号去重，每个新版本只弹出一次系统通知，不在同一版本上反复打扰。
+`reminder status` 查询任务，`reminder off` 删除任务；Linux 不修改 crontab，只打印
+手动 cron 说明。
 `checkupdate` 只查询 GitHub Release 并比较版本；Windows 的 `update` 调用独立更新器，
 同时检查 GitHub 与官网，后台下载新版安装包并静默覆盖；Linux 只给出手动源码升级
 命令，不替换二进制。安装包会检测已安装 FileTgie 或旧版残留，并提供“覆盖安装”勾选；
@@ -106,20 +108,15 @@ gcc -O2 -Wall -Wextra -o FileTgieUpdater.exe src\updater_main.c -lwinhttp -lshel
 make
 ```
 
-产出 `FileTgie`。已在 Debian/Ubuntu x86_64 Linux 上以 `gcc -Wall -Wextra`
-实机编译零警告，并完成全部命令回归。
-
-源码全部位于 `src/`，仅使用 C 标准库与平台原生 API，无第三方依赖。
+产出 `FileTgie`。源码全部位于 `src/`，仅使用 C 标准库与平台原生 API，无第三方依赖。
 
 #### Linux 工具链口径
 
-* 已实机验证：GCC 11.4.0（Ubuntu 22.04 / x86_64 / glibc），
-  `-O2 -Wall -Wextra` 零警告。
-* 同机补充验证：`-std=c99`、`-std=gnu99`、`-std=c11`、`-std=gnu11`、
-  `-std=gnu17` 均可零警告编译；代码不依赖 C11 专属语法。
-* 预期可编译：支持 C99 的 GCC 5+ 与现代 glibc；本发布未逐版本实测更低版本。
-* 预编译 tarball 面向 x86_64 glibc（Debian/Ubuntu 系），不保证 musl/Alpine；
-  其他发行版建议直接 `make` 从源码构建。Clang 本次未实测。
+* 历史实机验证：GCC 11.4.0（Ubuntu 22.04 / x86_64 / glibc）曾以
+  `-O2 -Wall -Wextra` 零警告编译，并在 C99/GNU99/C11/GNU11/GNU17 标准下通过。
+* 预期可编译：支持 C99 的 GCC 5+ 与现代 glibc；本轮 v0.4.0 未在本地 Linux
+  工具链中重新实机构建，未逐版本实测更低版本。
+* musl/Alpine 不保证；其他发行版直接 `make` 从源码构建。Clang 本次未实测。
 
 ## 通用用法
 
@@ -162,7 +159,7 @@ FileTgie -l ru disk
 | dellog      | `dellog`                | 删除 FileTgie 自身运行日志(只删本工具日志) |
 | checkupdate | `checkupdate`           | 查询 GitHub 最新 Release 并比较版本，只报告不安装 |
 | update      | `update`                | Windows 调用独立更新器检查 GitHub/官网并后台覆盖；Linux 只打印手动升级步骤 |
-| reminder    | `reminder on [daily HH:MM|hourly]` / `reminder status` / `reminder off` | Windows 开启/查询/删除可选的用户级定时更新检查提醒；Linux 只打印手动 cron 说明 |
+| reminder    | `reminder on [every N|daily HH:MM|hourly]` / `reminder status` / `reminder off` | Windows 开启/查询/删除可选的用户级定时更新检查提醒；缺省每 1 分钟，`every N` 为 1–1439 分钟，每个新版本只通知一次；Linux 只打印手动 cron 说明 |
 | stat        | `stat <路径>`             | 文件 / 目录详细信息（大小、三个时间）        |
 | count       | `count <目录>`            | 递归统计文件数与文件夹数                |
 | lines       | `lines <文件>`            | 统计单个文件行数                    |
@@ -312,19 +309,19 @@ Use `fd -u` when the candidate set must include hidden files and paths ignored b
 
 ## 便携包与安装程序
 
-* **Windows 绿色便携包**（`FileTgie.windows.0.3.0.portable.zip`）：含
+* **Windows 绿色便携包**（`FileTgie.windows.0.4.0.portable.zip`）：含
   `FileTgie.exe`、`FileTgieUpdater.exe`、`README.md`、`User Manual.txt`、`LICENSE`、
   `COPYING`。便携模式不写注册表、不写入 Program Files，除 exe 旁自身的
   `filetgie.log` 外不写用户位置，解压即用、删文件夹即卸载。
 
-* **Linux 预编译包**（`FileTgie.linux.0.3.0.tar.gz`）：含剥离符号的 x86_64
-  glibc 二进制、README、LICENSE、COPYING、LINUX.txt 与 User Manual；已在
-  Ubuntu 22.04 / GCC 11.4.0 / glibc 2.35 上零警告构建并完成回归。包面向
-  x86_64 glibc（Debian/Ubuntu 系），不保证 musl/Alpine；其他发行版用 `make`
-  从源码构建。
+* **Linux 构建**：源码包在 Linux 执行 `make` 即可生成 `FileTgie`；检查与统计
+  命令为 POSIX 只读路径，`update` / `reminder` 在 Linux 只打印手动步骤，不替换
+  二进制、不修改 crontab。v0.4.0 本轮未在本地 Linux 工具链中重打预编译 tarball；
+  上一版 x86_64 glibc 预编译包保留在 v0.3.0 Release，其他发行版或新版本请用
+  `make` 从源码构建。
 
 * **安装程序**：提供 Inno Setup 6 脚本 `installer\installer.iss`，编译出
-  `FileTgie.windows.0.3.0.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
+  `FileTgie.windows.0.4.0.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
   /桌面（默认不勾选）快捷方式、标准卸载项，以及默认勾选的“覆盖安装”选项；安装前
   检测已注册的 FileTgie、App Paths 与旧版残留文件，不勾选覆盖时需另选目录。覆盖时
   先把旧的 `FileTgie.exe`、`FileTgieUpdater.exe` 和文档移动到安装目录 `.old` 备份，

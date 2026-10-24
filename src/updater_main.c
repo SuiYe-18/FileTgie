@@ -277,14 +277,95 @@ static int current_from_sibling(int v[3]) {
     return ok;
 }
 
+/* Keep one notification per discovered release so a one-minute task does not
+ * toast on every wake. The state file is user-specific and never touches the
+ * installation folder. */
+static void notified_path(char* out, size_t len) {
+    const char* dir = getenv("LOCALAPPDATA");
+    if (dir && *dir) {
+        snprintf(out, len, "%s\\FileTgie\\notified.txt", dir);
+        return;
+    }
+    char tmp[MAX_PATH];
+    if (GetTempPathA(MAX_PATH, tmp) > 0)
+        snprintf(out, len, "%sFileTgie-notified.txt", tmp);
+    else
+        snprintf(out, len, "FileTgie-notified.txt");
+}
+
+static int notified_already(const char* latest) {
+    char path[MAX_PATH + 64], buf[32];
+    notified_path(path, sizeof(path));
+    FILE* f = fopen(path, "r");
+    if (!f) return 0;
+    int seen = 0;
+    if (fgets(buf, sizeof(buf), f)) {
+        buf[strcspn(buf, "\r\n")] = '\0';
+        seen = strcmp(buf, latest) == 0;
+    }
+    fclose(f);
+    return seen;
+}
+
+static void mark_notified(const char* latest) {
+    char path[MAX_PATH + 64];
+    notified_path(path, sizeof(path));
+    char* slash = strrchr(path, '\\');
+    if (slash) {
+        *slash = '\0';
+        CreateDirectoryA(path, NULL);
+        *slash = '\\';
+    }
+    FILE* f = fopen(path, "w");
+    if (f) {
+        fprintf(f, "%s", latest);
+        fclose(f);
+    }
+}
+
+/* Use the built-in Windows PowerShell toast channel; PowerShell itself is part
+ * of Windows, so this adds no third-party dependency. Failures are ignored:
+ * the read-only check still returns the newer-version exit code. */
+static void show_update_toast(const char* current, const char* latest) {
+    char cmd[2048];
+    snprintf(cmd, sizeof(cmd),
+        "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "
+        "\"[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType=WindowsRuntime]|Out-Null;"
+        "[Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument, ContentType=WindowsRuntime]|Out-Null;"
+        "$x=New-Object Windows.Data.Xml.Dom.XmlDocument;"
+        "$x.LoadXml('<toast activationType='protocol' launch='https://github.com/SuiYe-18/FileTgie/releases/latest'>"
+        "<visual><binding template='ToastText02'>"
+        "<text id='1'>FileTgie update available</text>"
+        "<text id='2'>%s is available; current %s. Click to open the release page.</text>"
+        "</binding></visual></toast>');"
+        "$t=[Windows.UI.Notifications.ToastNotification]::new($x);"
+        "[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\\WindowsPowerShell\\v1.0\\powershell.exe').Show($t)\"",
+        latest, current);
+
+    STARTUPINFOA si;
+    PROCESS_INFORMATION pi;
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    si.dwFlags = STARTF_USESHOWWINDOW;
+    si.wShowWindow = SW_HIDE;
+    ZeroMemory(&pi, sizeof(pi));
+    if (CreateProcessA(NULL, cmd, NULL, NULL, FALSE, CREATE_NO_WINDOW,
+                       NULL, NULL, &si, &pi)) {
+        WaitForSingleObject(pi.hProcess, 3000);
+        CloseHandle(pi.hThread);
+        CloseHandle(pi.hProcess);
+    }
+}
+
 int main(int argc, char** argv) {
-    int check_only = 0, background = 0;
+    int check_only = 0, background = 0, notify = 0;
     int current[3] = {0,0,0};
     int have_current = 0;
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--check") == 0) check_only = 1;
         else if (strcmp(argv[i], "--background") == 0) background = 1;
+        else if (strcmp(argv[i], "--notify") == 0) notify = 1;
         else if (strncmp(argv[i], "--current=", 10) == 0)
             have_current = parse_semver(argv[i] + 10, current);
     }
@@ -336,6 +417,18 @@ int main(int argc, char** argv) {
 
     if (!background) printf("New version v%d.%d.%d found on GitHub/website.\n", latest[0], latest[1], latest[2]);
     if (check_only) {
+        if (notify) {
+            char latest_s[32], current_s[32];
+            snprintf(latest_s, sizeof(latest_s), "v%d.%d.%d", latest[0], latest[1], latest[2]);
+            if (have_current)
+                snprintf(current_s, sizeof(current_s), "v%d.%d.%d", current[0], current[1], current[2]);
+            else
+                snprintf(current_s, sizeof(current_s), "unknown");
+            if (!notified_already(latest_s)) {
+                show_update_toast(current_s, latest_s);
+                mark_notified(latest_s);
+            }
+        }
         buf_free(&gh); buf_free(&site);
         return have_current ? 2 : 0;
     }

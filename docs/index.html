@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FileTgie v0.3.0 — Read-only file statistics &amp; search CLI in pure C</title>
+<title>FileTgie v0.4.0 — Read-only file statistics &amp; search CLI in pure C</title>
 <meta name="description" content="FileTgie is a lightweight, read-only, zero-dependency file statistics and search command-line tool written in pure C for Windows and Linux. LGPL-3.0-or-later.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000000'/%3E%3Ccircle cx='28' cy='28' r='14' fill='none' stroke='%23FFFFFF' stroke-width='6'/%3E%3Cline x1='38' y1='38' x2='52' y2='52' stroke='%23FFFFFF' stroke-width='7' stroke-linecap='square'/%3E%3C/svg%3E">
 <style>
@@ -192,6 +192,14 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
   border: 1px solid var(--black); background: transparent;
 }
 .install-card .btn-ghost:hover { background: var(--black); color: var(--paper); }
+.companion-card { display: flex; flex-direction: column; gap: 10px; }
+.companion-card p { flex: 1; }
+.companion-link {
+  align-self: flex-start; font-family: var(--mono); font-size: 13px;
+  border: 1px solid var(--ink); padding: 9px 13px; text-decoration: none; min-height: 44px;
+  display: inline-flex; align-items: center;
+}
+.companion-link:hover { background: var(--ink); color: var(--paper); }
 
 /* ===== Footer (black) ===== */
 .site-footer { background: var(--black); color: var(--paper); padding: 48px 0 36px; }
@@ -244,6 +252,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       <a href="#features" data-i18n="nav.features">Features</a>
       <a href="#commands" data-i18n="nav.commands">Commands</a>
       <a href="#quickstart" data-i18n="nav.quickstart">Quick start</a>
+      <a href="#companions" data-i18n="nav.companions">Companions</a>
       <a href="#languages" data-i18n="nav.languages">Languages</a>
       <a href="#license" data-i18n="nav.license">License</a>
       <div class="site-lang" role="group" aria-label="Site language">
@@ -261,17 +270,17 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <section class="hero" id="top">
   <div class="wrap">
     <img class="hero-logo" src="assets/logo_wide_white.png" alt="FileTgie white logo on black">
-    <div class="hero-tag">v0.3.0 · pure C · LGPL-3.0-or-later</div>
+    <div class="hero-tag">v0.4.0 · pure C · LGPL-3.0-or-later</div>
     <h1 data-i18n="hero.title">Lightweight, read-only, zero-dependency file statistics &amp; search CLI</h1>
     <p class="lede" data-i18n="hero.lede">Written in pure C with the standard library only, one source tree builds for Windows and Linux. Every command does one small, predictable thing and never touches your files.</p>
     <div class="cta-row">
-      <a class="btn btn-solid" data-i18n="hero.installer" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.3.0.setup.exe">Download installer (Windows)</a>
+      <a class="btn btn-solid" data-i18n="hero.installer" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.4.0.setup.exe">Download installer (Windows)</a>
       <a class="btn btn-ghost" data-i18n="hero.repo" href="https://github.com/SuiYe-18/FileTgie" target="_blank" rel="noopener">GitHub repository</a>
     </div>
     <div class="cta-row" style="margin-top:10px;">
-      <a class="btn btn-ghost" data-i18n="hero.portable" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.3.0.portable.zip">Windows portable ZIP</a>
-      <a class="btn btn-ghost" data-i18n="hero.linux" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.3.0.tar.gz">Linux tarball</a>
-      <a class="btn btn-ghost" data-i18n="hero.source" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.3.0.zip">Source archive</a>
+      <a class="btn btn-ghost" data-i18n="hero.portable" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.4.0.portable.zip">Windows portable ZIP</a>
+      <a class="btn btn-ghost" data-i18n="hero.linux" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.4.0.zip">Linux build from source</a>
+      <a class="btn btn-ghost" data-i18n="hero.source" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.4.0.zip">Source archive</a>
       <a class="btn btn-ghost" data-i18n="hero.explore" href="#commands">Explore 61 commands</a>
     </div>
   </div>
@@ -379,7 +388,49 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       <li data-i18n-html="note.alias"><strong>Language option aliases:</strong> <code>--lang</code> also accepts <code>-lang</code>, <code>-l</code>, and the equals form <code>--lang=en</code> / <code>-l=ja</code>; the code is case-insensitive and may appear before or after the command.</li>
       <li data-i18n-html="note.exclude"><strong>Exclusions:</strong> <code>--exclude &lt;glob&gt;</code> and <code>--exclude-ext &lt;ext&gt;</code> may be repeated; they apply only to traversal commands, not to commands that take an explicit single file such as <code>lines</code> or <code>hash</code>.</li>
       <li data-i18n-html="note.help">Run with no arguments or <code>help</code> to print the full command table (exit code 0).</li>
+      <li data-i18n-html="note.update"><strong>Updates:</strong> <code>checkupdate</code> is read-only; <code>update</code> manually checks GitHub and the website before a silent Windows overwrite. <code>reminder on</code> defaults to a 1-minute read-only check, <code>reminder on every 5</code> sets a 5-minute interval, <code>reminder status</code> reports the task, and <code>reminder off</code> deletes it. One notification appears for each newly discovered version.</li>
     </ul>
+  </div>
+</section>
+
+<!-- ===== Optional companions ===== -->
+<section id="companions" style="background:var(--wash);">
+  <div class="wrap">
+    <div class="eyebrow" data-i18n="comp.eyebrow">Optional companions</div>
+    <h2 class="section-title" data-i18n="comp.title">Pair FileTgie with independent tools you already like</h2>
+    <p class="section-sub" data-i18n="comp.sub">FileTgie does not download, call, bundle or require any companion below. Install them separately; let each tool do the job it does best, and use FileTgie for exact counts, line totals, size, hashes and directory comparison.</p>
+    <div class="features-grid">
+      <div class="feature-card companion-card">
+        <h3>fd</h3>
+        <p data-i18n-html="comp.fd.text">fd finds candidate files by name quickly; pass a candidate path to FileTgie for exact size, line count or hash. The "file-finding twin" works without being embedded in FTG.</p>
+        <a class="companion-link" href="https://github.com/sharkdp/fd" target="_blank" rel="noopener">fd project</a>
+      </div>
+      <div class="feature-card companion-card">
+        <h3>ripgrep (rg)</h3>
+        <p data-i18n-html="comp.rg.text">rg searches file contents at high speed; FileTgie gives exact text-line totals, byte size and integrity checks instead of replacing your search engine.</p>
+        <a class="companion-link" href="https://github.com/BurntSushi/ripgrep" target="_blank" rel="noopener">ripgrep project</a>
+      </div>
+      <div class="feature-card companion-card">
+        <h3>fzf</h3>
+        <p data-i18n-html="comp.fzf.text">Use fzf as an interactive fuzzy picker over a file list; once you choose, hand the selected path to FileTgie for a stable read-only report.</p>
+        <a class="companion-link" href="https://github.com/junegunn/fzf" target="_blank" rel="noopener">fzf project</a>
+      </div>
+      <div class="feature-card companion-card">
+        <h3>bat</h3>
+        <p data-i18n-html="comp.bat.text">bat previews a file with line numbers and syntax highlighting; FileTgie reports the exact total line count, exact bytes and checksum.</p>
+        <a class="companion-link" href="https://github.com/sharkdp/bat" target="_blank" rel="noopener">bat project</a>
+      </div>
+      <div class="feature-card companion-card">
+        <h3>eza</h3>
+        <p data-i18n-html="comp.eza.text">eza gives a modern directory listing or tree view; FileTgie counts files/folders, sums directory size and compares two directories with exact grouped numbers.</p>
+        <a class="companion-link" href="https://github.com/eza-community/eza" target="_blank" rel="noopener">eza project</a>
+      </div>
+      <div class="feature-card companion-card">
+        <h3>dust / duf</h3>
+        <p data-i18n-html="comp.disk.text">dust and duf visualize disk use; FileTgie reports exact free space, drive capacity, oversized files and byte totals from the command line.</p>
+        <a class="companion-link" href="https://github.com/bootandy/dust" target="_blank" rel="noopener">dust project</a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -418,10 +469,10 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         <p data-i18n-html="install.setupText">The installer registers App Paths and PATH under Program Files. It detects an installed copy, App Paths registration, or leftover files after a non-official deletion, and keeps the overwrite option checked by default. On overwrite, previous program files move to a disabled <code>.old</code> backup folder; the registry, PATH and shortcuts keep pointing only to the new root-folder files. The bundled updater checks GitHub and the website before launching a silent overwrite install.</p>
       </div>
       <div class="install-card">
-        <h3 data-i18n="install.linuxTitle">Linux — portable tarball or build from source</h3>
-        <p data-i18n-html="install.linuxText">The v0.3.0 Linux tarball contains a stripped x86_64 glibc binary, README, LICENSE, COPYING, LINUX.txt and documentation. Extract it and run <code>./FileTgie --lang en help</code>; optionally copy the binary into <code>PATH</code>. Inspection commands need no installer, administrator rights or network; <code>checkupdate</code> uses curl for GitHub. Built on Ubuntu 22.04 with GCC 11.4.0 and glibc 2.35; <code>-O2 -Wall -Wextra</code> and C99/GNU99/C11/GNU11/GNU17 compile clean. The package targets x86_64 glibc (Debian/Ubuntu family), not musl/Alpine; use <code>make</code> from source on another distribution.</p>
+        <h3 data-i18n="install.linuxTitle">Linux — build from source</h3>
+        <p data-i18n-html="install.linuxText">v0.4.0 supplies Linux-compatible source code; run <code>make</code> on a Linux host and start with <code>./FileTgie --lang en help</code>. Inspection commands need no installer, administrator rights or network; <code>checkupdate</code> uses curl for GitHub. The last verified x86_64 glibc prebuilt tarball remains in the v0.3.0 Release; musl/Alpine is not guaranteed.</p>
         <pre>make</pre>
-        <a class="btn btn-ghost" data-i18n="install.linuxButton" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.3.0.tar.gz">Download Linux tarball</a>
+        <a class="btn btn-ghost" data-i18n="install.linuxButton" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.4.0.zip">Build Linux from source</a>
       </div>
       <div class="install-card">
         <h3 data-i18n="install.srcTitle">Source code</h3>
@@ -449,10 +500,10 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       </div>
       <div>
         <h3 data-i18n="footer.version">Version</h3>
-        <p data-i18n-html="footer.versionText">v0.3.0 adds the optional reminder command: Windows creates or removes a user-level FileTgieReminder task for daily or hourly read-only checks; checkupdate/update and the bundled updater still check GitHub and the website before a silent overwrite install, and previous files go to a disabled .old folder. Linux prints manual cron and upgrade steps. The version source is src/commands.h (FILETGIE_VERSION).</p>
+        <p data-i18n-html="footer.versionText">v0.4.0 makes reminder a customizable read-only update check: <code>reminder on</code> defaults to one minute, <code>every N</code> chooses 1-1439 minutes, and daily/hourly remain available. The bundled updater checks GitHub and the website and shows one toast per new version; silent overwrite keeps previous files in a disabled .old folder. Linux prints manual cron and upgrade steps. The version source is src/commands.h (FILETGIE_VERSION).</p>
       </div>
     </div>
-    <div class="footer-bottom">Copyright (C) 2026 SuiYe_TR · FileTgie v0.3.0 · read-only file statistics &amp; search CLI</div>
+    <div class="footer-bottom">Copyright (C) 2026 SuiYe_TR · FileTgie v0.4.0 · read-only file statistics &amp; search CLI</div>
   </div>
 </footer>
 
@@ -462,13 +513,13 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 (function () {
   var SITE_I18N = {
     en: {
-      "meta.title": "FileTgie v0.3.0 — Read-only file statistics & search CLI in pure C",
+      "meta.title": "FileTgie v0.4.0 — Read-only file statistics & search CLI in pure C",
       "nav.features": "Features", "nav.commands": "Commands", "nav.quickstart": "Quick start",
-      "nav.languages": "Languages", "nav.license": "License",
+      "nav.companions": "Companions", "nav.languages": "Languages", "nav.license": "License",
       "hero.title": "Lightweight, read-only, zero-dependency file statistics & search CLI",
       "hero.lede": "Written in pure C with the standard library only, one source tree builds for Windows and Linux. Every command does one small, predictable thing and never touches your files.",
       "hero.installer": "Download installer (Windows)", "hero.repo": "GitHub repository",
-      "hero.portable": "Windows portable ZIP", "hero.linux": "Linux tarball", "hero.source": "Source archive",
+      "hero.portable": "Windows portable ZIP", "hero.linux": "Linux build from source", "hero.source": "Source archive",
       "hero.explore": "Explore 61 commands",
       "stat.commands": "built-in commands", "stat.langs": "interface languages",
       "stat.deps": "third-party dependencies", "stat.platforms": "platforms: Windows + Linux",
@@ -491,6 +542,16 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "note.alias": "<strong>Language option aliases:</strong> <code>--lang</code> also accepts <code>-lang</code>, <code>-l</code>, and the equals form <code>--lang=en</code> / <code>-l=ja</code>; the code is case-insensitive and may appear before or after the command.",
       "note.exclude": "<strong>Exclusions:</strong> <code>--exclude &lt;glob&gt;</code> and <code>--exclude-ext &lt;ext&gt;</code> may be repeated; they apply only to traversal commands, not to commands that take an explicit single file such as <code>lines</code> or <code>hash</code>.",
       "note.help": "Run with no arguments or <code>help</code> to print the full command table (exit code 0).",
+      "note.update": "<strong>Updates:</strong> <code>checkupdate</code> is read-only; <code>update</code> manually checks GitHub and the website before a silent Windows overwrite. <code>reminder on</code> defaults to a 1-minute read-only check, <code>reminder on every 5</code> sets a 5-minute interval, <code>reminder status</code> reports the task, and <code>reminder off</code> deletes it. One notification appears for each newly discovered version.",
+      "comp.eyebrow": "Optional companions",
+      "comp.title": "Pair FileTgie with independent tools you already like",
+      "comp.sub": "FileTgie does not download, call, bundle or require any companion below. Install them separately; let each tool do the job it does best, and use FileTgie for exact counts, line totals, size, hashes and directory comparison.",
+      "comp.fd.text": "fd finds candidate files by name quickly; pass a candidate path to FileTgie for exact size, line count or hash. The file-finding twin works without being embedded in FTG.",
+      "comp.rg.text": "rg searches file contents at high speed; FileTgie gives exact text-line totals, byte size and integrity checks instead of replacing your search engine.",
+      "comp.fzf.text": "Use fzf as an interactive fuzzy picker over a file list; once you choose, hand the selected path to FileTgie for a stable read-only report.",
+      "comp.bat.text": "bat previews a file with line numbers and syntax highlighting; FileTgie reports the exact total line count, exact bytes and checksum.",
+      "comp.eza.text": "eza gives a modern directory listing or tree view; FileTgie counts files/folders, sums directory size and compares two directories with exact grouped numbers.",
+      "comp.disk.text": "dust and duf visualize disk use; FileTgie reports exact free space, drive capacity, oversized files and byte totals from the command line.",
       "langs.eyebrow": "Interface languages", "langs.title": "Switch the UI with one flag",
       "langs.sub": "All prompts, errors and help strings ship in four language packs inside the binary; no external locale files are needed.",
       "langs.cn": "Chinese (default fallback)", "langs.en": "English", "langs.ja": "Japanese", "langs.ru": "Russian",
@@ -502,25 +563,25 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "install.winText": "The portable package contains <code>FileTgie.exe</code>, <code>FileTgieUpdater.exe</code>, README, User Manual, LICENSE and COPYING. It writes no registry keys and nothing outside the folder; unzip and run, delete the folder to uninstall. The only file written next to the executable is its own <code>filetgie.log</code>.",
       "install.setupTitle": "Windows installer and overwrite upgrade",
       "install.setupText": "The installer registers App Paths and PATH under Program Files. It detects an installed copy, App Paths registration, or leftover files after a non-official deletion, and keeps the overwrite option checked by default. On overwrite, previous program files move to a disabled <code>.old</code> backup folder; the registry, PATH and shortcuts keep pointing only to the new root-folder files. The bundled updater checks GitHub and the website before launching a silent overwrite install.",
-      "install.linuxTitle": "Linux — portable tarball or build from source",
-      "install.linuxText": "The v0.3.0 Linux tarball contains a stripped x86_64 glibc binary, README, LICENSE, COPYING, LINUX.txt and documentation. Extract it and run <code>./FileTgie --lang en help</code>; optionally copy the binary into <code>PATH</code>. Inspection commands need no installer, administrator rights or network; <code>checkupdate</code> uses curl for GitHub. Built on Ubuntu 22.04 with GCC 11.4.0 and glibc 2.35; <code>-O2 -Wall -Wextra</code> and C99/GNU99/C11/GNU11/GNU17 compile clean. The package targets x86_64 glibc (Debian/Ubuntu family), not musl/Alpine; use <code>make</code> from source on another distribution.",
-      "install.linuxButton": "Download Linux tarball", "install.srcTitle": "Source code",
+      "install.linuxTitle": "Linux — build from source",
+      "install.linuxText": "v0.4.0 supplies Linux-compatible source code; run <code>make</code> on a Linux host and start with <code>./FileTgie --lang en help</code>. Inspection commands need no installer, administrator rights or network; <code>checkupdate</code> uses curl for GitHub. The last verified x86_64 glibc prebuilt tarball remains in the v0.3.0 Release; musl/Alpine is not guaranteed.",
+      "install.linuxButton": "Build Linux from source", "install.srcTitle": "Source code",
       "install.srcText": "All sources live under <code>src/</code> and use only the C standard library and native platform APIs. Run <code>build.bat</code> on Windows or <code>make</code> on Linux; the Windows updater builds only on Windows.",
       "footer.author": "Author", "footer.license": "License",
       "footer.licenseText": "LGPL-3.0-or-later (GNU Lesser General Public License, version 3 or later). Full legal text in LICENSE; plain-language linking notes in COPYING.",
       "footer.version": "Version",
-      "footer.versionText": "v0.3.0 adds the optional reminder command: Windows creates or removes a user-level FileTgieReminder task for daily or hourly read-only checks; checkupdate/update and the bundled updater still check GitHub and the website before a silent overwrite install, and previous files go to a disabled .old folder. Linux prints manual cron and upgrade steps. The version source is src/commands.h (FILETGIE_VERSION).",
+      "footer.versionText": "v0.4.0 makes reminder a customizable read-only update check: <code>reminder on</code> defaults to one minute, <code>every N</code> chooses 1-1439 minutes, and daily/hourly remain available. The bundled updater checks GitHub and the website and shows one toast per new version; silent overwrite keeps previous files in a disabled .old folder. Linux prints manual cron and upgrade steps. The version source is src/commands.h (FILETGIE_VERSION).",
       "groups.all": "All", "groups.system": "System & Log", "groups.stats": "Statistics",
       "groups.text": "Text & Lines", "groups.search": "Search & Find", "groups.verify": "Verify & Integrity",
       "note.all": "Showing all {n} commands from CMD_TABLE.", "note.group": "Showing {n} commands in this group."
     },
     cn: {
-      "meta.title": "FileTgie v0.3.0 — 纯 C 只读文件统计与搜索命令行工具",
-      "nav.features": "功能", "nav.commands": "命令", "nav.quickstart": "快速开始", "nav.languages": "界面语言", "nav.license": "许可证",
+      "meta.title": "FileTgie v0.4.0 — 纯 C 只读文件统计与搜索命令行工具",
+      "nav.features": "功能", "nav.commands": "命令", "nav.quickstart": "快速开始", "nav.companions": "搭配工具", "nav.languages": "界面语言", "nav.license": "许可证",
       "hero.title": "轻量、只读、零依赖的文件统计与搜索命令行工具",
       "hero.lede": "纯 C 仅用标准库编写，同一套源码可构建 Windows 与 Linux 版本。每条命令只做一件小而确定的事，绝不触碰你的文件。",
       "hero.installer": "下载安装程序（Windows）", "hero.repo": "GitHub 仓库",
-      "hero.portable": "Windows 便携 ZIP", "hero.linux": "Linux 压缩包", "hero.source": "源码包", "hero.explore": "查看 61 条命令",
+      "hero.portable": "Windows 便携 ZIP", "hero.linux": "Linux 源码构建", "hero.source": "源码包", "hero.explore": "查看 61 条命令",
       "stat.commands": "内置命令", "stat.langs": "界面语言", "stat.deps": "第三方依赖", "stat.platforms": "平台：Windows + Linux",
       "features.eyebrow": "功能", "features.title": "小而克制，默认安全", "features.sub": "每条命令只执行一个边界清晰的操作；结果明确可预期，不会出现意外副作用。",
       "f.light.title": "轻量", "f.light.text": "单个紧凑可执行文件，无需运行时、包管理器或配置文件。",
@@ -540,6 +601,16 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "note.alias": "<strong>语言参数别名：</strong><code>--lang</code> 也接受 <code>-lang</code>、<code>-l</code> 以及等号形式 <code>--lang=en</code> / <code>-l=ja</code>；语言码不区分大小写，可放在命令前后。",
       "note.exclude": "<strong>排除项：</strong><code>--exclude &lt;glob&gt;</code> 与 <code>--exclude-ext &lt;ext&gt;</code> 可重复使用；只作用于遍历命令，不作用于接收单个明确文件的命令，如 <code>lines</code> 或 <code>hash</code>。",
       "note.help": "不带参数或运行 <code>help</code> 可打印完整命令表（退出码 0）。",
+      "note.update": "<strong>更新：</strong><code>checkupdate</code> 只读检查；<code>update</code> 手动检查 GitHub 与官网后，在 Windows 静默覆盖。<code>reminder on</code> 缺省每 1 分钟只读检查，<code>reminder on every 5</code> 改为每 5 分钟，<code>reminder status</code> 查看任务，<code>reminder off</code> 删除任务；每个新版本只提示一次。",
+      "comp.eyebrow": "可选搭配工具",
+      "comp.title": "让 FileTgie 搭配你已经喜欢的独立工具",
+      "comp.sub": "FileTgie 不下载、不调用、不打包、也不依赖下面任何工具。请独立安装；让每个工具做自己擅长的事，FileTgie 负责精确数量、行数、大小、哈希与目录对比。",
+      "comp.fd.text": "fd 负责快速按文件名找到候选文件；把候选路径交给 FileTgie 得到精确大小、行数或哈希。这对“文件速查双子星”各自独立，FTG 不内置 fd。",
+      "comp.rg.text": "rg 高速搜索文件内容；FileTgie 提供精确文本行数、字节大小与完整性校验，不替代你的搜索引擎。",
+      "comp.fzf.text": "fzf 作为文件列表的交互式模糊选择器；选定后把路径交给 FileTgie，得到稳定的只读报告。",
+      "comp.bat.text": "bat 带行号和语法高亮预览文件；FileTgie 报告精确总行数、精确字节数和校验和。",
+      "comp.eza.text": "eza 提供现代目录列表或树视图；FileTgie 统计文件/文件夹数量、汇总目录大小，并用精确分组数字对比两个目录。",
+      "comp.disk.text": "dust 与 duf 可视化磁盘占用；FileTgie 从命令行报告精确可用空间、磁盘容量、超大文件和字节总量。",
       "langs.eyebrow": "界面语言", "langs.title": "一个参数切换界面语言", "langs.sub": "所有提示、错误和帮助文本都打包在二进制内，无需外部语言文件。",
       "langs.cn": "中文（默认回退）", "langs.en": "英语", "langs.ja": "日语", "langs.ru": "俄语",
       "langs.note1": "示例：<code>FileTgie --lang en count D:\\docs</code>、<code>FileTgie -lang ja lines ./a.txt</code>、<code>FileTgie -l ru disk</code>。",
@@ -550,25 +621,25 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "install.winText": "便携包包含 <code>FileTgie.exe</code>、<code>FileTgieUpdater.exe</code>、README、User Manual、LICENSE、COPYING；不写注册表，也不写文件夹外内容；解压运行，删除文件夹即卸载。可执行文件旁唯一写入的是自身 <code>filetgie.log</code>。",
       "install.setupTitle": "Windows 安装包与覆盖升级",
       "install.setupText": "安装包在 Program Files 注册 App Paths 与 PATH。它会检测已安装副本、App Paths 注册，或非官方删除后的残留文件，并默认勾选覆盖选项。覆盖时旧程序文件先移入禁用的 <code>.old</code> 备份文件夹；注册表、PATH 与快捷方式始终只指向根目录新文件。内置更新器会先检查 GitHub 与官网，再启动静默覆盖安装。",
-      "install.linuxTitle": "Linux — 便携压缩包或从源码构建",
-      "install.linuxText": "v0.3.0 Linux 预编译包包含剥离符号的 x86_64 glibc 二进制、README、LICENSE、COPYING、LINUX.txt 与文档。解压后运行 <code>./FileTgie --lang en help</code>；可选择把二进制复制到 <code>PATH</code>。检查类命令不需要安装程序、管理员权限或网络；<code>checkupdate</code> 通过 curl 请求 GitHub。已在 Ubuntu 22.04、GCC 11.4.0、glibc 2.35 上验证；<code>-O2 -Wall -Wextra</code> 与 C99/GNU99/C11/GNU11/GNU17 均零警告。包面向 x86_64 glibc（Debian/Ubuntu 系），不保证 musl/Alpine；其他发行版请用 <code>make</code> 从源码构建。",
-      "install.linuxButton": "下载 Linux 压缩包", "install.srcTitle": "源代码",
+      "install.linuxTitle": "Linux — 从源码构建",
+      "install.linuxText": "v0.4.0 提供兼容 Linux 的源码；在 Linux 主机执行 <code>make</code>，再从 <code>./FileTgie --lang en help</code> 开始。检查类命令不需要安装程序、管理员权限或网络；<code>checkupdate</code> 通过 curl 请求 GitHub。最后一个已验证的 x86_64 glibc 预编译包保留在 v0.3.0 Release；不保证 musl/Alpine。",
+      "install.linuxButton": "获取 Linux 源码", "install.srcTitle": "源代码",
       "install.srcText": "所有源码位于 <code>src/</code>，仅使用 C 标准库与平台原生 API。Windows 运行 <code>build.bat</code>，Linux 运行 <code>make</code>；Windows 更新器只在 Windows 构建。",
       "footer.author": "作者", "footer.license": "许可证",
       "footer.licenseText": "LGPL-3.0-or-later（GNU 宽通用公共许可证，第 3 版或更新）。完整法律文本见 LICENSE，通俗链接说明见 COPYING。",
       "footer.version": "版本",
-      "footer.versionText": "v0.3.0 新增可选 reminder 命令：Windows 创建或删除用户级 FileTgieReminder 任务，按每日或每小时做只读检查；checkupdate/update 与内置更新器仍先检查 GitHub 与官网，再静默覆盖安装，旧文件进入禁用的 .old 文件夹。Linux 只给出手动 cron 与升级步骤。版本来源是 src/commands.h（FILETGIE_VERSION）。",
+      "footer.versionText": "v0.4.0 把 reminder 做成可定制的只读更新检查：<code>reminder on</code> 缺省每 1 分钟，<code>every N</code> 可设置 1–1439 分钟，daily/hourly 继续兼容。内置更新器检查 GitHub 与官网，每个新版本只弹出一次通知；静默覆盖时旧文件进入禁用的 .old 文件夹。Linux 只给出手动 cron 与升级步骤。版本来源是 src/commands.h（FILETGIE_VERSION）。",
       "groups.all": "全部", "groups.system": "系统与日志", "groups.stats": "统计",
       "groups.text": "文本与行数", "groups.search": "搜索与查找", "groups.verify": "校验与完整性",
       "note.all": "显示 CMD_TABLE 中的全部 {n} 条命令。", "note.group": "显示该组中的 {n} 条命令。"
     },
     ja: {
-      "meta.title": "FileTgie v0.3.0 — 純粋なC製の読み取り専用ファイル統計・検索CLI",
-      "nav.features": "機能", "nav.commands": "コマンド", "nav.quickstart": "クイックスタート", "nav.languages": "言語", "nav.license": "ライセンス",
+      "meta.title": "FileTgie v0.4.0 — 純粋なC製の読み取り専用ファイル統計・検索CLI",
+      "nav.features": "機能", "nav.commands": "コマンド", "nav.quickstart": "クイックスタート", "nav.companions": "組み合わせ", "nav.languages": "言語", "nav.license": "ライセンス",
       "hero.title": "軽量・読み取り専用・非依存のファイル統計＆検索 CLI",
       "hero.lede": "純粋な C と標準ライブラリだけで書かれ、同一ソースから Windows と Linux をビルドできます。各コマンドは小さく予測可能な1操作だけを行い、ファイルを変更しません。",
       "hero.installer": "インストーラをダウンロード（Windows）", "hero.repo": "GitHub リポジトリ",
-      "hero.portable": "Windows ポータブル ZIP", "hero.linux": "Linux tarball", "hero.source": "ソースアーカイブ", "hero.explore": "61コマンドを見る",
+      "hero.portable": "Windows ポータブル ZIP", "hero.linux": "Linux ソースビルド", "hero.source": "ソースアーカイブ", "hero.explore": "61コマンドを見る",
       "stat.commands": "内蔵コマンド", "stat.langs": "対応言語", "stat.deps": "サードパーティ依存", "stat.platforms": "対応: Windows + Linux",
       "features.eyebrow": "機能", "features.title": "設計は小さく、既定で安全", "features.sub": "各コマンドは範囲の明確な単一操作を行い、結果は分かりやすく予測でき、予期しない副作用はありません。",
       "f.light.title": "軽量", "f.light.text": "単一のコンパクトな実行ファイル。ランタイム、パッケージマネージャ、設定ファイルは不要です。",
@@ -588,6 +659,16 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "note.alias": "<strong>言語オプション別名:</strong><code>--lang</code> は <code>-lang</code>, <code>-l</code>, <code>--lang=en</code> / <code>-l=ja</code> も受付。大文字小文字不問、コマンド前後どちらでも可。",
       "note.exclude": "<strong>除外:</strong><code>--exclude &lt;glob&gt;</code> と <code>--exclude-ext &lt;ext&gt;</code> は反復可。走査コマンドのみに適用し、<code>lines</code>/<code>hash</code> など単一ファイル指定コマンドには適用しません。",
       "note.help": "引数なし、または <code>help</code> で全コマンド表を表示（終了コード0）。",
+      "note.update": "<strong>更新:</strong> <code>checkupdate</code> は読み取り専用。<code>update</code> は GitHub と公式サイトを手動で確認し、Windows で静かに上書きします。<code>reminder on</code> は既定で1分ごとの読み取り専用チェック、<code>reminder on every 5</code> は5分間隔、<code>reminder status</code> はタスク表示、<code>reminder off</code> は削除。新バージョンごとに通知は1回だけです。",
+      "comp.eyebrow": "任意の組み合わせ",
+      "comp.title": "好きな独立ツールと FileTgie を組み合わせる",
+      "comp.sub": "FileTgie は下記ツールをダウンロード・呼び出し・同梱・依存しません。別々にインストールし、それぞれ得意な仕事を任せ、FileTgie は正確な件数・行数・サイズ・ハッシュ・ディレクトリ比較に使います。",
+      "comp.fd.text": "fd はファイル名候補を高速に探します。候補パスを FileTgie に渡せば、正確なサイズ・行数・ハッシュを得られます。FTG に内蔵されない独立の相棒です。",
+      "comp.rg.text": "rg はファイル内容を高速検索します。FileTgie は正確なテキスト行数・バイトサイズ・整合性チェックを提供し、検索エンジンを置き換えません。",
+      "comp.fzf.text": "fzf をファイルリストの対話的な曖昧選択に使い、選んだパスを FileTgie に渡して安定した読み取り専用レポートを得ます。",
+      "comp.bat.text": "bat は行番号とシンタックスハイライトでプレビュー。FileTgie は正確な総行数・バイト数・チェックサムを報告します。",
+      "comp.eza.text": "eza は現代的なディレクトリ一覧やツリー表示。FileTgie はファイル/フォルダ数、ディレクトリ合計サイズを数え、正確な数値で2ディレクトリを比較します。",
+      "comp.disk.text": "dust と duf はディスク使用を可視化。FileTgie は正確な空き容量・ドライブ容量・大きいファイル・バイト合計をコマンドラインで報告します。",
       "langs.eyebrow": "対応言語", "langs.title": "1つのフラグでUIを切替", "langs.sub": "プロンプト・エラー・ヘルプ文字列はバイナリ内の4言語パックに含まれ、外部ロケール不要です。",
       "langs.cn": "中国語（既定フォールバック）", "langs.en": "英語", "langs.ja": "日本語", "langs.ru": "ロシア語",
       "langs.note1": "例: <code>FileTgie --lang en count D:\\docs</code>、<code>FileTgie -lang ja lines ./a.txt</code>、<code>FileTgie -l ru disk</code>。",
@@ -598,25 +679,25 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "install.winText": "同梱は <code>FileTgie.exe</code>、<code>FileTgieUpdater.exe</code>、README、User Manual、LICENSE、COPYING。レジストリやフォルダ外へ書き込みせず、展開して実行、フォルダ削除でアンインストール。実行ファイルの横に書くのは自身の <code>filetgie.log</code> だけです。",
       "install.setupTitle": "Windowsインストーラと上書き更新",
       "install.setupText": "インストーラはProgram FilesにApp PathsとPATHを登録します。既存コピー、App Paths登録、非公式削除後の残りを検出し、上書きオプションを既定でオンにします。上書き時、旧プログラムファイルは無効な <code>.old</code> バックアップフォルダへ移動し、レジストリ・PATH・ショートカットは新しいルートフォルダのファイルだけを指します。同梱アップデータはGitHubと公式サイトを確認してから静かな上書きインストールを起動します。",
-      "install.linuxTitle": "Linux — ポータブルtarballまたはソースビルド",
-      "install.linuxText": "v0.3.0 の Linux プレビルド tarball には、シンボルを削除した x86_64 glibc バイナリ、README、LICENSE、COPYING、LINUX.txt、ドキュメントが入っています。展開して <code>./FileTgie --lang en help</code> を実行。必要ならバイナリを <code>PATH</code> にコピー。検査コマンドにインストーラ・管理者権限・ネットは不要で、<code>checkupdate</code> は GitHub へ curl で問い合わせます。Ubuntu 22.04 / GCC 11.4.0 / glibc 2.35 で検証済み。<code>-O2 -Wall -Wextra</code> と C99/GNU99/C11/GNU11/GNU17 はクリーン。対象は x86_64 glibc（Debian/Ubuntu系）で、musl/Alpine は非保証。他のディストリビューションは <code>make</code> でソースからビルドしてください。",
-      "install.linuxButton": "Linux tarballをダウンロード", "install.srcTitle": "ソースコード",
+      "install.linuxTitle": "Linux — ソースからビルド",
+      "install.linuxText": "v0.4.0 は Linux 互換のソースを提供します。Linux 環境で <code>make</code> を実行し、<code>./FileTgie --lang en help</code> から始めてください。検査コマンドにインストーラ・管理者権限・ネットは不要で、<code>checkupdate</code> は GitHub へ curl で問い合わせます。最後に検証済みの x86_64 glibc プレビルド tarball は v0.3.0 Release に残っています。musl/Alpine は非保証です。",
+      "install.linuxButton": "Linux ソースを取得", "install.srcTitle": "ソースコード",
       "install.srcText": "全ソースは <code>src/</code> にあり、C標準ライブラリとネイティブAPIだけを使用。Windowsで <code>build.bat</code>、Linuxで <code>make</code> を実行。WindowsアップデータはWindowsでのみビルドされます。",
       "footer.author": "作者", "footer.license": "ライセンス",
       "footer.licenseText": "LGPL-3.0-or-later（GNU劣等一般公衆利用許諾書第3版以降）。完全な法的文面はLICENSE、平易なリンク説明はCOPYING。",
       "footer.version": "バージョン",
-      "footer.versionText": "v0.3.0 は任意の reminder コマンドを追加。Windows は毎日または毎時の読み取り専用チェック用に FileTgieReminder ユーザータスクを作成・削除します。checkupdate/update と同梱アップデータは GitHub と公式サイトを確認してから静かに上書きし、旧ファイルは無効な .old に保存。Linux は手動 cron と更新手順を表示します。バージョンの基準は src/commands.h（FILETGIE_VERSION）。",
+      "footer.versionText": "v0.4.0 は reminder をカスタム可能な読み取り専用更新チェックに拡張。<code>reminder on</code> は既定1分ごと、<code>every N</code> は1–1439分を指定、daily/hourly も維持。同梱アップデータはGitHubと公式サイトを確認し、新バージョンごとに通知を1回表示。静かな上書きで旧ファイルは無効な .old に保存。Linux は手動 cron と更新手順を表示します。バージョンの基準は src/commands.h（FILETGIE_VERSION）。",
       "groups.all": "すべて", "groups.system": "システムとログ", "groups.stats": "統計",
       "groups.text": "テキストと行数", "groups.search": "検索", "groups.verify": "検証と整合性",
       "note.all": "CMD_TABLE の全 {n} コマンドを表示。", "note.group": "このグループの {n} コマンドを表示。"
     },
     ru: {
-      "meta.title": "FileTgie v0.3.0 — Лёгкая утилита статистики и поиска файлов на чистом C",
-      "nav.features": "Возможности", "nav.commands": "Команды", "nav.quickstart": "Быстрый старт", "nav.languages": "Языки", "nav.license": "Лицензия",
+      "meta.title": "FileTgie v0.4.0 — Лёгкая утилита статистики и поиска файлов на чистом C",
+      "nav.features": "Возможности", "nav.commands": "Команды", "nav.quickstart": "Быстрый старт", "nav.companions": "Партнёры", "nav.languages": "Языки", "nav.license": "Лицензия",
       "hero.title": "Лёгкий инструмент статистики и поиска файлов только для чтения",
       "hero.lede": "Чистый C, только стандартная библиотека; один исходник собирается для Windows и Linux. Каждая команда делает одно предсказуемое действие и не меняет ваши файлы.",
       "hero.installer": "Скачать установщик (Windows)", "hero.repo": "Репозиторий GitHub",
-      "hero.portable": "Портативный ZIP для Windows", "hero.linux": "tar.gz для Linux", "hero.source": "Архив с исходниками", "hero.explore": "Посмотреть 61 команд",
+      "hero.portable": "Портативный ZIP для Windows", "hero.linux": "Сборка Linux из исходников", "hero.source": "Архив с исходниками", "hero.explore": "Посмотреть 61 команд",
       "stat.commands": "встроенных команд", "stat.langs": "языков интерфейса", "stat.deps": "сторонних зависимостей", "stat.platforms": "платформы: Windows + Linux",
       "features.eyebrow": "Возможности", "features.title": "Мал по замыслу, безопасен по умолчанию", "features.sub": "Каждая команда выполняет одну четко ограниченную операцию. Результаты ясны; неожиданных побочных эффектов нет.",
       "f.light.title": "Лёгкость", "f.light.text": "Один компактный исполняемый файл: без среды выполнения, менеджера пакетов и конфигурации.",
@@ -636,6 +717,16 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "note.alias": "<strong>Псевдонимы языка:</strong><code>--lang</code> также принимает <code>-lang</code>, <code>-l</code>, <code>--lang=en</code> / <code>-l=ja</code>; код без учета регистра, до или после команды.",
       "note.exclude": "<strong>Исключения:</strong><code>--exclude &lt;glob&gt;</code> и <code>--exclude-ext &lt;ext&gt;</code> повторяемы; только для обходных команд, не для одиночных файлов вроде <code>lines</code> или <code>hash</code>.",
       "note.help": "Запуск без аргументов или <code>help</code> печатает полную таблицу команд (код выхода 0).",
+      "note.update": "<strong>Обновления:</strong> <code>checkupdate</code> работает только на чтение; <code>update</code> вручную проверяет GitHub и сайт перед тихой заменой в Windows. <code>reminder on</code> по умолчанию проверяет каждую 1 минуту, <code>reminder on every 5</code> задаёт интервал 5 минут, <code>reminder status</code> показывает задачу, <code>reminder off</code> удаляет её. Одно уведомление для каждой новой версии.",
+      "comp.eyebrow": "Необязательные партнёры",
+      "comp.title": "Свяжите FileTgie с независимыми инструментами",
+      "comp.sub": "FileTgie не скачивает, не вызывает, не упаковывает и не требует приведённые ниже инструменты. Устанавливайте их отдельно: пусть каждый делает своё дело, а FileTgie считает точные количество, строки, размеры, хеши и сравнивает каталоги.",
+      "comp.fd.text": "fd быстро находит файлы по имени; передайте выбранный путь в FileTgie для точного размера, числа строк или хеша. Близнец поиска работает отдельно и не встроен в FTG.",
+      "comp.rg.text": "rg быстро ищет по содержимому; FileTgie даёт точное число строк, байты и проверку целостности, не заменяя поисковый движок.",
+      "comp.fzf.text": "fzf используется как интерактивный нечёткий выбор из списка файлов; выбранный путь передайте в FileTgie для стабильного отчёта только на чтение.",
+      "comp.bat.text": "bat показывает файл с номерами строк и подсветкой; FileTgie сообщает точное общее число строк, байты и контрольную сумму.",
+      "comp.eza.text": "eza даёт современный список или дерево каталогов; FileTgie считает файлы/папки, суммирует размер и точно сравнивает два каталога.",
+      "comp.disk.text": "dust и duf визуализируют место на диске; FileTgie сообщает точное свободное место, ёмкость дисков, крупные файлы и суммы в байтах.",
       "langs.eyebrow": "Языки интерфейса", "langs.title": "Один флаг переключает UI", "langs.sub": "Подсказки, ошибки и справка встроены в бинарник, внешние локали не нужны.",
       "langs.cn": "Китайский (запасной язык)", "langs.en": "Английский", "langs.ja": "Японский", "langs.ru": "Русский",
       "langs.note1": "Примеры: <code>FileTgie --lang en count D:\\docs</code>, <code>FileTgie -lang ja lines ./a.txt</code>, <code>FileTgie -l ru disk</code>.",
@@ -646,14 +737,14 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "install.winText": "Содержит <code>FileTgie.exe</code>, <code>FileTgieUpdater.exe</code>, README, User Manual, LICENSE, COPYING. Не пишет реестр и файлы вне папки; распакуйте и запустите, удаление папки удаляет программу. Рядом записывается только собственный <code>filetgie.log</code>.",
       "install.setupTitle": "Установщик Windows и обновление с заменой",
       "install.setupText": "Установщик регистрирует App Paths и PATH в Program Files. Он находит установленную копию, регистрацию App Paths или остатки после неофициального удаления и оставляет замену включённой по умолчанию. При замене прежние файлы программы перемещаются в отключённую папку резервной копии <code>.old</code>; реестр, PATH и ярлыки продолжают указывать только на новые файлы в корне. Встроенный апдейтер проверяет GitHub и сайт перед тихой установкой с заменой.",
-      "install.linuxTitle": "Linux — tarball или сборка из исходников",
-      "install.linuxText": "В готовом Linux-архиве v0.3.0 — stripped-бинарник x86_64 glibc, README, LICENSE, COPYING, LINUX.txt и документация. Распакуйте и запустите <code>./FileTgie --lang en help</code>; при желании скопируйте бинарник в <code>PATH</code>. Командам проверки не нужны установщик, права администратора и сеть; <code>checkupdate</code> запрашивает GitHub через curl. Проверено на Ubuntu 22.04, GCC 11.4.0, glibc 2.35; <code>-O2 -Wall -Wextra</code> и C99/GNU99/C11/GNU11/GNU17 собираются чисто. Пакет для x86_64 glibc (Debian/Ubuntu), не musl/Alpine; на другом дистрибутиве собирайте из исходников через <code>make</code>.",
-      "install.linuxButton": "Скачать tarball Linux", "install.srcTitle": "Исходный код",
+      "install.linuxTitle": "Linux — сборка из исходников",
+      "install.linuxText": "v0.4.0 поставляется с совместимым с Linux исходным кодом; выполните <code>make</code> на Linux-хосте и начните с <code>./FileTgie --lang en help</code>. Командам проверки не нужны установщик, права администратора и сеть; <code>checkupdate</code> запрашивает GitHub через curl. Последний проверенный x86_64 glibc-бинарник остаётся в релизе v0.3.0; musl/Alpine не гарантируется.",
+      "install.linuxButton": "Получить исходники для Linux", "install.srcTitle": "Исходный код",
       "install.srcText": "Все исходники в <code>src/</code>; только стандартная библиотека C и родные API. На Windows запустите <code>build.bat</code>, на Linux — <code>make</code>; Windows-апдейтер собирается только на Windows.",
       "footer.author": "Автор", "footer.license": "Лицензия",
       "footer.licenseText": "LGPL-3.0-or-later (GNU LGPL, версия 3 или позже). Полный юридический текст в LICENSE, пояснение линковки в COPYING.",
       "footer.version": "Версия",
-      "footer.versionText": "v0.3.0 добавляет необязательную команду reminder: Windows создаёт или удаляет пользовательскую задачу FileTgieReminder для ежедневной или ежечасной проверки только на чтение; checkupdate/update и встроенный апдейтер проверяют GitHub и сайт перед тихой заменой, прежние файлы сохраняются в отключённой .old. Linux печатает ручные cron и шаги обновления. Источник версии: src/commands.h (FILETGIE_VERSION).",
+      "footer.versionText": "v0.4.0 делает reminder настраиваемой проверкой только на чтение: <code>reminder on</code> по умолчанию каждую минуту, <code>every N</code> задаёт 1–1439 минут, daily/hourly сохранены. Встроенный апдейтер проверяет GitHub и сайт и показывает одно уведомление для новой версии; тихая замена сохраняет прежние файлы в отключённой .old. Linux печатает ручные cron и шаги обновления. Источник версии: src/commands.h (FILETGIE_VERSION).",
       "groups.all": "Все", "groups.system": "Система и журнал", "groups.stats": "Статистика",
       "groups.text": "Текст и строки", "groups.search": "Поиск", "groups.verify": "Проверка и целостность",
       "note.all": "Показаны все {n} команд из CMD_TABLE.", "note.group": "Показаны {n} команд этой группы."
@@ -671,8 +762,8 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         ["log", "log", "Print FileTgie's own run log (filetgie.log next to the executable)."],
         ["dellog", "dellog", "Delete only FileTgie's own run log; touches nothing else."],
         ["checkupdate", "checkupdate", "Query GitHub for the latest release and compare versions without installing."],
-        ["update", "update", "On Windows download and launch the newer installer; on Linux print manual upgrade steps."],
-        ["reminder", "reminder on [daily HH:MM|hourly] | status | off", "Enable, query or remove the optional user-level scheduled update-check reminder; Linux prints manual cron guidance."],
+        ["update", "update", "On Windows check GitHub and the website, download the newer installer, and launch the silent overwrite; on Linux print manual upgrade steps."],
+        ["reminder", "reminder on [every N|daily HH:MM|hourly] | status | off", "Enable, query or remove the optional Windows user-level task; default checks every 1 minute, with one notification per new version; Linux prints manual cron guidance."],
         ["stat", "stat <path>", "Detailed file or directory info: size and three timestamps."],
         ["count", "count <dir>", "Recursively count files and folders."],
         ["lines", "lines <file>", "Count the lines of a single file."],

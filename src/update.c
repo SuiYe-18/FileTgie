@@ -503,7 +503,7 @@ static int reminder_action(char* exe, size_t exe_len, char* args, size_t args_le
     snprintf(updater, sizeof(updater), "%s\\FileTgieUpdater.exe", self);
     if (GetFileAttributesA(updater) != INVALID_FILE_ATTRIBUTES) {
         snprintf(exe, exe_len, "%s", updater);
-        snprintf(args, args_len, "--check");
+        snprintf(args, args_len, "--check --notify");
         return 1;
     }
     snprintf(exe, exe_len, "%s", self);
@@ -525,6 +525,18 @@ static int reminder_valid_time(const char* s) {
     if (strlen(s) != 5 || s[2] != ':') return 0;
     if (sscanf(s, "%d:%d", &hh, &mm) != 2) return 0;
     return hh >= 0 && hh <= 23 && mm >= 0 && mm <= 59;
+}
+
+/* Scheduled-task minute multiplier accepted by schtasks.exe /SC MINUTE.
+ * 1439 keeps the interval under 24 hours; use daily/hourly for longer cadences. */
+static int reminder_valid_minutes(const char* s, int* out) {
+    if (!s || !*s) return 0;
+    for (const char* p = s; *p; p++)
+        if (!isdigit((unsigned char)*p)) return 0;
+    long v = strtol(s, NULL, 10);
+    if (v < 1 || v > 1439) return 0;
+    *out = (int)v;
+    return 1;
 }
 #endif
 
@@ -568,13 +580,9 @@ int cmd_reminder(const LangPack* L, int argc, char** argv) {
         return 1;
     }
 
-    const char* mode = argc >= 3 ? argv[2] : "daily";
+    const char* mode = argc >= 3 ? argv[2] : "every";
     const char* time = argc >= 4 ? argv[3] : "09:00";
-    if (argc >= 5) {
-        printf("%s", L->rem_bad_schedule);
-        printf("\n");
-        return 1;
-    }
+    int minutes = 1;
 
     char exe[MAX_PATH + 64], args[64];
     if (!reminder_action(exe, sizeof(exe), args, sizeof(args))) {
@@ -585,8 +593,23 @@ int cmd_reminder(const LangPack* L, int argc, char** argv) {
 
     char cmdline[8192];
     int built = 0;
-    if (ft_strcase_eq(mode, "daily")) {
-        if (!reminder_valid_time(time)) {
+    if (ft_strcase_eq(mode, "every")) {
+        if (argc >= 5) {
+            printf("%s", L->rem_bad_schedule);
+            printf("\n");
+            return 1;
+        }
+        if (argc == 4 && !reminder_valid_minutes(argv[3], &minutes)) {
+            printf("%s", L->rem_bad_schedule);
+            printf("\n");
+            return 1;
+        }
+        built = snprintf(cmdline, sizeof(cmdline),
+            "schtasks.exe /Create /TN FileTgieReminder "
+            "/TR \"\\\"%s\\\" %s\" /SC MINUTE /MO %d /F",
+            exe, args, minutes) > 0;
+    } else if (ft_strcase_eq(mode, "daily")) {
+        if (argc >= 5 || !reminder_valid_time(time)) {
             printf("%s", L->rem_bad_schedule);
             printf("\n");
             return 1;
@@ -595,6 +618,11 @@ int cmd_reminder(const LangPack* L, int argc, char** argv) {
             "schtasks.exe /Create /TN FileTgieReminder "
             "/TR \"\\\"%s\\\" %s\" /SC DAILY /ST %s /F", exe, args, time) > 0;
     } else if (ft_strcase_eq(mode, "hourly")) {
+        if (argc >= 4) {
+            printf("%s", L->rem_bad_schedule);
+            printf("\n");
+            return 1;
+        }
         built = snprintf(cmdline, sizeof(cmdline),
             "schtasks.exe /Create /TN FileTgieReminder "
             "/TR \"\\\"%s\\\" %s\" /SC HOURLY /MO 1 /F", exe, args) > 0;
@@ -611,7 +639,8 @@ int cmd_reminder(const LangPack* L, int argc, char** argv) {
     }
 
     if (ft_strcase_eq(mode, "daily")) printf(L->rem_on_daily, time);
-    else printf("%s", L->rem_on_hourly);
+    else if (ft_strcase_eq(mode, "hourly")) printf("%s", L->rem_on_hourly);
+    else printf(L->rem_on_every, minutes);
     printf("\n");
     return 0;
 #endif

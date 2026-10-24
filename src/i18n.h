@@ -208,6 +208,7 @@ typedef struct {
     const char* rem_usage;         /* reminder syntax                    */
     const char* rem_on_daily;      /* daily reminder enabled, %s time    */
     const char* rem_on_hourly;     /* hourly reminder enabled            */
+    const char* rem_on_every;      /* every N minutes enabled, %d        */
     const char* rem_off;           /* reminder disabled                  */
     const char* rem_status_on;      /* reminder enabled status             */
     const char* rem_status_off;    /* reminder disabled status           */
