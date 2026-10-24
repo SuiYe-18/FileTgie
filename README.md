@@ -7,7 +7,33 @@
 
 **Windows** 与 **Linux** 可执行文件。
 
+## Download
 
+| Package | Link |
+| --- | --- |
+| Official website | https://suiye-18.github.io/filetgie-official-website/ |
+| Windows installer | [FileTgie.windows.0.1.0.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.0.setup.exe) |
+| Windows portable ZIP | [FileTgie.windows.0.1.0.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.0.portable.zip) |
+| Linux tarball | [FileTgie.linux.0.1.0.tar.gz](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz) |
+| Source archive | [FileTgie.source.0.1.0.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.1.0.zip) |
+
+## Highlights
+
+- **57 built-in commands** for counting, line statistics, file search, checksums, encoding checks, duplicates, disk space and verification.
+- **Read-only by default:** every inspection command only reads files; it never modifies, deletes or moves user data.
+- **Pure C, zero third-party dependency:** C standard library plus native Windows/POSIX APIs only.
+- **Four interface languages:** switch messages with `--lang cn|en|ja|ru`.
+- **Portable and small:** no runtime package, no configuration file, and no required network access.
+- **LGPL-3.0-or-later:** free to run, study, modify and redistribute.
+
+Common uses: file counting, line counting, directory size, filename/content search, duplicate detection, byte comparison, CRC32 checksums, encoding detection, hidden/read-only file lists and disk space overview.
+
+```bash
+FileTgie count ./src
+FileTgie --lang en linesdir ./src
+FileTgie findlarge ./logs 50
+FileTgie compare a.bin b.bin
+```
 
 * 核心理念：**一步一步慢慢来** —— 每个命令只做一件小事，结果清晰、可预期。
 
