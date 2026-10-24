@@ -70,6 +70,13 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
   border: 1px solid var(--ink); padding: 7px 14px; text-decoration: none;
 }
 .nav .gh-link:hover { background: var(--ink); color: var(--paper); }
+.site-lang { display: flex; gap: 4px; align-items: center; }
+.site-lang button {
+  min-height: 44px; padding: 7px 10px; border: 1px solid transparent;
+  background: transparent; color: var(--ink); font-family: var(--mono);
+  font-size: 13px; cursor: pointer;
+}
+.site-lang button.active { border-color: var(--ink); font-weight: 700; }
 
 /* ===== Hero (black) ===== */
 .hero { background: var(--black); color: var(--paper); padding: 72px 0 64px; }
@@ -233,11 +240,17 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       <img src="assets/logo_wide_black.png" alt="FileTgie logo">
     </a>
     <nav class="nav" aria-label="Primary">
-      <a href="#features">Features</a>
-      <a href="#commands">Commands</a>
-      <a href="#quickstart">Quick start</a>
-      <a href="#languages">Languages</a>
-      <a href="#license">License</a>
+      <a href="#features" data-i18n="nav.features">Features</a>
+      <a href="#commands" data-i18n="nav.commands">Commands</a>
+      <a href="#quickstart" data-i18n="nav.quickstart">Quick start</a>
+      <a href="#languages" data-i18n="nav.languages">Languages</a>
+      <a href="#license" data-i18n="nav.license">License</a>
+      <div class="site-lang" role="group" aria-label="Site language">
+        <button type="button" data-lang="cn">cn</button>
+        <button type="button" data-lang="en" class="active">en</button>
+        <button type="button" data-lang="ja">ja</button>
+        <button type="button" data-lang="ru">ru</button>
+      </div>
       <a class="gh-link" href="https://github.com/SuiYe-18/FileTgie" target="_blank" rel="noopener">GitHub</a>
     </nav>
   </div>
@@ -248,17 +261,17 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
   <div class="wrap">
     <img class="hero-logo" src="assets/logo_wide_white.png" alt="FileTgie white logo on black">
     <div class="hero-tag">v0.1.0 · pure C · LGPL-3.0-or-later</div>
-    <h1>Lightweight, read-only, zero-dependency file statistics &amp; search CLI</h1>
-    <p class="lede">Written in pure C with the standard library only, one source tree builds for Windows and Linux. Every command does one small, predictable thing and never touches your files.</p>
+    <h1 data-i18n="hero.title">Lightweight, read-only, zero-dependency file statistics &amp; search CLI</h1>
+    <p class="lede" data-i18n="hero.lede">Written in pure C with the standard library only, one source tree builds for Windows and Linux. Every command does one small, predictable thing and never touches your files.</p>
     <div class="cta-row">
-      <a class="btn btn-solid" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.0.setup.exe">Download installer (Windows)</a>
-      <a class="btn btn-ghost" href="https://github.com/SuiYe-18/FileTgie" target="_blank" rel="noopener">GitHub repository</a>
+      <a class="btn btn-solid" data-i18n="hero.installer" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.0.setup.exe">Download installer (Windows)</a>
+      <a class="btn btn-ghost" data-i18n="hero.repo" href="https://github.com/SuiYe-18/FileTgie" target="_blank" rel="noopener">GitHub repository</a>
     </div>
     <div class="cta-row" style="margin-top:10px;">
-      <a class="btn btn-ghost" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.0.portable.zip">Windows portable ZIP</a>
-      <a class="btn btn-ghost" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz">Linux tarball</a>
-      <a class="btn btn-ghost" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.1.0.zip">Source archive</a>
-      <a class="btn btn-ghost" href="#commands">Explore 57 commands</a>
+      <a class="btn btn-ghost" data-i18n="hero.portable" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.1.0.portable.zip">Windows portable ZIP</a>
+      <a class="btn btn-ghost" data-i18n="hero.linux" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz">Linux tarball</a>
+      <a class="btn btn-ghost" data-i18n="hero.source" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.1.0.zip">Source archive</a>
+      <a class="btn btn-ghost" data-i18n="hero.explore" href="#commands">Explore 57 commands</a>
     </div>
   </div>
 </section>
@@ -267,10 +280,10 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <div class="stats">
   <div class="wrap">
     <div class="stat-grid">
-      <div class="stat-cell"><div class="stat-num">57</div><div class="stat-label">built-in commands</div></div>
-      <div class="stat-cell"><div class="stat-num">4</div><div class="stat-label">interface languages</div></div>
-      <div class="stat-cell"><div class="stat-num">0</div><div class="stat-label">third-party dependencies</div></div>
-      <div class="stat-cell"><div class="stat-num">2</div><div class="stat-label">platforms: Windows + Linux</div></div>
+      <div class="stat-cell"><div class="stat-num">57</div><div class="stat-label" data-i18n="stat.commands">built-in commands</div></div>
+      <div class="stat-cell"><div class="stat-num">4</div><div class="stat-label" data-i18n="stat.langs">interface languages</div></div>
+      <div class="stat-cell"><div class="stat-num">0</div><div class="stat-label" data-i18n="stat.deps">third-party dependencies</div></div>
+      <div class="stat-cell"><div class="stat-num">2</div><div class="stat-label" data-i18n="stat.platforms">platforms: Windows + Linux</div></div>
     </div>
   </div>
 </div>
@@ -278,39 +291,39 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <!-- ===== Features ===== -->
 <section id="features">
   <div class="wrap">
-    <div class="eyebrow">Features</div>
-    <h2 class="section-title">Small by design, safe by default</h2>
-    <p class="section-sub">Each command performs a single, clearly bounded operation. Results are clear and expected; there are no surprise side effects.</p>
+    <div class="eyebrow" data-i18n="features.eyebrow">Features</div>
+    <h2 class="section-title" data-i18n="features.title">Small by design, safe by default</h2>
+    <p class="section-sub" data-i18n="features.sub">Each command performs a single, clearly bounded operation. Results are clear and expected; there are no surprise side effects.</p>
     <div class="features-grid">
       <div class="feature-card">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" stroke-linejoin="round"/></svg>
-        <h3>Lightweight</h3>
-        <p>A single compact executable with no runtime, no package manager and no configuration file.</p>
+        <h3 data-i18n="f.light.title">Lightweight</h3>
+        <p data-i18n="f.light.text">A single compact executable with no runtime, no package manager and no configuration file.</p>
       </div>
       <div class="feature-card">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M8 6 4 12l4 6M16 6l4 6-4 6M13 4l-2 16" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <h3>Pure C, standard library only</h3>
-        <p>Built from C standard library calls and platform-native APIs; no third-party dependency anywhere in the source tree.</p>
+        <h3 data-i18n="f.pure.title">Pure C, standard library only</h3>
+        <p data-i18n="f.pure.text">Built from C standard library calls and platform-native APIs; no third-party dependency anywhere in the source tree.</p>
       </div>
       <div class="feature-card">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3z" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <h3>Read-only safe</h3>
-        <p>Never modifies, deletes or moves user files. The only write is its own <code>filetgie.log</code>, managed by <code>log</code> and <code>dellog</code>.</p>
+        <h3 data-i18n="f.safe.title">Read-only safe</h3>
+        <p data-i18n-html="f.safe.text">Never modifies, deletes or moves user files. The only write is its own <code>filetgie.log</code>, managed by <code>log</code> and <code>dellog</code>.</p>
       </div>
       <div class="feature-card">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18" stroke-linecap="round"/></svg>
-        <h3>Four switchable languages</h3>
-        <p>Interface messages switch between cn, en, ja and ru with <code>--lang</code>; unknown codes warn and fall back to cn.</p>
+        <h3 data-i18n="f.lang.title">Four switchable languages</h3>
+        <p data-i18n-html="f.lang.text">Interface messages switch between cn, en, ja and ru with <code>--lang</code>; unknown codes warn and fall back to cn.</p>
       </div>
       <div class="feature-card">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4" stroke-linecap="round"/></svg>
-        <h3>Cross-platform</h3>
-        <p><code>src/port.c</code> isolates the Windows wide-character Win32 API from POSIX; the rest of the code is platform-independent.</p>
+        <h3 data-i18n="f.cross.title">Cross-platform</h3>
+        <p data-i18n-html="f.cross.text"><code>src/port.c</code> isolates the Windows wide-character Win32 API from POSIX; the rest of the code is platform-independent.</p>
       </div>
       <div class="feature-card">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5" stroke-linecap="round"/></svg>
-        <h3>LGPL-3.0-or-later</h3>
-        <p>Free to run, study, modify and redistribute; static and dynamic linking obligations are documented in LICENSE and COPYING.</p>
+        <h3 data-i18n="f.license.title">LGPL-3.0-or-later</h3>
+        <p data-i18n="f.license.text">Free to run, study, modify and redistribute; static and dynamic linking obligations are documented in LICENSE and COPYING.</p>
       </div>
     </div>
   </div>
@@ -319,9 +332,9 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <!-- ===== Commands ===== -->
 <section class="commands" id="commands">
   <div class="wrap">
-    <div class="eyebrow">Command overview</div>
-    <h2 class="section-title">57 commands, grouped by job</h2>
-    <p class="section-sub">Every entry below comes from the built-in command table. <code>log</code> and <code>dellog</code> read or delete FileTgie's own log; all others are strictly read-only.</p>
+    <div class="eyebrow" data-i18n="commands.eyebrow">Command overview</div>
+    <h2 class="section-title" data-i18n="commands.title">57 commands, grouped by job</h2>
+    <p class="section-sub" data-i18n-html="commands.sub">Every entry below comes from the built-in command table. <code>log</code> and <code>dellog</code> read or delete FileTgie's own log; all others are strictly read-only.</p>
     <div class="tab-row" id="tabRow" role="tablist"></div>
     <div id="cmdPanels"></div>
     <div class="cmd-count-note" id="cmdNote"></div>
@@ -331,40 +344,40 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <!-- ===== Quick start ===== -->
 <section id="quickstart">
   <div class="wrap">
-    <div class="eyebrow">Quick start</div>
-    <h2 class="section-title">Usage and examples</h2>
+    <div class="eyebrow" data-i18n="quick.eyebrow">Quick start</div>
+    <h2 class="section-title" data-i18n="quick.title">Usage and examples</h2>
     <div class="usage-block">FileTgie [--lang cn|en|ja|ru] [--exclude &lt;glob&gt;] [--exclude-ext &lt;ext&gt;] &lt;command&gt; [args...]</div>
 
     <div class="example">
-      <div class="example-head"><span class="ex-desc">Count files and folders in a folder</span><button class="copy-btn" type="button" data-copy="FileTgie count D:\Photos">Copy</button></div>
+      <div class="example-head"><span class="ex-desc" data-i18n="ex1.desc">Count files and folders in a folder</span><button class="copy-btn" type="button" data-copy="FileTgie count D:\Photos" data-i18n="copy">Copy</button></div>
       <pre>FileTgie count D:\Photos</pre>
     </div>
     <div class="example">
-      <div class="example-head"><span class="ex-desc">Sum all text-file lines in a codebase, English UI</span><button class="copy-btn" type="button" data-copy="FileTgie --lang en linesdir ./src">Copy</button></div>
+      <div class="example-head"><span class="ex-desc" data-i18n="ex2.desc">Sum all text-file lines in a codebase, English UI</span><button class="copy-btn" type="button" data-copy="FileTgie --lang en linesdir ./src" data-i18n="copy">Copy</button></div>
       <pre>FileTgie --lang en linesdir ./src</pre>
     </div>
     <div class="example">
-      <div class="example-head"><span class="ex-desc">Find log files larger than 50 MB, largest first</span><button class="copy-btn" type="button" data-copy="FileTgie findlarge D:\app\logs 50">Copy</button></div>
+      <div class="example-head"><span class="ex-desc" data-i18n="ex3.desc">Find log files larger than 50 MB, largest first</span><button class="copy-btn" type="button" data-copy="FileTgie findlarge D:\app\logs 50" data-i18n="copy">Copy</button></div>
       <pre>FileTgie findlarge D:\app\logs 50</pre>
     </div>
     <div class="example">
-      <div class="example-head"><span class="ex-desc">Search file contents for a text snippet and report line numbers</span><button class="copy-btn" type="button" data-copy="FileTgie findcontent ./src &quot;TODO&quot;">Copy</button></div>
+      <div class="example-head"><span class="ex-desc" data-i18n="ex4.desc">Search file contents for a text snippet and report line numbers</span><button class="copy-btn" type="button" data-copy="FileTgie findcontent ./src &quot;TODO&quot;" data-i18n="copy">Copy</button></div>
       <pre>FileTgie findcontent ./src "TODO"</pre>
     </div>
     <div class="example">
-      <div class="example-head"><span class="ex-desc">Verify two files are byte-for-byte identical</span><button class="copy-btn" type="button" data-copy="FileTgie compare a.bin b.bin">Copy</button></div>
+      <div class="example-head"><span class="ex-desc" data-i18n="ex5.desc">Verify two files are byte-for-byte identical</span><button class="copy-btn" type="button" data-copy="FileTgie compare a.bin b.bin" data-i18n="copy">Copy</button></div>
       <pre>FileTgie compare a.bin b.bin</pre>
     </div>
     <div class="example">
-      <div class="example-head"><span class="ex-desc">Show capacity, used and free space of every drive</span><button class="copy-btn" type="button" data-copy="FileTgie disk">Copy</button></div>
+      <div class="example-head"><span class="ex-desc" data-i18n="ex6.desc">Show capacity, used and free space of every drive</span><button class="copy-btn" type="button" data-copy="FileTgie disk" data-i18n="copy">Copy</button></div>
       <pre>FileTgie disk</pre>
     </div>
 
     <ul class="notes">
-      <li><strong>Binary units (1024):</strong> B → KB → MB → GB step by 1024 (1 KB = 1024 B, 1 MB = 1024 KB); <code>size</code>, <code>stat</code> and <code>du</code> also print exact byte counts.</li>
-      <li><strong>Language option aliases:</strong> <code>--lang</code> also accepts <code>-lang</code>, <code>-l</code>, and the equals form <code>--lang=en</code> / <code>-l=ja</code>; the code is case-insensitive and may appear before or after the command.</li>
-      <li><strong>Exclusions:</strong> <code>--exclude &lt;glob&gt;</code> and <code>--exclude-ext &lt;ext&gt;</code> may be repeated; they apply only to traversal commands, not to commands that take an explicit single file such as <code>lines</code> or <code>hash</code>.</li>
-      <li>Run with no arguments or <code>help</code> to print the full command table (exit code 0).</li>
+      <li data-i18n-html="note.binary"><strong>Binary units (1024):</strong> B → KB → MB → GB step by 1024 (1 KB = 1024 B, 1 MB = 1024 KB); <code>size</code>, <code>stat</code> and <code>du</code> also print exact byte counts.</li>
+      <li data-i18n-html="note.alias"><strong>Language option aliases:</strong> <code>--lang</code> also accepts <code>-lang</code>, <code>-l</code>, and the equals form <code>--lang=en</code> / <code>-l=ja</code>; the code is case-insensitive and may appear before or after the command.</li>
+      <li data-i18n-html="note.exclude"><strong>Exclusions:</strong> <code>--exclude &lt;glob&gt;</code> and <code>--exclude-ext &lt;ext&gt;</code> may be repeated; they apply only to traversal commands, not to commands that take an explicit single file such as <code>lines</code> or <code>hash</code>.</li>
+      <li data-i18n-html="note.help">Run with no arguments or <code>help</code> to print the full command table (exit code 0).</li>
     </ul>
   </div>
 </section>
@@ -372,19 +385,19 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <!-- ===== Languages ===== -->
 <section id="languages" style="background:var(--wash);">
   <div class="wrap">
-    <div class="eyebrow">Interface languages</div>
-    <h2 class="section-title">Switch the UI with one flag</h2>
-    <p class="section-sub">All prompts, errors and help strings ship in four language packs inside the binary; no external locale files are needed.</p>
+    <div class="eyebrow" data-i18n="langs.eyebrow">Interface languages</div>
+    <h2 class="section-title" data-i18n="langs.title">Switch the UI with one flag</h2>
+    <p class="section-sub" data-i18n="langs.sub">All prompts, errors and help strings ship in four language packs inside the binary; no external locale files are needed.</p>
     <div class="lang-grid">
-      <div class="lang-card"><div class="lang-code">cn</div><div class="lang-name">Chinese (default fallback)</div></div>
-      <div class="lang-card"><div class="lang-code">en</div><div class="lang-name">English</div></div>
-      <div class="lang-card"><div class="lang-code">ja</div><div class="lang-name">Japanese</div></div>
-      <div class="lang-card"><div class="lang-code">ru</div><div class="lang-name">Russian</div></div>
+      <div class="lang-card"><div class="lang-code">cn</div><div class="lang-name" data-i18n="langs.cn">Chinese (default fallback)</div></div>
+      <div class="lang-card"><div class="lang-code">en</div><div class="lang-name" data-i18n="langs.en">English</div></div>
+      <div class="lang-card"><div class="lang-code">ja</div><div class="lang-name" data-i18n="langs.ja">Japanese</div></div>
+      <div class="lang-card"><div class="lang-code">ru</div><div class="lang-name" data-i18n="langs.ru">Russian</div></div>
     </div>
     <ul class="notes">
-      <li>Examples: <code>FileTgie --lang en count D:\docs</code>, <code>FileTgie -lang ja lines ./a.txt</code>, <code>FileTgie -l ru disk</code>.</li>
-      <li>An unrecognized language code prints a localized warning, falls back to <code>cn</code>, and the program keeps running.</li>
-      <li><code>langs</code> lists the available language codes at runtime.</li>
+      <li data-i18n-html="langs.note1">Examples: <code>FileTgie --lang en count D:\docs</code>, <code>FileTgie -lang ja lines ./a.txt</code>, <code>FileTgie -l ru disk</code>.</li>
+      <li data-i18n-html="langs.note2">An unrecognized language code prints a localized warning, falls back to <code>cn</code>, and the program keeps running.</li>
+      <li data-i18n-html="langs.note3"><code>langs</code> lists the available language codes at runtime.</li>
     </ul>
   </div>
 </section>
@@ -392,27 +405,27 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <!-- ===== Install ===== -->
 <section id="install">
   <div class="wrap">
-    <div class="eyebrow">Get FileTgie</div>
-    <h2 class="section-title">Portable package or build from source</h2>
+    <div class="eyebrow" data-i18n="install.eyebrow">Get FileTgie</div>
+    <h2 class="section-title" data-i18n="install.title">Portable package or build from source</h2>
     <div class="install-grid">
       <div class="install-card">
-        <h3>Windows portable package</h3>
-        <p>The green portable package contains only <code>FileTgie.exe</code>, README, LICENSE and COPYING. It writes no registry keys and nothing outside the folder; unzip and run, delete the folder to uninstall. The only file written next to the executable is its own <code>filetgie.log</code>.</p>
+        <h3 data-i18n="install.winTitle">Windows portable package</h3>
+        <p data-i18n-html="install.winText">The green portable package contains only <code>FileTgie.exe</code>, README, LICENSE and COPYING. It writes no registry keys and nothing outside the folder; unzip and run, delete the folder to uninstall. The only file written next to the executable is its own <code>filetgie.log</code>.</p>
       </div>
       <div class="install-card">
-        <h3>Build from source — Windows (MinGW gcc)</h3>
-        <p>Run <code>build.bat</code> in the project root, equivalent to the command below; the build target <code>-O2 -Wall</code> must compile with zero warnings.</p>
+        <h3 data-i18n="install.winBuildTitle">Build from source — Windows (MinGW gcc)</h3>
+        <p data-i18n-html="install.winBuildText">Run <code>build.bat</code> in the project root, equivalent to the command below; the build target <code>-O2 -Wall</code> must compile with zero warnings.</p>
         <pre>gcc -O2 -Wall -o FileTgie.exe src\main.c src\commands.c src\port.c src\util.c src\i18n.c</pre>
       </div>
       <div class="install-card">
-        <h3>Linux — portable tarball or build from source</h3>
-        <p>Extract <code>FileTgie.linux.0.1.0.tar.gz</code> and run <code>./FileTgie --lang en help</code>; optionally copy the binary into <code>PATH</code>. No installer, administrator rights, or network access are required. To build from source, run <code>make</code>. Tested on GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc); C99/GNU99/C11/GNU11/GNU17 build clean, and a C99-capable GCC 5+ on modern glibc is expected to compile. The prebuilt tarball targets x86_64 glibc (Debian/Ubuntu family), not musl/Alpine; Clang was not verified in this release.</p>
+        <h3 data-i18n="install.linuxTitle">Linux — portable tarball or build from source</h3>
+        <p data-i18n-html="install.linuxText">Extract <code>FileTgie.linux.0.1.0.tar.gz</code> and run <code>./FileTgie --lang en help</code>; optionally copy the binary into <code>PATH</code>. No installer, administrator rights, or network access are required. To build from source, run <code>make</code>. Tested on GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc); C99/GNU99/C11/GNU11/GNU17 build clean, and a C99-capable GCC 5+ on modern glibc is expected to compile. The prebuilt tarball targets x86_64 glibc (Debian/Ubuntu family), not musl/Alpine; Clang was not verified in this release.</p>
         <pre>make</pre>
-        <a class="btn btn-ghost" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz">Download Linux tarball</a>
+        <a class="btn btn-ghost" data-i18n="install.linuxButton" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz">Download Linux tarball</a>
       </div>
       <div class="install-card">
-        <h3>Source code</h3>
-        <p>All sources live under <code>src/</code> and use only the C standard library and native platform APIs. Visit the repository for the latest source and releases:</p>
+        <h3 data-i18n="install.srcTitle">Source code</h3>
+        <p data-i18n-html="install.srcText">All sources live under <code>src/</code> and use only the C standard library and native platform APIs. Visit the repository for the latest source and releases:</p>
         <p><a href="https://github.com/SuiYe-18/FileTgie" target="_blank" rel="noopener" style="font-family:var(--mono);text-decoration:underline;">github.com/SuiYe-18/FileTgie</a></p>
       </div>
     </div>
@@ -425,27 +438,227 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
     <img class="footer-logo" src="assets/logo_wide_white.png" alt="FileTgie white logo">
     <div class="footer-grid">
       <div>
-        <h3>Author</h3>
+        <h3 data-i18n="footer.author">Author</h3>
         <p>SuiYe_TR (single author)</p>
         <p><a href="https://github.com/SuiYe-18/FileTgie" target="_blank" rel="noopener">github.com/SuiYe-18/FileTgie</a></p>
       </div>
       <div>
-        <h3>License</h3>
-        <p>LGPL-3.0-or-later (GNU Lesser General Public License, version 3 or later). Full legal text in LICENSE; plain-language linking notes in COPYING.</p>
+        <h3 data-i18n="footer.license">License</h3>
+        <p data-i18n="footer.licenseText">LGPL-3.0-or-later (GNU Lesser General Public License, version 3 or later). Full legal text in LICENSE; plain-language linking notes in COPYING.</p>
       </div>
       <div>
-        <h3>Version</h3>
-        <p>v0.1.0 — first release after the version numbering reset. The single source of truth for the version is <code>src/commands.h</code> (FILETGIE_VERSION).</p>
+        <h3 data-i18n="footer.version">Version</h3>
+        <p data-i18n-html="footer.versionText">v0.1.0 — first release after the version numbering reset. The single source of truth for the version is <code>src/commands.h</code> (FILETGIE_VERSION).</p>
       </div>
     </div>
     <div class="footer-bottom">Copyright (C) 2026 SuiYe_TR · FileTgie v0.1.0 · read-only file statistics &amp; search CLI</div>
   </div>
 </footer>
 
-<div class="toast" id="toast" role="status" aria-live="polite">Copied to clipboard</div>
+<div class="toast" id="toast" role="status" aria-live="polite" data-i18n="toast.copied">Copied to clipboard</div>
 
 <script>
 (function () {
+  var SITE_I18N = {
+    en: {
+      "meta.title": "FileTgie v0.1.0 — Read-only file statistics & search CLI in pure C",
+      "nav.features": "Features", "nav.commands": "Commands", "nav.quickstart": "Quick start",
+      "nav.languages": "Languages", "nav.license": "License",
+      "hero.title": "Lightweight, read-only, zero-dependency file statistics & search CLI",
+      "hero.lede": "Written in pure C with the standard library only, one source tree builds for Windows and Linux. Every command does one small, predictable thing and never touches your files.",
+      "hero.installer": "Download installer (Windows)", "hero.repo": "GitHub repository",
+      "hero.portable": "Windows portable ZIP", "hero.linux": "Linux tarball", "hero.source": "Source archive",
+      "hero.explore": "Explore 57 commands",
+      "stat.commands": "built-in commands", "stat.langs": "interface languages",
+      "stat.deps": "third-party dependencies", "stat.platforms": "platforms: Windows + Linux",
+      "features.eyebrow": "Features", "features.title": "Small by design, safe by default",
+      "features.sub": "Each command performs a single, clearly bounded operation. Results are clear and expected; there are no surprise side effects.",
+      "f.light.title": "Lightweight", "f.light.text": "A single compact executable with no runtime, no package manager and no configuration file.",
+      "f.pure.title": "Pure C, standard library only", "f.pure.text": "Built from C standard library calls and platform-native APIs; no third-party dependency anywhere in the source tree.",
+      "f.safe.title": "Read-only safe", "f.safe.text": "Never modifies, deletes or moves user files. The only write is its own <code>filetgie.log</code>, managed by <code>log</code> and <code>dellog</code>.",
+      "f.lang.title": "Four switchable languages", "f.lang.text": "Interface messages switch between cn, en, ja and ru with <code>--lang</code>; unknown codes warn and fall back to cn.",
+      "f.cross.title": "Cross-platform", "f.cross.text": "<code>src/port.c</code> isolates the Windows wide-character Win32 API from POSIX; the rest of the code is platform-independent.",
+      "f.license.title": "LGPL-3.0-or-later", "f.license.text": "Free to run, study, modify and redistribute; static and dynamic linking obligations are documented in LICENSE and COPYING.",
+      "commands.eyebrow": "Command overview", "commands.title": "57 commands, grouped by job",
+      "commands.sub": "Every entry below comes from the built-in command table. <code>log</code> and <code>dellog</code> read or delete FileTgie's own log; all others are strictly read-only.",
+      "quick.eyebrow": "Quick start", "quick.title": "Usage and examples",
+      "ex1.desc": "Count files and folders in a folder", "ex2.desc": "Sum all text-file lines in a codebase, English UI",
+      "ex3.desc": "Find log files larger than 50 MB, largest first", "ex4.desc": "Search file contents for a text snippet and report line numbers",
+      "ex5.desc": "Verify two files are byte-for-byte identical", "ex6.desc": "Show capacity, used and free space of every drive",
+      "copy": "Copy", "toast.copied": "Copied to clipboard",
+      "note.binary": "<strong>Binary units (1024):</strong> B → KB → MB → GB step by 1024 (1 KB = 1024 B, 1 MB = 1024 KB); <code>size</code>, <code>stat</code> and <code>du</code> also print exact byte counts.",
+      "note.alias": "<strong>Language option aliases:</strong> <code>--lang</code> also accepts <code>-lang</code>, <code>-l</code>, and the equals form <code>--lang=en</code> / <code>-l=ja</code>; the code is case-insensitive and may appear before or after the command.",
+      "note.exclude": "<strong>Exclusions:</strong> <code>--exclude &lt;glob&gt;</code> and <code>--exclude-ext &lt;ext&gt;</code> may be repeated; they apply only to traversal commands, not to commands that take an explicit single file such as <code>lines</code> or <code>hash</code>.",
+      "note.help": "Run with no arguments or <code>help</code> to print the full command table (exit code 0).",
+      "langs.eyebrow": "Interface languages", "langs.title": "Switch the UI with one flag",
+      "langs.sub": "All prompts, errors and help strings ship in four language packs inside the binary; no external locale files are needed.",
+      "langs.cn": "Chinese (default fallback)", "langs.en": "English", "langs.ja": "Japanese", "langs.ru": "Russian",
+      "langs.note1": "Examples: <code>FileTgie --lang en count D:\\docs</code>, <code>FileTgie -lang ja lines ./a.txt</code>, <code>FileTgie -l ru disk</code>.",
+      "langs.note2": "An unrecognized language code prints a localized warning, falls back to <code>cn</code>, and the program keeps running.",
+      "langs.note3": "<code>langs</code> lists the available language codes at runtime.",
+      "install.eyebrow": "Get FileTgie", "install.title": "Portable package or build from source",
+      "install.winTitle": "Windows portable package",
+      "install.winText": "The green portable package contains only <code>FileTgie.exe</code>, README, LICENSE and COPYING. It writes no registry keys and nothing outside the folder; unzip and run, delete the folder to uninstall. The only file written next to the executable is its own <code>filetgie.log</code>.",
+      "install.winBuildTitle": "Build from source — Windows (MinGW gcc)",
+      "install.winBuildText": "Run <code>build.bat</code> in the project root, equivalent to the command below; the build target <code>-O2 -Wall</code> must compile with zero warnings.",
+      "install.linuxTitle": "Linux — portable tarball or build from source",
+      "install.linuxText": "Extract <code>FileTgie.linux.0.1.0.tar.gz</code> and run <code>./FileTgie --lang en help</code>; optionally copy the binary into <code>PATH</code>. No installer, administrator rights, or network access are required. To build from source, run <code>make</code>. Tested on GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc); C99/GNU99/C11/GNU11/GNU17 build clean, and a C99-capable GCC 5+ on modern glibc is expected to compile. The prebuilt tarball targets x86_64 glibc (Debian/Ubuntu family), not musl/Alpine; Clang was not verified in this release.",
+      "install.linuxButton": "Download Linux tarball", "install.srcTitle": "Source code",
+      "install.srcText": "All sources live under <code>src/</code> and use only the C standard library and native platform APIs. Visit the repository for the latest source and releases:",
+      "footer.author": "Author", "footer.license": "License",
+      "footer.licenseText": "LGPL-3.0-or-later (GNU Lesser General Public License, version 3 or later). Full legal text in LICENSE; plain-language linking notes in COPYING.",
+      "footer.version": "Version",
+      "footer.versionText": "v0.1.0 — first release after the version numbering reset. The single source of truth for the version is <code>src/commands.h</code> (FILETGIE_VERSION).",
+      "groups.all": "All", "groups.system": "System & Log", "groups.stats": "Statistics",
+      "groups.text": "Text & Lines", "groups.search": "Search & Find", "groups.verify": "Verify & Integrity",
+      "note.all": "Showing all {n} commands from CMD_TABLE.", "note.group": "Showing {n} commands in this group."
+    },
+    cn: {
+      "meta.title": "FileTgie v0.1.0 — 纯 C 只读文件统计与搜索命令行工具",
+      "nav.features": "功能", "nav.commands": "命令", "nav.quickstart": "快速开始", "nav.languages": "界面语言", "nav.license": "许可证",
+      "hero.title": "轻量、只读、零依赖的文件统计与搜索命令行工具",
+      "hero.lede": "纯 C 仅用标准库编写，同一套源码可构建 Windows 与 Linux 版本。每条命令只做一件小而确定的事，绝不触碰你的文件。",
+      "hero.installer": "下载安装程序（Windows）", "hero.repo": "GitHub 仓库",
+      "hero.portable": "Windows 便携 ZIP", "hero.linux": "Linux 压缩包", "hero.source": "源码包", "hero.explore": "查看 57 条命令",
+      "stat.commands": "内置命令", "stat.langs": "界面语言", "stat.deps": "第三方依赖", "stat.platforms": "平台：Windows + Linux",
+      "features.eyebrow": "功能", "features.title": "小而克制，默认安全", "features.sub": "每条命令只执行一个边界清晰的操作；结果明确可预期，不会出现意外副作用。",
+      "f.light.title": "轻量", "f.light.text": "单个紧凑可执行文件，无需运行时、包管理器或配置文件。",
+      "f.pure.title": "纯 C，仅标准库", "f.pure.text": "只使用 C 标准库调用与平台原生 API，源码树中没有第三方依赖。",
+      "f.safe.title": "只读安全", "f.safe.text": "绝不修改、删除或移动用户文件；唯一写入的是自身 <code>filetgie.log</code>，由 <code>log</code> 与 <code>dellog</code> 管理。",
+      "f.lang.title": "四种可切换语言", "f.lang.text": "界面信息通过 <code>--lang</code> 在 cn、en、ja、ru 间切换；未知语言码会警告并回退到 cn。",
+      "f.cross.title": "跨平台", "f.cross.text": "<code>src/port.c</code> 隔离 Windows 宽字符 Win32 API 与 POSIX，其余代码与平台无关。",
+      "f.license.title": "LGPL-3.0-or-later", "f.license.text": "可自由运行、研究、修改和再分发；静态与动态链接义务见 LICENSE 和 COPYING。",
+      "commands.eyebrow": "命令概览", "commands.title": "57 条命令，按用途分组",
+      "commands.sub": "以下条目来自内置命令表。<code>log</code> 与 <code>dellog</code> 读取或删除 FileTgie 自身日志，其余全部严格只读。",
+      "quick.eyebrow": "快速开始", "quick.title": "用法与示例",
+      "ex1.desc": "统计文件夹中的文件和文件夹数量", "ex2.desc": "在代码库中汇总所有文本文件行数，英文界面",
+      "ex3.desc": "查找大于 50 MB 的日志文件，从大到小排列", "ex4.desc": "搜索文件内容中的文本片段并报告行号",
+      "ex5.desc": "逐字节校验两个文件是否完全相同", "ex6.desc": "显示每个磁盘的总容量、已用空间和可用空间",
+      "copy": "复制", "toast.copied": "已复制到剪贴板",
+      "note.binary": "<strong>二进制单位（1024）：</strong>B → KB → MB → GB 均按 1024 进位；<code>size</code>、<code>stat</code>、<code>du</code> 同时输出精确字节数。",
+      "note.alias": "<strong>语言参数别名：</strong><code>--lang</code> 也接受 <code>-lang</code>、<code>-l</code> 以及等号形式 <code>--lang=en</code> / <code>-l=ja</code>；语言码不区分大小写，可放在命令前后。",
+      "note.exclude": "<strong>排除项：</strong><code>--exclude &lt;glob&gt;</code> 与 <code>--exclude-ext &lt;ext&gt;</code> 可重复使用；只作用于遍历命令，不作用于接收单个明确文件的命令，如 <code>lines</code> 或 <code>hash</code>。",
+      "note.help": "不带参数或运行 <code>help</code> 可打印完整命令表（退出码 0）。",
+      "langs.eyebrow": "界面语言", "langs.title": "一个参数切换界面语言", "langs.sub": "所有提示、错误和帮助文本都打包在二进制内，无需外部语言文件。",
+      "langs.cn": "中文（默认回退）", "langs.en": "英语", "langs.ja": "日语", "langs.ru": "俄语",
+      "langs.note1": "示例：<code>FileTgie --lang en count D:\\docs</code>、<code>FileTgie -lang ja lines ./a.txt</code>、<code>FileTgie -l ru disk</code>。",
+      "langs.note2": "无法识别的语言码会输出本地化警告，回退到 <code>cn</code>，程序继续运行。",
+      "langs.note3": "<code>langs</code> 在运行时列出可用语言码。",
+      "install.eyebrow": "获取 FileTgie", "install.title": "便携包或从源码构建",
+      "install.winTitle": "Windows 便携包",
+      "install.winText": "便携包只包含 <code>FileTgie.exe</code>、README、LICENSE、COPYING；不写注册表，也不写文件夹外内容；解压运行，删除文件夹即卸载。可执行文件旁唯一写入的是自身 <code>filetgie.log</code>。",
+      "install.winBuildTitle": "从源码构建 — Windows（MinGW gcc）",
+      "install.winBuildText": "在项目根目录运行 <code>build.bat</code>，等价于下面命令；构建目标 <code>-O2 -Wall</code> 必须零警告。",
+      "install.linuxTitle": "Linux — 便携压缩包或从源码构建",
+      "install.linuxText": "解压 <code>FileTgie.linux.0.1.0.tar.gz</code> 后运行 <code>./FileTgie --lang en help</code>；可选择把二进制复制到 <code>PATH</code>。不需要安装程序、管理员权限或网络。从源码构建运行 <code>make</code>。已在 GCC 11.4.0（Ubuntu 22.04，x86_64，glibc）验证；C99/GNU99/C11/GNU11/GNU17 均零警告，现代 glibc 上具备 C99 能力的 GCC 5+ 预期可编译。预编译包面向 x86_64 glibc（Debian/Ubuntu 系），不保证 musl/Alpine；本版未验证 Clang。",
+      "install.linuxButton": "下载 Linux 压缩包", "install.srcTitle": "源代码",
+      "install.srcText": "所有源码位于 <code>src/</code>，仅使用 C 标准库与平台原生 API。访问仓库获取最新源码与发布：",
+      "footer.author": "作者", "footer.license": "许可证",
+      "footer.licenseText": "LGPL-3.0-or-later（GNU 宽通用公共许可证，第 3 版或更新）。完整法律文本见 LICENSE，通俗链接说明见 COPYING。",
+      "footer.version": "版本",
+      "footer.versionText": "v0.1.0 — 版本号重置后的首个发布。版本唯一事实来源是 <code>src/commands.h</code>（FILETGIE_VERSION）。",
+      "groups.all": "全部", "groups.system": "系统与日志", "groups.stats": "统计",
+      "groups.text": "文本与行数", "groups.search": "搜索与查找", "groups.verify": "校验与完整性",
+      "note.all": "显示 CMD_TABLE 中的全部 {n} 条命令。", "note.group": "显示该组中的 {n} 条命令。"
+    },
+    ja: {
+      "meta.title": "FileTgie v0.1.0 — 純粋なC製の読み取り専用ファイル統計・検索CLI",
+      "nav.features": "機能", "nav.commands": "コマンド", "nav.quickstart": "クイックスタート", "nav.languages": "言語", "nav.license": "ライセンス",
+      "hero.title": "軽量・読み取り専用・非依存のファイル統計＆検索 CLI",
+      "hero.lede": "純粋な C と標準ライブラリだけで書かれ、同一ソースから Windows と Linux をビルドできます。各コマンドは小さく予測可能な1操作だけを行い、ファイルを変更しません。",
+      "hero.installer": "インストーラをダウンロード（Windows）", "hero.repo": "GitHub リポジトリ",
+      "hero.portable": "Windows ポータブル ZIP", "hero.linux": "Linux tarball", "hero.source": "ソースアーカイブ", "hero.explore": "57コマンドを見る",
+      "stat.commands": "内蔵コマンド", "stat.langs": "対応言語", "stat.deps": "サードパーティ依存", "stat.platforms": "対応: Windows + Linux",
+      "features.eyebrow": "機能", "features.title": "設計は小さく、既定で安全", "features.sub": "各コマンドは範囲の明確な単一操作を行い、結果は分かりやすく予測でき、予期しない副作用はありません。",
+      "f.light.title": "軽量", "f.light.text": "単一のコンパクトな実行ファイル。ランタイム、パッケージマネージャ、設定ファイルは不要です。",
+      "f.pure.title": "純粋なC・標準ライブラリのみ", "f.pure.text": "C標準ライブラリとネイティブAPIだけを使用し、ソースツリーにサードパーティ依存はありません。",
+      "f.safe.title": "読み取り専用で安全", "f.safe.text": "ユーザーファイルを変更・削除・移動しません。書き込むのは自身の <code>filetgie.log</code> だけで、<code>log</code> と <code>dellog</code> で管理されます。",
+      "f.lang.title": "切り替え可能な4言語", "f.lang.text": "<code>--lang</code> で cn/en/ja/ru を切り替えます。未知の言語コードは警告して cn に戻ります。",
+      "f.cross.title": "クロスプラットフォーム", "f.cross.text": "<code>src/port.c</code> が Windows のワイド文字 Win32 API と POSIX を分離し、他のコードはプラットフォーム非依存です。",
+      "f.license.title": "LGPL-3.0-or-later", "f.license.text": "実行・研究・改変・再配布が自由。静的/動的リンク条項は LICENSE と COPYING に記載されています。",
+      "commands.eyebrow": "コマンド概要", "commands.title": "57コマンドを用途別に整理",
+      "commands.sub": "以下は内蔵コマンド表から。<code>log</code> と <code>dellog</code> は FileTgie 自身のログを読む/消すだけで、他はすべて読み取り専用です。",
+      "quick.eyebrow": "クイックスタート", "quick.title": "使い方と例",
+      "ex1.desc": "フォルダ内のファイルとフォルダを数える", "ex2.desc": "コードベースのテキストファイル行数を合計（英語UI）",
+      "ex3.desc": "50MBを超えるログを大きい順に探す", "ex4.desc": "ファイル内容から文字列を検索し行番号を報告",
+      "ex5.desc": "2ファイルがバイト単位で一致するか検証", "ex6.desc": "各ドライブの容量・使用量・空き容量を表示",
+      "copy": "コピー", "toast.copied": "クリップボードにコピーしました",
+      "note.binary": "<strong>2進数単位(1024):</strong>B→KB→MB→GB は1024刻み。<code>size</code>/<code>stat</code>/<code>du</code> は正確なバイト数も表示。",
+      "note.alias": "<strong>言語オプション別名:</strong><code>--lang</code> は <code>-lang</code>, <code>-l</code>, <code>--lang=en</code> / <code>-l=ja</code> も受付。大文字小文字不問、コマンド前後どちらでも可。",
+      "note.exclude": "<strong>除外:</strong><code>--exclude &lt;glob&gt;</code> と <code>--exclude-ext &lt;ext&gt;</code> は反復可。走査コマンドのみに適用し、<code>lines</code>/<code>hash</code> など単一ファイル指定コマンドには適用しません。",
+      "note.help": "引数なし、または <code>help</code> で全コマンド表を表示（終了コード0）。",
+      "langs.eyebrow": "対応言語", "langs.title": "1つのフラグでUIを切替", "langs.sub": "プロンプト・エラー・ヘルプ文字列はバイナリ内の4言語パックに含まれ、外部ロケール不要です。",
+      "langs.cn": "中国語（既定フォールバック）", "langs.en": "英語", "langs.ja": "日本語", "langs.ru": "ロシア語",
+      "langs.note1": "例: <code>FileTgie --lang en count D:\\docs</code>、<code>FileTgie -lang ja lines ./a.txt</code>、<code>FileTgie -l ru disk</code>。",
+      "langs.note2": "未認識の言語コードはローカライズ警告を出して <code>cn</code> に戻り、実行を継続します。",
+      "langs.note3": "<code>langs</code> は実行時に利用可能な言語コードを列挙します。",
+      "install.eyebrow": "FileTgieを入手", "install.title": "ポータブルパッケージまたはソースビルド",
+      "install.winTitle": "Windowsポータブルパッケージ",
+      "install.winText": "同梱は <code>FileTgie.exe</code>/README/LICENSE/COPYING のみ。レジストリやフォルダ外へ書き込みせず、展開して実行、フォルダ削除でアンインストール。実行ファイルの横に書くのは自身の <code>filetgie.log</code> だけです。",
+      "install.winBuildTitle": "ソースからビルド — Windows (MinGW gcc)",
+      "install.winBuildText": "ルートで <code>build.bat</code> を実行。下記コマンドと等価。ビルドは <code>-O2 -Wall</code> で警告ゼロが必要です。",
+      "install.linuxTitle": "Linux — ポータブルtarballまたはソースビルド",
+      "install.linuxText": "<code>FileTgie.linux.0.1.0.tar.gz</code> を展開し <code>./FileTgie --lang en help</code> を実行。必要ならバイナリを <code>PATH</code> にコピー。インストーラ・管理者権限・ネットは不要。ソースビルドは <code>make</code>。GCC 11.4.0（Ubuntu 22.04, x86_64, glibc）で検証済み。C99/GNU99/C11/GNU11/GNU17 はクリーン、C99対応 GCC 5+ の現代 glibc でビルド期待。プレビルドは x86_64 glibc（Debian/Ubuntu系）、musl/Alpine 非保証、Clang未検証。",
+      "install.linuxButton": "Linux tarballをダウンロード", "install.srcTitle": "ソースコード",
+      "install.srcText": "全ソースは <code>src/</code> にあり、C標準ライブラリとネイティブAPIだけを使用。最新ソースとリリースはリポジトリへ:",
+      "footer.author": "作者", "footer.license": "ライセンス",
+      "footer.licenseText": "LGPL-3.0-or-later（GNU劣等一般公衆利用許諾書第3版以降）。完全な法的文面はLICENSE、平易なリンク説明はCOPYING。",
+      "footer.version": "バージョン",
+      "footer.versionText": "v0.1.0 — 番号リセット後の初リリース。バージョンの唯一の基準は <code>src/commands.h</code>（FILETGIE_VERSION）。",
+      "groups.all": "すべて", "groups.system": "システムとログ", "groups.stats": "統計",
+      "groups.text": "テキストと行数", "groups.search": "検索", "groups.verify": "検証と整合性",
+      "note.all": "CMD_TABLE の全 {n} コマンドを表示。", "note.group": "このグループの {n} コマンドを表示。"
+    },
+    ru: {
+      "meta.title": "FileTgie v0.1.0 — Лёгкая утилита статистики и поиска файлов на чистом C",
+      "nav.features": "Возможности", "nav.commands": "Команды", "nav.quickstart": "Быстрый старт", "nav.languages": "Языки", "nav.license": "Лицензия",
+      "hero.title": "Лёгкий инструмент статистики и поиска файлов только для чтения",
+      "hero.lede": "Чистый C, только стандартная библиотека; один исходник собирается для Windows и Linux. Каждая команда делает одно предсказуемое действие и не меняет ваши файлы.",
+      "hero.installer": "Скачать установщик (Windows)", "hero.repo": "Репозиторий GitHub",
+      "hero.portable": "Портативный ZIP для Windows", "hero.linux": "tar.gz для Linux", "hero.source": "Архив с исходниками", "hero.explore": "Посмотреть 57 команд",
+      "stat.commands": "встроенных команд", "stat.langs": "языков интерфейса", "stat.deps": "сторонних зависимостей", "stat.platforms": "платформы: Windows + Linux",
+      "features.eyebrow": "Возможности", "features.title": "Мал по замыслу, безопасен по умолчанию", "features.sub": "Каждая команда выполняет одну четко ограниченную операцию. Результаты ясны; неожиданных побочных эффектов нет.",
+      "f.light.title": "Лёгкость", "f.light.text": "Один компактный исполняемый файл: без среды выполнения, менеджера пакетов и конфигурации.",
+      "f.pure.title": "Чистый C, только стандартная библиотека", "f.pure.text": "Вызовы стандартной библиотеки C и родные API; сторонних зависимостей в дереве исходников нет.",
+      "f.safe.title": "Только чтение", "f.safe.text": "Не изменяет, не удаляет и не перемещает пользовательские файлы. Единственная запись — собственный <code>filetgie.log</code> под управлением <code>log</code> и <code>dellog</code>.",
+      "f.lang.title": "Четыре переключаемых языка", "f.lang.text": "Интерфейс переключается между cn, en, ja, ru через <code>--lang</code>; неизвестный код предупреждает и возвращается к cn.",
+      "f.cross.title": "Кроссплатформенность", "f.cross.text": "<code>src/port.c</code> отделяет широкие символы Win32 API от POSIX; остальной код не зависит от платформы.",
+      "f.license.title": "LGPL-3.0-or-later", "f.license.text": "Свободно запускать, изучать, изменять и распространять; обязательства линковки описаны в LICENSE и COPYING.",
+      "commands.eyebrow": "Обзор команд", "commands.title": "57 команд по группам",
+      "commands.sub": "Ниже таблица встроенных команд. <code>log</code> и <code>dellog</code> читают/удаляют собственный журнал FileTgie; остальные только чтение.",
+      "quick.eyebrow": "Быстрый старт", "quick.title": "Использование и примеры",
+      "ex1.desc": "Посчитать файлы и папки в каталоге", "ex2.desc": "Суммировать строки текстовых файлов в кодовой базе, английский UI",
+      "ex3.desc": "Найти журналы больше 50 МБ, сначала самые большие", "ex4.desc": "Искать фрагмент в содержимом файлов и показать номера строк",
+      "ex5.desc": "Побайтово проверить идентичность двух файлов", "ex6.desc": "Показать емкость, занятое и свободное место дисков",
+      "copy": "Копировать", "toast.copied": "Скопировано в буфер обмена",
+      "note.binary": "<strong>Двоичные единицы (1024):</strong>B→KB→MB→GB по 1024; <code>size</code>, <code>stat</code>, <code>du</code> также печатают точные байты.",
+      "note.alias": "<strong>Псевдонимы языка:</strong><code>--lang</code> также принимает <code>-lang</code>, <code>-l</code>, <code>--lang=en</code> / <code>-l=ja</code>; код без учета регистра, до или после команды.",
+      "note.exclude": "<strong>Исключения:</strong><code>--exclude &lt;glob&gt;</code> и <code>--exclude-ext &lt;ext&gt;</code> повторяемы; только для обходных команд, не для одиночных файлов вроде <code>lines</code> или <code>hash</code>.",
+      "note.help": "Запуск без аргументов или <code>help</code> печатает полную таблицу команд (код выхода 0).",
+      "langs.eyebrow": "Языки интерфейса", "langs.title": "Один флаг переключает UI", "langs.sub": "Подсказки, ошибки и справка встроены в бинарник, внешние локали не нужны.",
+      "langs.cn": "Китайский (запасной язык)", "langs.en": "Английский", "langs.ja": "Японский", "langs.ru": "Русский",
+      "langs.note1": "Примеры: <code>FileTgie --lang en count D:\\docs</code>, <code>FileTgie -lang ja lines ./a.txt</code>, <code>FileTgie -l ru disk</code>.",
+      "langs.note2": "Неизвестный код языка печатает локализованное предупреждение, возвращается к <code>cn</code> и продолжает работу.",
+      "langs.note3": "<code>langs</code> выводит доступные коды языков во время выполнения.",
+      "install.eyebrow": "Получить FileTgie", "install.title": "Портативный пакет или сборка из исходников",
+      "install.winTitle": "Портативный пакет Windows",
+      "install.winText": "Содержит только <code>FileTgie.exe</code>, README, LICENSE, COPYING. Не пишет реестр и файлы вне папки; распакуйте и запустите, удаление папки удаляет программу. Рядом записывается только собственный <code>filetgie.log</code>.",
+      "install.winBuildTitle": "Сборка из исходников — Windows (MinGW gcc)",
+      "install.winBuildText": "Запустите <code>build.bat</code> в корне; цель <code>-O2 -Wall</code> должна собираться без предупреждений.",
+      "install.linuxTitle": "Linux — tarball или сборка из исходников",
+      "install.linuxText": "Распакуйте <code>FileTgie.linux.0.1.0.tar.gz</code> и запустите <code>./FileTgie --lang en help</code>; при желании скопируйте бинарник в <code>PATH</code>. Без установщика, прав администратора и сети. Сборка из исходников: <code>make</code>. Проверено GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc); C99/GNU99/C11/GNU11/GNU17 чисто, C99 GCC 5+ на современной glibc ожидаемо собирается. Готовый пакет для x86_64 glibc (Debian/Ubuntu), не musl/Alpine; Clang не проверялся.",
+      "install.linuxButton": "Скачать tarball Linux", "install.srcTitle": "Исходный код",
+      "install.srcText": "Все исходники в <code>src/</code>; только стандартная библиотека C и родные API. Актуальные исходники и релизы в репозитории:",
+      "footer.author": "Автор", "footer.license": "Лицензия",
+      "footer.licenseText": "LGPL-3.0-or-later (GNU LGPL, версия 3 или позже). Полный юридический текст в LICENSE, пояснение линковки в COPYING.",
+      "footer.version": "Версия",
+      "footer.versionText": "v0.1.0 — первый релиз после сброса нумерации. Единственный источник версии: <code>src/commands.h</code> (FILETGIE_VERSION).",
+      "groups.all": "Все", "groups.system": "Система и журнал", "groups.stats": "Статистика",
+      "groups.text": "Текст и строки", "groups.search": "Поиск", "groups.verify": "Проверка и целостность",
+      "note.all": "Показаны все {n} команд из CMD_TABLE.", "note.group": "Показаны {n} команд этой группы."
+    }
+  };
+
   // ===== Command data: names and English descriptions from README, names verified against CMD_TABLE (57) =====
   var GROUPS = [
     {
@@ -602,21 +815,35 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
   var panels = document.getElementById("cmdPanels");
   var note = document.getElementById("cmdNote");
 
+  var activeGroupId = GROUPS[0].id;
+  var currentLang = "en";
+  function siteText(key, lang) {
+    return (SITE_I18N[lang] && SITE_I18N[lang][key]) || SITE_I18N.en[key] || key;
+  }
+  function groupLabel(g, lang) {
+    return siteText("groups." + g.id, lang) + " (" + g.items.length + ")";
+  }
+  function updateGroupNote(lang) {
+    var g = GROUPS.filter(function (x) { return x.id === activeGroupId; })[0] || GROUPS[0];
+    var key = g.id === "all" ? "note.all" : "note.group";
+    note.textContent = siteText(key, lang).replace("{n}", String(g.items.length));
+  }
+
   GROUPS.forEach(function (g, idx) {
     var btn = document.createElement("button");
     btn.type = "button";
     btn.className = "tab-btn" + (idx === 0 ? " active" : "");
     btn.setAttribute("role", "tab");
     btn.textContent = g.label + " (" + g.items.length + ")";
+    g.button = btn;
     btn.addEventListener("click", function () {
+      activeGroupId = g.id;
       document.querySelectorAll(".tab-btn").forEach(function (b) { b.classList.remove("active"); });
       document.querySelectorAll(".cmd-panel").forEach(function (p) { p.classList.remove("active"); });
       btn.classList.add("active");
       var panel = document.getElementById("panel-" + g.id);
       panel.classList.add("active");
-      note.textContent = g.id === "all"
-        ? "Showing all " + g.items.length + " commands from CMD_TABLE."
-        : "Showing " + g.items.length + " commands in this group.";
+      updateGroupNote(currentLang);
     });
     tabRow.appendChild(btn);
 
@@ -637,7 +864,33 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
     panel.appendChild(list);
     panels.appendChild(panel);
   });
-  note.textContent = "Showing all " + GROUPS[0].items.length + " commands from CMD_TABLE.";
+  function applySiteLang(lang) {
+    if (!SITE_I18N[lang]) lang = "en";
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.title = siteText("meta.title", lang);
+    try { localStorage.setItem("filetgie-site-lang", lang); } catch (e) {}
+    document.querySelectorAll(".site-lang button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-lang") === lang);
+    });
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      el.textContent = siteText(el.getAttribute("data-i18n"), lang);
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach(function (el) {
+      el.innerHTML = siteText(el.getAttribute("data-i18n-html"), lang);
+    });
+    GROUPS.forEach(function (g) {
+      if (g.button) g.button.textContent = groupLabel(g, lang);
+    });
+    updateGroupNote(lang);
+  }
+
+  document.querySelectorAll(".site-lang button").forEach(function (b) {
+    b.addEventListener("click", function () { applySiteLang(b.getAttribute("data-lang")); });
+  });
+  var savedLang = "en";
+  try { savedLang = localStorage.getItem("filetgie-site-lang") || "en"; } catch (e) {}
+  applySiteLang(savedLang);
 
   // ===== Copy buttons =====
   var toast = document.getElementById("toast");
@@ -658,11 +911,11 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         ta.select();
         try { document.execCommand("copy"); } catch (e) {}
         document.body.removeChild(ta);
-        showToast("Copied to clipboard");
+        showToast(siteText("toast.copied", currentLang));
       }
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(function () {
-          showToast("Copied to clipboard");
+          showToast(siteText("toast.copied", currentLang));
         }).catch(fallback);
       } else {
         fallback();
