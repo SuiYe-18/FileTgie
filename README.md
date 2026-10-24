@@ -64,7 +64,7 @@ FileTgie --lang en reminder off
 * **patch（.x）**：只用于小补丁、小插曲（修小问题、文案微调），不进入
   minor 的进位序列。
 
-当前版本为 `0.4.0`：在 `0.4.0` 可选 `reminder` 的基础上，把 Windows 默认检查间隔
+当前版本为 `0.4.0`：在 `0.3.0` 可选 `reminder` 的基础上，把 Windows 默认检查间隔
 改为每 1 分钟只读检查，并支持 `reminder on every N`（1–1439 分钟自定义间隔）；
 `daily HH:MM`（缺省 09:00）与 `hourly` 保持兼容。任务运行
 `FileTgieUpdater.exe --check --notify`，同时检查 GitHub Release 与官网版本；
@@ -368,7 +368,7 @@ FileTgie 采用 **LGPL-3.0-or-later**（GNU Lesser General Public License
 ```
 FileTgie/
 ├─ build.bat          # Windows 构建脚本
-├─ Makefile          # Linux 构建（gcc -Wall -Wextra，已实机验证）
+├─ Makefile          # Linux 构建（gcc -Wall -Wextra，历史实机验证）
 ├─ README.md
 ├─ LICENSE           # LGPL-3.0 完整官方文本
 ├─ COPYING           # LGPL 通俗中文说明（动态/静态链接）
