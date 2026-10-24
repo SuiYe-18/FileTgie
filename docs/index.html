@@ -270,7 +270,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
     </div>
     <div class="cta-row" style="margin-top:10px;">
       <a class="btn btn-ghost" data-i18n="hero.portable" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.3.0.portable.zip">Windows portable ZIP</a>
-      <a class="btn btn-ghost" data-i18n="hero.linux" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz">Linux tarball</a>
+      <a class="btn btn-ghost" data-i18n="hero.linux" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.3.0.tar.gz">Linux tarball</a>
       <a class="btn btn-ghost" data-i18n="hero.source" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.3.0.zip">Source archive</a>
       <a class="btn btn-ghost" data-i18n="hero.explore" href="#commands">Explore 61 commands</a>
     </div>
@@ -419,9 +419,9 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       </div>
       <div class="install-card">
         <h3 data-i18n="install.linuxTitle">Linux — portable tarball or build from source</h3>
-        <p data-i18n-html="install.linuxText">The Linux prebuilt tarball remains 0.1.0; use the current 0.3.0 source archive and run <code>make</code> for current features. Extract the tarball and run <code>./FileTgie --lang en help</code>; optionally copy the binary into <code>PATH</code>. No installer, administrator rights, or network access are required. The verified build used GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc); C99/GNU99/C11/GNU11/GNU17 build clean, and a C99-capable GCC 5+ on modern glibc is expected to compile. The prebuilt tarball targets x86_64 glibc (Debian/Ubuntu family), not musl/Alpine; Clang was not verified.</p>
+        <p data-i18n-html="install.linuxText">The v0.3.0 Linux tarball contains a stripped x86_64 glibc binary, README, LICENSE, COPYING, LINUX.txt and documentation. Extract it and run <code>./FileTgie --lang en help</code>; optionally copy the binary into <code>PATH</code>. Inspection commands need no installer, administrator rights or network; <code>checkupdate</code> uses curl for GitHub. Built on Ubuntu 22.04 with GCC 11.4.0 and glibc 2.35; <code>-O2 -Wall -Wextra</code> and C99/GNU99/C11/GNU11/GNU17 compile clean. The package targets x86_64 glibc (Debian/Ubuntu family), not musl/Alpine; use <code>make</code> from source on another distribution.</p>
         <pre>make</pre>
-        <a class="btn btn-ghost" data-i18n="install.linuxButton" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz">Download Linux tarball</a>
+        <a class="btn btn-ghost" data-i18n="install.linuxButton" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.3.0.tar.gz">Download Linux tarball</a>
       </div>
       <div class="install-card">
         <h3 data-i18n="install.srcTitle">Source code</h3>
@@ -503,7 +503,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "install.setupTitle": "Windows installer and overwrite upgrade",
       "install.setupText": "The installer registers App Paths and PATH under Program Files. It detects an installed copy, App Paths registration, or leftover files after a non-official deletion, and keeps the overwrite option checked by default. On overwrite, previous program files move to a disabled <code>.old</code> backup folder; the registry, PATH and shortcuts keep pointing only to the new root-folder files. The bundled updater checks GitHub and the website before launching a silent overwrite install.",
       "install.linuxTitle": "Linux — portable tarball or build from source",
-      "install.linuxText": "The Linux prebuilt tarball remains 0.1.0; use the current 0.3.0 source archive and run <code>make</code> for current features. Extract the tarball and run <code>./FileTgie --lang en help</code>; optionally copy the binary into <code>PATH</code>. No installer, administrator rights, or network access are required. The verified build used GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc); C99/GNU99/C11/GNU11/GNU17 build clean, and a C99-capable GCC 5+ on modern glibc is expected to compile. The prebuilt tarball targets x86_64 glibc (Debian/Ubuntu family), not musl/Alpine; Clang was not verified.",
+      "install.linuxText": "The v0.3.0 Linux tarball contains a stripped x86_64 glibc binary, README, LICENSE, COPYING, LINUX.txt and documentation. Extract it and run <code>./FileTgie --lang en help</code>; optionally copy the binary into <code>PATH</code>. Inspection commands need no installer, administrator rights or network; <code>checkupdate</code> uses curl for GitHub. Built on Ubuntu 22.04 with GCC 11.4.0 and glibc 2.35; <code>-O2 -Wall -Wextra</code> and C99/GNU99/C11/GNU11/GNU17 compile clean. The package targets x86_64 glibc (Debian/Ubuntu family), not musl/Alpine; use <code>make</code> from source on another distribution.",
       "install.linuxButton": "Download Linux tarball", "install.srcTitle": "Source code",
       "install.srcText": "All sources live under <code>src/</code> and use only the C standard library and native platform APIs. Run <code>build.bat</code> on Windows or <code>make</code> on Linux; the Windows updater builds only on Windows.",
       "footer.author": "Author", "footer.license": "License",
@@ -551,7 +551,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "install.setupTitle": "Windows 安装包与覆盖升级",
       "install.setupText": "安装包在 Program Files 注册 App Paths 与 PATH。它会检测已安装副本、App Paths 注册，或非官方删除后的残留文件，并默认勾选覆盖选项。覆盖时旧程序文件先移入禁用的 <code>.old</code> 备份文件夹；注册表、PATH 与快捷方式始终只指向根目录新文件。内置更新器会先检查 GitHub 与官网，再启动静默覆盖安装。",
       "install.linuxTitle": "Linux — 便携压缩包或从源码构建",
-      "install.linuxText": "Linux 预编译包仍为 0.1.0；当前功能请使用 0.3.0 源码包并运行 <code>make</code> 构建。解压 <code>FileTgie.linux.0.1.0.tar.gz</code> 后运行 <code>./FileTgie --lang en help</code>；可选择把二进制复制到 <code>PATH</code>。不需要安装程序、管理员权限或网络。已在 GCC 11.4.0（Ubuntu 22.04，x86_64，glibc）验证；C99/GNU99/C11/GNU11/GNU17 均零警告，现代 glibc 上具备 C99 能力的 GCC 5+ 预期可编译。预编译包面向 x86_64 glibc（Debian/Ubuntu 系），不保证 musl/Alpine；未验证 Clang。",
+      "install.linuxText": "v0.3.0 Linux 预编译包包含剥离符号的 x86_64 glibc 二进制、README、LICENSE、COPYING、LINUX.txt 与文档。解压后运行 <code>./FileTgie --lang en help</code>；可选择把二进制复制到 <code>PATH</code>。检查类命令不需要安装程序、管理员权限或网络；<code>checkupdate</code> 通过 curl 请求 GitHub。已在 Ubuntu 22.04、GCC 11.4.0、glibc 2.35 上验证；<code>-O2 -Wall -Wextra</code> 与 C99/GNU99/C11/GNU11/GNU17 均零警告。包面向 x86_64 glibc（Debian/Ubuntu 系），不保证 musl/Alpine；其他发行版请用 <code>make</code> 从源码构建。",
       "install.linuxButton": "下载 Linux 压缩包", "install.srcTitle": "源代码",
       "install.srcText": "所有源码位于 <code>src/</code>，仅使用 C 标准库与平台原生 API。Windows 运行 <code>build.bat</code>，Linux 运行 <code>make</code>；Windows 更新器只在 Windows 构建。",
       "footer.author": "作者", "footer.license": "许可证",
@@ -599,7 +599,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "install.setupTitle": "Windowsインストーラと上書き更新",
       "install.setupText": "インストーラはProgram FilesにApp PathsとPATHを登録します。既存コピー、App Paths登録、非公式削除後の残りを検出し、上書きオプションを既定でオンにします。上書き時、旧プログラムファイルは無効な <code>.old</code> バックアップフォルダへ移動し、レジストリ・PATH・ショートカットは新しいルートフォルダのファイルだけを指します。同梱アップデータはGitHubと公式サイトを確認してから静かな上書きインストールを起動します。",
       "install.linuxTitle": "Linux — ポータブルtarballまたはソースビルド",
-      "install.linuxText": "Linux プレビルドは 0.1.0 のままです。最新機能は 0.3.0 ソースアーカイブを展開し <code>make</code> でビルドしてください。<code>FileTgie.linux.0.1.0.tar.gz</code> を展開し <code>./FileTgie --lang en help</code> を実行。必要ならバイナリを <code>PATH</code> にコピー。インストーラ・管理者権限・ネットは不要。GCC 11.4.0（Ubuntu 22.04, x86_64, glibc）で検証済み。C99/GNU99/C11/GNU11/GNU17 はクリーン、C99対応 GCC 5+ の現代 glibc でビルド期待。プレビルドは x86_64 glibc（Debian/Ubuntu系）、musl/Alpine 非保証、Clang未検証。",
+      "install.linuxText": "v0.3.0 の Linux プレビルド tarball には、シンボルを削除した x86_64 glibc バイナリ、README、LICENSE、COPYING、LINUX.txt、ドキュメントが入っています。展開して <code>./FileTgie --lang en help</code> を実行。必要ならバイナリを <code>PATH</code> にコピー。検査コマンドにインストーラ・管理者権限・ネットは不要で、<code>checkupdate</code> は GitHub へ curl で問い合わせます。Ubuntu 22.04 / GCC 11.4.0 / glibc 2.35 で検証済み。<code>-O2 -Wall -Wextra</code> と C99/GNU99/C11/GNU11/GNU17 はクリーン。対象は x86_64 glibc（Debian/Ubuntu系）で、musl/Alpine は非保証。他のディストリビューションは <code>make</code> でソースからビルドしてください。",
       "install.linuxButton": "Linux tarballをダウンロード", "install.srcTitle": "ソースコード",
       "install.srcText": "全ソースは <code>src/</code> にあり、C標準ライブラリとネイティブAPIだけを使用。Windowsで <code>build.bat</code>、Linuxで <code>make</code> を実行。WindowsアップデータはWindowsでのみビルドされます。",
       "footer.author": "作者", "footer.license": "ライセンス",
@@ -647,7 +647,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "install.setupTitle": "Установщик Windows и обновление с заменой",
       "install.setupText": "Установщик регистрирует App Paths и PATH в Program Files. Он находит установленную копию, регистрацию App Paths или остатки после неофициального удаления и оставляет замену включённой по умолчанию. При замене прежние файлы программы перемещаются в отключённую папку резервной копии <code>.old</code>; реестр, PATH и ярлыки продолжают указывать только на новые файлы в корне. Встроенный апдейтер проверяет GitHub и сайт перед тихой установкой с заменой.",
       "install.linuxTitle": "Linux — tarball или сборка из исходников",
-      "install.linuxText": "Готовый Linux-пакет пока остаётся 0.1.0; для текущих функций используйте исходники 0.3.0 и выполните <code>make</code>. Распакуйте <code>FileTgie.linux.0.1.0.tar.gz</code> и запустите <code>./FileTgie --lang en help</code>; при желании скопируйте бинарник в <code>PATH</code>. Без установщика, прав администратора и сети. Проверено GCC 11.4.0 (Ubuntu 22.04, x86_64, glibc); C99/GNU99/C11/GNU11/GNU17 чисто, C99 GCC 5+ на современной glibc ожидаемо собирается. Пакет для x86_64 glibc (Debian/Ubuntu), не musl/Alpine; Clang не проверялся.",
+      "install.linuxText": "В готовом Linux-архиве v0.3.0 — stripped-бинарник x86_64 glibc, README, LICENSE, COPYING, LINUX.txt и документация. Распакуйте и запустите <code>./FileTgie --lang en help</code>; при желании скопируйте бинарник в <code>PATH</code>. Командам проверки не нужны установщик, права администратора и сеть; <code>checkupdate</code> запрашивает GitHub через curl. Проверено на Ubuntu 22.04, GCC 11.4.0, glibc 2.35; <code>-O2 -Wall -Wextra</code> и C99/GNU99/C11/GNU11/GNU17 собираются чисто. Пакет для x86_64 glibc (Debian/Ubuntu), не musl/Alpine; на другом дистрибутиве собирайте из исходников через <code>make</code>.",
       "install.linuxButton": "Скачать tarball Linux", "install.srcTitle": "Исходный код",
       "install.srcText": "Все исходники в <code>src/</code>; только стандартная библиотека C и родные API. На Windows запустите <code>build.bat</code>, на Linux — <code>make</code>; Windows-апдейтер собирается только на Windows.",
       "footer.author": "Автор", "footer.license": "Лицензия",

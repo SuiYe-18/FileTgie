@@ -14,7 +14,7 @@
 | Official website | https://suiye-18.github.io/filetgie-official-website/ |
 | Windows installer | [FileTgie.windows.0.3.0.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.3.0.setup.exe) |
 | Windows portable ZIP | [FileTgie.windows.0.3.0.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.3.0.portable.zip) |
-| Linux tarball | [FileTgie.linux.0.1.0.tar.gz](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.1.0.tar.gz) (prebuilt 0.1.0; source 0.3.0 builds with `make`) |
+| Linux tarball | [FileTgie.linux.0.3.0.tar.gz](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.linux.0.3.0.tar.gz) (x86_64 glibc; build other systems from source with `make`) |
 | Source archive | [FileTgie.source.0.3.0.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.3.0.zip) |
 
 ## Highlights
@@ -317,9 +317,11 @@ Use `fd -u` when the candidate set must include hidden files and paths ignored b
   `COPYING`。便携模式不写注册表、不写入 Program Files，除 exe 旁自身的
   `filetgie.log` 外不写用户位置，解压即用、删文件夹即卸载。
 
-* **Linux 预编译包**（`FileTgie.linux.0.1.0.tar.gz`）：保留上一轮已验证的
-  x86_64 glibc 二进制、README、LICENSE、COPYING 与 User Manual；0.3.0 源码可直接
-  用 `make` 构建，当前环境未重新生成 Linux ELF。
+* **Linux 预编译包**（`FileTgie.linux.0.3.0.tar.gz`）：含剥离符号的 x86_64
+  glibc 二进制、README、LICENSE、COPYING、LINUX.txt 与 User Manual；已在
+  Ubuntu 22.04 / GCC 11.4.0 / glibc 2.35 上零警告构建并完成回归。包面向
+  x86_64 glibc（Debian/Ubuntu 系），不保证 musl/Alpine；其他发行版用 `make`
+  从源码构建。
 
 * **安装程序**：提供 Inno Setup 6 脚本 `installer\installer.iss`，编译出
   `FileTgie.windows.0.3.0.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）

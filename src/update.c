@@ -105,6 +105,7 @@ static void json_field(const char* body, const char* key, char* out, size_t len)
     json_copy_string(json_value_start(body, key), out, len);
 }
 
+#ifdef _WIN32
 /* Find the first download URL whose name contains both windows and suffix. */
 static int extract_asset(const char* body, const char* suffix, char* out, size_t len) {
     const char* p = body;
@@ -120,6 +121,7 @@ static int extract_asset(const char* body, const char* suffix, char* out, size_t
     }
     return -1;
 }
+#endif
 
 static int check_no_extra(const LangPack* L, int argc, char** argv) {
     if (argc > 1) {
@@ -324,16 +326,18 @@ static int fetch_release(const LangPack* L, char* tag, size_t tag_len, char* set
 #ifdef _WIN32
     int status = win_http_text(FT_API_URL, &body);
 #else
+    (void)setup;
+    (void)setup_len;
     int status = linux_http_text(&body);
     if (status == 2) {
-        printf(L->upd_curl_missing);
+        printf("%s", L->upd_curl_missing);
         printf("\n");
         free(body.data);
         return 1;
     }
 #endif
     if (status != 200 || !body.data || body.len == 0) {
-        printf(L->upd_network);
+        printf("%s", L->upd_network);
         printf("\n");
         free(body.data);
         return 1;
@@ -343,7 +347,7 @@ static int fetch_release(const LangPack* L, char* tag, size_t tag_len, char* set
     if (tag[0] == 'v' || tag[0] == 'V')
         memmove(tag, tag + 1, strlen(tag));
     if (!tag[0] || parse_semver(tag, (int[3]){0,0,0}) == 0) {
-        printf(L->upd_parse);
+        printf("%s", L->upd_parse);
         printf("\n");
         free(body.data);
         return 1;
@@ -370,7 +374,7 @@ static int report_versions(const LangPack* L, const char* latest_tag, int* newer
         printf(L->upd_release_url, FT_RELEASE_URL);
         printf("\n");
     } else {
-        printf(L->upd_uptodate);
+        printf("%s", L->upd_uptodate);
         printf("\n");
     }
     return 0;
@@ -397,7 +401,7 @@ int cmd_update(const LangPack* L, int argc, char** argv) {
 
 #ifdef _WIN32
     if (!setup[0]) {
-        printf(L->upd_no_asset);
+        printf("%s", L->upd_no_asset);
         printf("\n");
         return 1;
     }
@@ -415,9 +419,9 @@ int cmd_update(const LangPack* L, int argc, char** argv) {
             snprintf(args, sizeof(args), "--current=%s --background", FILETGIE_VERSION);
             HINSTANCE uh = ShellExecuteA(NULL, "open", updater, args, NULL, SW_HIDE);
             if ((INT_PTR)uh > 32) {
-                printf(L->upd_launch);
+                printf("%s", L->upd_launch);
                 printf("\n");
-                printf(L->upd_done);
+                printf("%s", L->upd_done);
                 printf("\n");
                 return 0;
             }
@@ -427,7 +431,7 @@ int cmd_update(const LangPack* L, int argc, char** argv) {
     char tmp[MAX_PATH];
     DWORD n = GetTempPathA(MAX_PATH, tmp);
     if (n == 0 || n >= MAX_PATH) {
-        printf(L->upd_network);
+        printf("%s", L->upd_network);
         printf("\n");
         return 1;
     }
@@ -435,31 +439,31 @@ int cmd_update(const LangPack* L, int argc, char** argv) {
     snprintf(dest, sizeof(dest), "%sfiletgie-update-setup.exe", tmp);
     ft_remove_file(dest);
 
-    printf(L->upd_download);
+    printf("%s", L->upd_download);
     printf("\n");
     if (!win_http_download(setup, dest)) {
-        printf(L->upd_network);
+        printf("%s", L->upd_network);
         printf("\n");
         return 1;
     }
     printf(L->upd_downloaded, dest);
     printf("\n");
-    printf(L->upd_launch);
+    printf("%s", L->upd_launch);
     printf("\n");
 
     HINSTANCE h = ShellExecuteA(NULL, "runas", dest,
         "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /CLOSEAPPLICATIONS /FORCECLOSEAPPLICATIONS /MERGETASKS=overwrite",
         NULL, SW_SHOWNORMAL);
     if ((INT_PTR)h <= 32) {
-        printf(L->upd_network);
+        printf("%s", L->upd_network);
         printf("\n");
         return 1;
     }
-    printf(L->upd_done);
+    printf("%s", L->upd_done);
     printf("\n");
     return 0;
 #else
-    printf(L->upd_linux_manual);
+    printf("%s", L->upd_linux_manual);
     printf("\n");
     printf(L->upd_release_url, FT_RELEASE_URL);
     printf("\n");
@@ -527,12 +531,12 @@ static int reminder_valid_time(const char* s) {
 int cmd_reminder(const LangPack* L, int argc, char** argv) {
 #ifndef _WIN32
     (void)argc; (void)argv;
-    printf(L->rem_linux_manual);
+    printf("%s", L->rem_linux_manual);
     printf("\n");
     return 0;
 #else
     if (argc < 2) {
-        printf(L->rem_usage);
+        printf("%s", L->rem_usage);
         printf("\n");
         return 1;
     }
@@ -542,12 +546,12 @@ int cmd_reminder(const LangPack* L, int argc, char** argv) {
         if (reminder_task_exists()) {
             int rc = reminder_run("schtasks.exe /Delete /TN FileTgieReminder /F");
             if (rc != 0) {
-                printf(L->rem_scheduler_failed);
+                printf("%s", L->rem_scheduler_failed);
                 printf("\n");
                 return 1;
             }
         }
-        printf(L->rem_off);
+        printf("%s", L->rem_off);
         printf("\n");
         return 0;
     }
@@ -559,7 +563,7 @@ int cmd_reminder(const LangPack* L, int argc, char** argv) {
     }
 
     if (!ft_strcase_eq(action, "on")) {
-        printf(L->rem_bad_schedule);
+        printf("%s", L->rem_bad_schedule);
         printf("\n");
         return 1;
     }
@@ -567,14 +571,14 @@ int cmd_reminder(const LangPack* L, int argc, char** argv) {
     const char* mode = argc >= 3 ? argv[2] : "daily";
     const char* time = argc >= 4 ? argv[3] : "09:00";
     if (argc >= 5) {
-        printf(L->rem_bad_schedule);
+        printf("%s", L->rem_bad_schedule);
         printf("\n");
         return 1;
     }
 
     char exe[MAX_PATH + 64], args[64];
     if (!reminder_action(exe, sizeof(exe), args, sizeof(args))) {
-        printf(L->rem_scheduler_failed);
+        printf("%s", L->rem_scheduler_failed);
         printf("\n");
         return 1;
     }
@@ -583,7 +587,7 @@ int cmd_reminder(const LangPack* L, int argc, char** argv) {
     int built = 0;
     if (ft_strcase_eq(mode, "daily")) {
         if (!reminder_valid_time(time)) {
-            printf(L->rem_bad_schedule);
+            printf("%s", L->rem_bad_schedule);
             printf("\n");
             return 1;
         }
@@ -595,19 +599,19 @@ int cmd_reminder(const LangPack* L, int argc, char** argv) {
             "schtasks.exe /Create /TN FileTgieReminder "
             "/TR \"\\\"%s\\\" %s\" /SC HOURLY /MO 1 /F", exe, args) > 0;
     } else {
-        printf(L->rem_bad_schedule);
+        printf("%s", L->rem_bad_schedule);
         printf("\n");
         return 1;
     }
 
     if (!built || reminder_run(cmdline) != 0) {
-        printf(L->rem_scheduler_failed);
+        printf("%s", L->rem_scheduler_failed);
         printf("\n");
         return 1;
     }
 
     if (ft_strcase_eq(mode, "daily")) printf(L->rem_on_daily, time);
-    else printf(L->rem_on_hourly);
+    else printf("%s", L->rem_on_hourly);
     printf("\n");
     return 0;
 #endif
