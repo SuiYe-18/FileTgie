@@ -184,6 +184,24 @@ typedef struct {
     const char* cmp_text_files;  /* text files row label                */
     const char* cmp_hidden;      /* hidden files row label              */
     const char* cmp_avg_size;    /* average file size row label         */
+
+    /* --- v0.2.0: manual update check / update (appended; keep 4 packs in sync) --- */
+    const char* h_checkupdate;     /* checkupdate help text              */
+    const char* h_update;          /* update help text                   */
+    const char* upd_current;       /* current version line, %s           */
+    const char* upd_latest;        /* latest version line, %s            */
+    const char* upd_uptodate;      /* already latest                      */
+    const char* upd_newer;         /* newer available, %s                */
+    const char* upd_network;       /* network failure                     */
+    const char* upd_parse;         /* release JSON parse failure          */
+    const char* upd_no_asset;      /* Windows installer asset missing     */
+    const char* upd_download;      /* downloading message                */
+    const char* upd_downloaded;    /* saved installer path, %s           */
+    const char* upd_launch;        /* launching installer                */
+    const char* upd_done;          /* installer launched guidance        */
+    const char* upd_linux_manual;  /* Linux manual upgrade note          */
+    const char* upd_release_url;   /* release URL line, %s               */
+    const char* upd_curl_missing;  /* Linux curl unavailable             */
 } LangPack;
 
 /* 按语言码（cn/en/ja/ru）返回对应包，无法识别时回退到 cn。

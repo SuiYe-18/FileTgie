@@ -1,11 +1,11 @@
 ﻿==============================================================
- FileTgie v0.1.1 - Beginner User Manual / 新手用户手册
+ FileTgie v0.2.0 - Beginner User Manual / 新手用户手册
 ==============================================================
 
 by SuiYe_TR (Suiye-18) - Single Author
 GitHub: https://github.com/Suiye-18
 License: LGPL-3.0-or-later
-Version: v0.1.1
+Version: v0.2.0
 
 This manual is written in English with a Chinese translation under
 each paragraph. Commands, options and numbers come only from the
@@ -49,20 +49,27 @@ Japanese ja, Russian ru, switched with a command-line option.
 2. Read-only Safety / 只读安全承诺
 ==============================================================
 
-Every command only calls reading interfaces: directory enumeration,
-stat (file metadata), and fread (reading bytes). FileTgie never
-modifies, deletes or moves your files; it only inspects them.
+Inspection commands only call reading interfaces: directory
+enumeration, stat (file metadata), and fread (reading bytes). They
+never modify, delete or move your files; they only inspect them.
 
-所有命令只调用读取接口：目录枚举、stat（文件元信息）、fread（读取
-字节）。FileTgie 不修改、不删除、不移动你的文件，只做查看。
+检查类命令只调用读取接口：目录枚举、stat（文件元信息）、fread（读取
+字节），不修改、不删除、不移动用户文件，只做查看。
 
-The only thing FileTgie ever writes is its own filetgie.log next to
-the executable. The log command prints this log, and dellog deletes
-this log only; no other file on your disk is ever touched.
+During normal use the only FileTgie writes are its own filetgie.log next
+to the executable: log prints it, and dellog deletes this log only.
+The explicit update command upgrades FileTgie itself: on Windows it
+launches the bundled FileTgieUpdater.exe, which checks GitHub and the
+website and starts the newer silent installer. During an overwrite, the
+previous program files are moved to a disabled .old backup folder before
+the new files take over; on Linux it prints manual source-build steps
+and never replaces the binary.
 
-FileTgie 唯一写入的位置是可执行文件旁自身的 filetgie.log。log 命令
-查看该日志，dellog 只删除这一份自身日志；绝不触碰磁盘上的任何
-其他文件。
+常规使用中，FileTgie 只写入可执行文件旁自身的 filetgie.log：log 查看，
+dellog 只删除这一份自身日志。显式 update 命令只更新 FileTgie 自身：
+Windows 启动同目录 FileTgieUpdater.exe，由它检查 GitHub 与官网并启动
+新版静默安装；覆盖时旧程序文件先移动到禁用的 .old 备份文件夹，再由新文件
+接管；Linux 只打印源码构建的手动升级步骤，不替换二进制。
 
 
 ==============================================================
@@ -71,17 +78,37 @@ FileTgie 唯一写入的位置是可执行文件旁自身的 filetgie.log。log 
 
 Portable edition / 绿色便携包
 
-The portable package only contains FileTgie.exe, README.md, LICENSE
-and COPYING. It is fully portable: it does not write to the registry
-and does not install into Program Files. Unzip it and use it; to
-uninstall, simply delete the folder.
+The portable package contains FileTgie.exe, FileTgieUpdater.exe,
+README.md, User Manual.txt, LICENSE and COPYING. It is fully portable:
+it does not write to the registry and does not install into Program
+Files. Unzip it and use it; to uninstall, simply delete the folder.
 
-便携包仅含 FileTgie.exe、README.md、LICENSE、COPYING。工具完全便携：
-不写注册表、不写入 Program Files。解压即用，删除文件夹即完成卸载。
+便携包含 FileTgie.exe、FileTgieUpdater.exe、README.md、User Manual.txt、
+LICENSE、COPYING。工具完全便携：不写注册表、不写入 Program Files。解压即用，
+删除文件夹即完成卸载。
 
 The portable edition does not require administrator rights.
 
 便携版不需要管理员权限。
+
+Windows installer / Windows 安装包
+
+The installer registers App Paths and system PATH under Program Files.
+It detects an installed FileTgie, App Paths registration, or leftover
+files after a non-official deletion. The overwrite option is checked by
+default; uncheck it and choose another directory to preserve the old
+copy. On overwrite, previous FileTgie.exe, FileTgieUpdater.exe and
+documentation files are moved to .old next to the installation folder.
+The registry, PATH and shortcuts always point to the new files in the
+root folder; .old is a disabled backup and is never launched.
+Installation needs administrator rights for registry and PATH changes.
+
+安装包在 Program Files 中部署并注册 App Paths、系统 PATH。它会检测已
+安装的 FileTgie、App Paths 注册，或非官方删除后的残留文件。“覆盖安装”默认
+勾选；保留旧副本时请取消勾选并另选目录。覆盖时，旧的 FileTgie.exe、
+FileTgieUpdater.exe 与文档会移动到安装目录旁的 .old 备份文件夹；注册表、
+PATH 与快捷方式始终指向根目录新文件，.old 只是禁用备份，不会被启动。注册与
+PATH 修改需要管理员权限。
 
 Linux portable tarball / Linux 便携包
 
@@ -98,13 +125,16 @@ Building from source / 从源码构建
 
 Windows (MinGW gcc), in the project root directory:
 
-  gcc -O2 -Wall -o FileTgie.exe src\main.c src\commands.c src\port.c src\util.c src\i18n.c
+  gcc -O2 -Wall -Wextra -o FileTgie.exe src\main.c src\commands.c src\port.c src\util.c src\i18n.c src\update.c -lwinhttp -lshell32
+  gcc -O2 -Wall -Wextra -o FileTgieUpdater.exe src\updater_main.c -lwinhttp -lshell32
 
-Or just run build.bat. The build expects zero warnings with -O2 -Wall
-and produces FileTgie.exe.
+Or just run build.bat. The build expects zero warnings with
+-O2 -Wall -Wextra and produces FileTgie.exe plus the Windows-only
+FileTgieUpdater.exe; Linux make does not build the updater.
 
 Windows（MinGW gcc）在项目根目录执行上述命令，或直接运行 build.bat。
-构建要求 -O2 -Wall 零警告，产出 FileTgie.exe。
+构建要求 -O2 -Wall -Wextra 零警告，产出 FileTgie.exe 与 Windows 专用
+FileTgieUpdater.exe；Linux make 不构建更新器。
 
 Linux (gcc / clang):
 
@@ -188,7 +218,7 @@ rc=0；用法错误、路径未找到、参数错误返回 rc=1。
 
 
 ==============================================================
-5. Command Reference / 命令参考 (58 commands / 58 条命令)
+5. Command Reference / 命令参考 (60 commands / 60 条命令)
 ==============================================================
 
 Each entry gives: command name, syntax, one English-purpose line,
@@ -587,6 +617,28 @@ CN: 分组对比两个目录：文件数、目录数、总大小、精确字节�
 - 表示 B 更少，=0 表示没有变化。
 Example: FileTgie --lang en dirdiff ./old ./new
 
+59) checkupdate
+Syntax: checkupdate
+EN: Query the GitHub latest release and compare it with the local
+version; it only reports current/latest status and never installs.
+CN: 查询 GitHub 最新 Release 并与本地版本比较；只报告当前/最新状态，
+不执行安装。
+Example: FileTgie --lang en checkupdate
+
+60) update
+Syntax: update
+EN: On Windows, launch the bundled FileTgieUpdater.exe; it checks GitHub
+and the website, downloads the newer installer, and starts the silent
+overwrite install. The installer moves previous program files to .old
+before the new files take over. On Linux, print manual source-build
+upgrade steps and never replace the binary.
+CN: Windows 端启动同目录的 FileTgieUpdater.exe；它同时检查 GitHub 与
+官网，下载新版安装包并启动静默覆盖安装。安装器会先把旧程序文件移入 .old，
+再由新文件接管。Linux 端只打印源码构建的手动升级步骤，不替换二进制。
+Example: FileTgie --lang en update
+Standalone updater: FileTgieUpdater.exe --check
+Background mode:    FileTgieUpdater.exe --background --current=0.2.0
+
 
 ==============================================================
 6. Languages / 语言切换
@@ -629,6 +681,31 @@ working directory.
 
 用 log 查看日志，用 dellog 清空（删除）日志。日志路径在程序内统一
 计算，不依赖当前工作目录。
+
+checkupdate is a manual, read-only network check: it queries GitHub,
+compares the local version with the latest release and reports status.
+update performs the same check first; on Windows it launches the bundled
+FileTgieUpdater.exe, which checks GitHub and the official website,
+downloads the newer installer, and starts the silent overwrite install.
+Linux only prints manual upgrade commands. Nothing checks automatically
+on startup.
+
+checkupdate 是手动、只读的网络检查：查询 GitHub，比较本地版本与最新
+Release 并报告状态。update 先执行同样检查；Windows 随后启动同目录的
+FileTgieUpdater.exe，由它同时检查 GitHub 与官网、下载新版安装包并启动
+静默覆盖安装；Linux 只打印手动升级命令。程序启动时不会自动检查。
+
+The installer detects an installed FileTgie, App Paths registration, or
+leftover files after a non-official deletion. The "overwrite installation"
+option is checked by default; uncheck it and choose another directory if
+you want to keep the old copy untouched. On overwrite, old program files
+are moved to a disabled .old backup folder; the active registry, PATH and
+shortcuts continue to point only to the new root-folder files.
+
+安装包会检测已安装的 FileTgie、App Paths 注册，或非官方删除后留下的
+残留文件。“覆盖安装”默认勾选；若要保留旧副本，请取消勾选并另选目录。覆盖时，
+旧程序文件会移入禁用的 .old 备份文件夹；生效的注册表、PATH 与快捷方式始终只
+指向根目录新文件。
 
 
 ==============================================================

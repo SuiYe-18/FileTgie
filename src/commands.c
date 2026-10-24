@@ -1633,6 +1633,8 @@ const CommandEntry CMD_TABLE[] = {
     { "langs",       cmd_langs,      OFF(h_langs) },
     { "log",         cmd_log,        OFF(h_log) },
     { "dellog",      cmd_dellog,     OFF(h_dellog) },
+    { "checkupdate", cmd_checkupdate, OFF(h_checkupdate) },
+    { "update",      cmd_update,      OFF(h_update) },
     { "stat",        cmd_stat,       OFF(h_stat) },
     { "count",       cmd_count,       OFF(h_count) },
     { "lines",       cmd_lines,       OFF(h_lines) },

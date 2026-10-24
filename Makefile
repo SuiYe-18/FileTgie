@@ -3,7 +3,7 @@
 CC      ?= gcc
 CFLAGS  ?= -O2 -Wall -Wextra
 LDLIBS  ?= -lm
-SRCS    = src/main.c src/commands.c src/port.c src/util.c src/i18n.c
+SRCS    = src/main.c src/commands.c src/port.c src/util.c src/i18n.c src/update.c
 TARGET  = FileTgie
 
 all: $(TARGET)

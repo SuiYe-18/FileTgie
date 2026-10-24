@@ -137,7 +137,24 @@ static const LangPack ZH = {
     "差值(B-A)",
     "文本文件",
     "隐藏文件",
-    "平均文件大小"
+    "平均文件大小",
+    /* v0.2.0 manual update */
+    "联网检查 GitHub 是否有新版本",
+    "下载并启动 Windows 新版安装包",
+    "当前版本: v%s",
+    "最新版本: v%s",
+    "当前已是最新版本。",
+    "发现新版本: v%s",
+    "网络请求失败，请检查网络连接。",
+    "无法解析 GitHub Release 返回内容。",
+    "最新版本中未找到 Windows 安装包。",
+    "正在下载安装包...",
+    "安装包已保存: %s",
+    "正在启动静默安装（可能弹出 UAC 提权）...",
+    "安装器已启动；完成后请打开新终端运行 version 查看版本。",
+    "Linux 不自动替换二进制：请下载源码包执行 make，并手动替换。",
+    "发布页: %s",
+    "Linux 需要 curl 才能检查更新。"
 };
 
 /* ------------------------------------------------------------------ */
@@ -262,7 +279,24 @@ static const LangPack EN = {
     "Delta (B-A)",
     "Text files",
     "Hidden files",
-    "Average file size"
+    "Average file size",
+    /* v0.2.0 manual update */
+    "Check GitHub for a newer release",
+    "Download and launch the newer Windows installer",
+    "Current: v%s",
+    "Latest: v%s",
+    "You are already on the latest version.",
+    "A newer version is available: v%s",
+    "Network request failed; check your connection.",
+    "Failed to parse the GitHub release response.",
+    "The latest release has no Windows installer asset.",
+    "Downloading installer...",
+    "Installer saved: %s",
+    "Launching silent installer (a UAC prompt may appear)...",
+    "Installer launched; after it finishes, open a new terminal and run version.",
+    "Linux does not self-replace: download the source package, run make, and replace the binary manually.",
+    "Release: %s",
+    "curl is required for Linux update checks."
 };
 
 /* ------------------------------------------------------------------ */
@@ -387,7 +421,24 @@ static const LangPack JA = {
     "差(B-A)",
     "テキストファイル",
     "隠しファイル",
-    "平均ファイルサイズ"
+    "平均ファイルサイズ",
+    /* v0.2.0 manual update */
+    "GitHub の新しいリリースを確認",
+    "新しい Windows インストーラをダウンロードして起動",
+    "現在: v%s",
+    "最新: v%s",
+    "すでに最新バージョンです。",
+    "新しいバージョン: v%s",
+    "ネットワーク要求に失敗しました。接続を確認してください。",
+    "GitHub Release の応答を解析できません。",
+    "最新リリースに Windows インストーラが見つかりません。",
+    "インストーラをダウンロード中...",
+    "インストーラを保存しました: %s",
+    "サイレントインストーラを起動します(UAC が表示される場合があります)...",
+    "インストーラを起動しました。完了後、新しいターミナルで version を実行してください。",
+    "Linux では自己置換しません。ソースをダウンロードして make し、手動で置換してください。",
+    "リリース: %s",
+    "Linux の更新確認には curl が必要です。"
 };
 
 /* ------------------------------------------------------------------ */
@@ -512,7 +563,24 @@ static const LangPack RU = {
     "Разница (B-A)",
     "Текстовые файлы",
     "Скрытые файлы",
-    "Средний размер файла"
+    "Средний размер файла",
+    /* v0.2.0 manual update */
+    "Проверить новый релиз на GitHub",
+    "Скачать и запустить новый установщик Windows",
+    "Текущая: v%s",
+    "Последняя: v%s",
+    "У вас уже последняя версия.",
+    "Доступна новая версия: v%s",
+    "Сбой сетевого запроса. Проверьте подключение.",
+    "Не удалось разобрать ответ GitHub Release.",
+    "В последнем релизе нет установщика Windows.",
+    "Загрузка установщика...",
+    "Установщик сохранён: %s",
+    "Запуск тихой установки (может появиться запрос UAC)...",
+    "Установщик запущен. После завершения откройте новый терминал и выполните version.",
+    "Linux не заменяет бинарник: скачайте исходники, выполните make и замените файл вручную.",
+    "Релиз: %s",
+    "Для проверки обновлений в Linux нужен curl."
 };
 
 /* 全部语言包的注册表，顺序即 lang_list_all 的输出顺序。
