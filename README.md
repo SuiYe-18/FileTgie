@@ -1,4 +1,4 @@
-# FileTgie v0.4.0
+# FileTgie v0.4.1
 
 > A lightweight, read-only, zero-dependency file statistics and search CLI written in pure C.
 > One source tree builds for Windows and Linux; every command only reads and never modifies your files.
@@ -12,10 +12,10 @@
 | Package | Link |
 | --- | --- |
 | Official website | https://suiye-18.github.io/filetgie-official-website/ |
-| Windows installer | [FileTgie.windows.0.4.0.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.4.0.setup.exe) |
-| Windows portable ZIP | [FileTgie.windows.0.4.0.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.4.0.portable.zip) |
-| Linux | Build from the source archive with `make`; the last verified x86_64 glibc prebuilt package remains in the [v0.3.0 Release](https://github.com/SuiYe-18/FileTgie/releases/download/v0.3.0/FileTgie.linux.0.3.0.tar.gz) |
-| Source archive | [FileTgie.source.0.4.0.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.4.0.zip) |
+| Windows installer | [FileTgie.windows.0.4.1.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.4.1.setup.exe) |
+| Windows portable ZIP | [FileTgie.windows.0.4.1.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.4.1.portable.zip) |
+| Linux x86_64 glibc | Verified unchanged [v0.4.0 tarball](https://github.com/SuiYe-18/FileTgie/releases/download/v0.4.0/FileTgie.linux.0.4.0.tar.gz); other distributions build from source with `make` |
+| Source archive | [FileTgie.source.0.4.1.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.4.1.zip) |
 
 ## Highlights
 
@@ -64,13 +64,11 @@ FileTgie --lang en reminder off
 * **patch（.x）**：只用于小补丁、小插曲（修小问题、文案微调），不进入
   minor 的进位序列。
 
-当前版本为 `0.4.0`：在 `0.3.0` 可选 `reminder` 的基础上，把 Windows 默认检查间隔
-改为每 1 分钟只读检查，并支持 `reminder on every N`（1–1439 分钟自定义间隔）；
-`daily HH:MM`（缺省 09:00）与 `hourly` 保持兼容。任务运行
-`FileTgieUpdater.exe --check --notify`，同时检查 GitHub Release 与官网版本；
-发现新版本时按版本号去重，每个新版本只弹出一次系统通知，不在同一版本上反复打扰。
-`reminder status` 查询任务，`reminder off` 删除任务；Linux 不修改 crontab，只打印
-手动 cron 说明。
+当前版本为 `0.4.1`：这是 `0.4.0` 的 Windows 补丁版，保留 1 分钟缺省只读检查、
+`reminder on every N`（1–1439 分钟自定义间隔）、`daily HH:MM` 与 `hourly`，以及按
+版本号去重的系统通知。本次只改进独立更新器的前台下载体验：下载开始前显示白色 `=`
+进度条，已完成字节显示绿色 `>`，剩余部分保持白色 `=`；临时文件、无效 URL、网络会话、
+连接、无响应、HTTP 状态、重定向与磁盘写入失败都会输出明确错误，不再只显示笼统失败。
 `checkupdate` 只查询 GitHub Release 并比较版本；Windows 的 `update` 调用独立更新器，
 同时检查 GitHub 与官网，后台下载新版安装包并静默覆盖；Linux 只给出手动源码升级
 命令，不替换二进制。安装包会检测已安装 FileTgie 或旧版残留，并提供“覆盖安装”勾选；
@@ -114,8 +112,8 @@ make
 
 * 历史实机验证：GCC 11.4.0（Ubuntu 22.04 / x86_64 / glibc）曾以
   `-O2 -Wall -Wextra` 零警告编译，并在 C99/GNU99/C11/GNU11/GNU17 标准下通过。
-* 预期可编译：支持 C99 的 GCC 5+ 与现代 glibc；本轮 v0.4.0 未在本地 Linux
-  工具链中重新实机构建，未逐版本实测更低版本。
+* 预期可编译：支持 C99 的 GCC 5+ 与现代 glibc；v0.4.0 的 x86_64 glibc 预编译包
+  已实机验证，v0.4.1 未改动 Linux 平台代码，未逐版本实测更低 GCC。
 * musl/Alpine 不保证；其他发行版直接 `make` 从源码构建。Clang 本次未实测。
 
 ## 通用用法
@@ -309,19 +307,19 @@ Use `fd -u` when the candidate set must include hidden files and paths ignored b
 
 ## 便携包与安装程序
 
-* **Windows 绿色便携包**（`FileTgie.windows.0.4.0.portable.zip`）：含
+* **Windows 绿色便携包**（`FileTgie.windows.0.4.1.portable.zip`）：含
   `FileTgie.exe`、`FileTgieUpdater.exe`、`README.md`、`User Manual.txt`、`LICENSE`、
   `COPYING`。便携模式不写注册表、不写入 Program Files，除 exe 旁自身的
   `filetgie.log` 外不写用户位置，解压即用、删文件夹即卸载。
 
 * **Linux 构建**：源码包在 Linux 执行 `make` 即可生成 `FileTgie`；检查与统计
   命令为 POSIX 只读路径，`update` / `reminder` 在 Linux 只打印手动步骤，不替换
-  二进制、不修改 crontab。v0.4.0 本轮未在本地 Linux 工具链中重打预编译 tarball；
-  上一版 x86_64 glibc 预编译包保留在 v0.3.0 Release，其他发行版或新版本请用
+  二进制、不修改 crontab。v0.4.1 只改动 Windows 专用更新器，Linux 代码保持不变；
+  已验证的 x86_64 glibc 预编译包仍为 v0.4.0 tarball，其他发行版或新版本请用
   `make` 从源码构建。
 
 * **安装程序**：提供 Inno Setup 6 脚本 `installer\installer.iss`，编译出
-  `FileTgie.windows.0.4.0.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
+  `FileTgie.windows.0.4.1.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
   /桌面（默认不勾选）快捷方式、标准卸载项，以及默认勾选的“覆盖安装”选项；安装前
   检测已注册的 FileTgie、App Paths 与旧版残留文件，不勾选覆盖时需另选目录。覆盖时
   先把旧的 `FileTgie.exe`、`FileTgieUpdater.exe` 和文档移动到安装目录 `.old` 备份，

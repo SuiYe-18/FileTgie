@@ -1,11 +1,11 @@
 ﻿==============================================================
- FileTgie v0.4.0 - Beginner User Manual / 新手用户手册
+ FileTgie v0.4.1 - Beginner User Manual / 新手用户手册
 ==============================================================
 
 by SuiYe_TR (Suiye-18) - Single Author
 GitHub: https://github.com/Suiye-18
 License: LGPL-3.0-or-later
-Version: v0.4.0
+Version: v0.4.1
 
 This manual is written in English with a Chinese translation under
 each paragraph. Commands, options and numbers come only from the
@@ -115,16 +115,17 @@ PATH 修改需要管理员权限。
 
 Linux build / Linux 构建
 
-This v0.4.0 release supplies Linux-compatible source code; build on Linux with
-`make`, then run `./FileTgie --lang en help` and optionally copy FileTgie into a
-directory in PATH. Inspection commands need no installer, administrator rights
-or network; checkupdate uses curl to query GitHub. The last verified x86_64
-glibc prebuilt tarball remains in the v0.3.0 Release.
+v0.4.1 changes only the Windows standalone updater; the Linux-compatible source
+code remains available for `make`, after which run `./FileTgie --lang en help`
+and optionally copy FileTgie into a directory in PATH. Inspection commands need
+no installer, administrator rights or network; checkupdate uses curl to query
+GitHub. The verified x86_64 glibc prebuilt tarball remains the unchanged
+v0.4.0 Release package.
 
-v0.4.0 提供兼容 Linux 的源码；在 Linux 上执行 `make` 构建，然后运行
-`./FileTgie --lang en help`，也可按需把 FileTgie 复制到 PATH 目录。检查类
+v0.4.1 只改动 Windows 专用独立更新器；兼容 Linux 的源码仍可执行 `make` 构建，
+然后运行 `./FileTgie --lang en help`，也可按需把 FileTgie 复制到 PATH 目录。检查类
 命令不需要安装程序、管理员权限或网络；checkupdate 通过 curl 查询 GitHub。
-最后一个已验证的 x86_64 glibc 预编译 tarball 保留在 v0.3.0 Release。
+已验证的 x86_64 glibc 预编译包保持为未改动的 v0.4.0 Release 包。
 
 Building from source / 从源码构建
 
@@ -635,16 +636,23 @@ Example: FileTgie --lang en checkupdate
 Syntax: update
 EN: On Windows, launch the bundled FileTgieUpdater.exe; it checks GitHub
 and the website, downloads the newer installer, and starts the silent
-overwrite install. The installer moves previous program files to .old
-before the new files take over. On Linux, print manual source-build
-upgrade steps and never replace the binary.
+overwrite install. In foreground mode, the download bar starts as white
+`=`; green `>` shows completed bytes and white `=` remains for the rest.
+Download failures show a specific error, such as invalid URL, network
+session, connection, response, HTTP status, redirect or disk write.
+The installer moves previous program files to .old before the new files
+take over. On Linux, print manual source-build upgrade steps and never
+replace the binary.
 CN: Windows 端启动同目录的 FileTgieUpdater.exe；它同时检查 GitHub 与
-官网，下载新版安装包并启动静默覆盖安装。安装器会先把旧程序文件移入 .old，
-再由新文件接管。Linux 端只打印源码构建的手动升级步骤，不替换二进制。
+官网，下载新版安装包并启动静默覆盖安装。前台模式下进度条开始为白色 `=`，
+绿色 `>` 表示已完成字节，白色 `=` 表示剩余部分；下载失败会明确说明无效 URL、
+网络会话、连接、响应、HTTP 状态、重定向或磁盘写入等具体原因。安装器会先把旧
+程序文件移入 .old，再由新文件接管。Linux 端只打印源码构建的手动升级步骤，不
+替换二进制。
 Example: FileTgie --lang en update
 Standalone check:   FileTgieUpdater.exe --check
 Notify-only check:  FileTgieUpdater.exe --check --notify
-Background mode:    FileTgieUpdater.exe --background --current=0.4.0
+Background mode:    FileTgieUpdater.exe --background --current=0.4.1
 Silent upgrade task: the installer uses /MERGETASKS=overwrite for the .old backup/replacement path.
 
 61) reminder
@@ -670,7 +678,7 @@ Daily:    FileTgie --lang en reminder on daily 09:00
 Status:   FileTgie --lang en reminder status
 Disable:  FileTgie --lang en reminder off
 Standalone updater: FileTgieUpdater.exe --check --notify
-Background mode:    FileTgieUpdater.exe --background --current=0.4.0
+Background mode:    FileTgieUpdater.exe --background --current=0.4.1
 
 
 ==============================================================

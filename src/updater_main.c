@@ -22,8 +22,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdarg.h>
 
 #define FT_GITHUB_API "https://api.github.com/repos/SuiYe-18/FileTgie/releases/latest"
+#define FT_BAR_WIDTH 21
 #define FT_WEBSITE "https://suiye-18.github.io/filetgie-official-website/"
 #define FT_RELEASE_URL "https://github.com/SuiYe-18/FileTgie/releases/latest"
 
@@ -160,24 +162,69 @@ static int http_get(const char* url_in, Buf* out) {
     return 0;
 }
 
-static int http_download(const char* url_in, const char* dest) {
+static void set_error(char* err, size_t len, const char* fmt, ...) {
+    if (!err || len == 0) return;
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(err, len, fmt, args);
+    va_end(args);
+}
+
+/* White = before the bytes arrive; green > shows completed bytes, white = remains. */
+static void print_progress(int filled, int background) {
+    if (background) return;
+    if (filled < 0) filled = 0;
+    if (filled > FT_BAR_WIDTH) filled = FT_BAR_WIDTH;
+
+    HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO info;
+    WORD original = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+    if (GetConsoleScreenBufferInfo(out, &info)) original = info.wAttributes;
+
+    fputc('\r', stdout);
+    SetConsoleTextAttribute(out, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    for (int i = 0; i < filled; i++) fputc('>', stdout);
+    SetConsoleTextAttribute(out, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+    for (int i = filled; i < FT_BAR_WIDTH; i++) fputc('=', stdout);
+    SetConsoleTextAttribute(out, original);
+    fflush(stdout);
+}
+
+static int http_download(const char* url_in, const char* dest, int background,
+                        char* err, size_t err_len) {
     char url[2048];
     snprintf(url, sizeof(url), "%s", url_in);
     FILE* f = fopen(dest, "wb");
-    if (!f) return 0;
+    if (!f) {
+        set_error(err, err_len, "Cannot create temporary installer file: %s", dest);
+        return 0;
+    }
     int ok = 0;
     for (int hop = 0; hop < 5; hop++) {
         char host[256], path[2048];
-        if (split_https(url, host, sizeof(host), path, sizeof(path)) != 0) break;
+        if (split_https(url, host, sizeof(host), path, sizeof(path)) != 0) {
+            set_error(err, err_len, "Invalid installer download URL.");
+            break;
+        }
+
         HINTERNET session = WinHttpOpen(L"FileTgieUpdater/0.2",
             WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME,
             WINHTTP_NO_PROXY_BYPASS, 0);
+        if (!session) {
+            set_error(err, err_len, "Cannot open WinHTTP network session (error %lu).", GetLastError());
+            break;
+        }
+
         wchar_t* whost = NULL;
         wchar_t* wpath = NULL;
-        int ready = session && to_wide(host, &whost) == 0 && to_wide(path, &wpath) == 0;
+        int ready = to_wide(host, &whost) == 0 && to_wide(path, &wpath) == 0;
         HINTERNET connect = ready ? WinHttpConnect(session, whost, INTERNET_DEFAULT_HTTPS_PORT, 0) : NULL;
         HINTERNET request = connect ? WinHttpOpenRequest(connect, L"GET", wpath, NULL,
             WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, WINHTTP_FLAG_SECURE) : NULL;
+        if (!request) {
+            set_error(err, err_len, "Cannot connect to the download server (error %lu).", GetLastError());
+        }
+
         DWORD status = 0;
         if (request && WinHttpSendRequest(request, L"User-Agent: FileTgieUpdater\r\n",
                 (DWORD)-1L, WINHTTP_NO_REQUEST_DATA, 0, 0, 0) &&
@@ -186,13 +233,45 @@ static int http_download(const char* url_in, const char* dest) {
             WinHttpQueryHeaders(request,
                 WINHTTP_QUERY_STATUS_CODE | WINHTTP_QUERY_FLAG_NUMBER,
                 WINHTTP_HEADER_NAME_BY_INDEX, &status, &size, WINHTTP_NO_HEADER_INDEX);
+        } else if (request) {
+            set_error(err, err_len, "Network request failed before response (WinHTTP error %lu).", GetLastError());
         }
+
         if (status == 200 && request) {
+            ULONGLONG expected = 0;
+            ULONGLONG received = 0;
+            DWORD header_size = 0;
+            if (WinHttpQueryHeaders(request, WINHTTP_QUERY_CONTENT_LENGTH,
+                    WINHTTP_HEADER_NAME_BY_INDEX, NULL, &header_size,
+                    WINHTTP_NO_HEADER_INDEX) && header_size > 0) {
+                char* header = (char*)malloc(header_size + 1);
+                if (header) {
+                    memset(header, 0, header_size + 1);
+                    if (WinHttpQueryHeaders(request, WINHTTP_QUERY_CONTENT_LENGTH,
+                            WINHTTP_HEADER_NAME_BY_INDEX, header, &header_size,
+                            WINHTTP_NO_HEADER_INDEX))
+                        expected = _strtoui64(header, NULL, 10);
+                    free(header);
+                }
+            }
+
+            print_progress(0, background);
             char chunk[16384];
             DWORD n = 0;
-            while (WinHttpReadData(request, chunk, (DWORD)sizeof(chunk), &n) && n > 0)
-                if (fwrite(chunk, 1, n, f) != n) { status = 0; break; }
+            while (WinHttpReadData(request, chunk, (DWORD)sizeof(chunk), &n) && n > 0) {
+                if (fwrite(chunk, 1, n, f) != n) {
+                    set_error(err, err_len, "Disk write error while saving the installer.");
+                    status = 0;
+                    break;
+                }
+                received += n;
+                if (expected > 0) {
+                    int filled = (int)((received * FT_BAR_WIDTH) / expected);
+                    print_progress(filled, background);
+                }
+            }
             ok = status == 200;
+            if (ok) print_progress(FT_BAR_WIDTH, background);
         } else if (status >= 301 && status <= 308 && request) {
             DWORD size = 0;
             WinHttpQueryHeaders(request, WINHTTP_QUERY_LOCATION, L"Location",
@@ -204,10 +283,17 @@ static int http_download(const char* url_in, const char* dest) {
                     char next[2048];
                     WideCharToMultiByte(CP_UTF8, 0, loc, -1, next, sizeof(next), NULL, NULL);
                     snprintf(url, sizeof(url), "%s", next);
+                } else {
+                    set_error(err, err_len, "Invalid redirect received from the download server.");
                 }
                 free(loc);
+            } else {
+                set_error(err, err_len, "Redirect response did not include a Location header.");
             }
+        } else if (status > 0) {
+            set_error(err, err_len, "Unexpected HTTP status %lu from the download server.", status);
         }
+
         if (request) WinHttpCloseHandle(request);
         if (connect) WinHttpCloseHandle(connect);
         if (session) WinHttpCloseHandle(session);
@@ -450,14 +536,22 @@ int main(int argc, char** argv) {
     snprintf(dest, sizeof(dest), "%sfiletgie-update-setup.exe", tmp);
     DeleteFileA(dest);
 
-    if (!background) printf("Downloading installer...\n");
-    if (!http_download(asset, dest)) {
-        fprintf(stderr, "Installer download failed.\n");
+    char download_error[512] = "Unknown download failure.";
+    if (!background) {
+        printf("Downloading installer...\n");
+        print_progress(0, background);
+    }
+    if (!http_download(asset, dest, background, download_error, sizeof(download_error))) {
+        if (!background) fputc('\n', stderr);
+        fprintf(stderr, "Installer download failed: %s\n", download_error);
         buf_free(&gh); buf_free(&site);
         return 1;
     }
 
-    if (!background) printf("Launching silent overwrite installer...\n");
+    if (!background) {
+        fputc('\n', stdout);
+        printf("Launching silent overwrite installer...\n");
+    }
     HINSTANCE h = ShellExecuteA(NULL, "runas", dest,
         "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /CLOSEAPPLICATIONS /FORCECLOSEAPPLICATIONS /MERGETASKS=overwrite",
         NULL, SW_HIDE);
