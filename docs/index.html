@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FileTgie v0.4.0 — Read-only file statistics &amp; search CLI in pure C</title>
+<title>FileTgie v0.5.1 — Read-only file statistics &amp; search CLI in pure C</title>
 <meta name="description" content="FileTgie is a lightweight, read-only, zero-dependency file statistics and search command-line tool written in pure C for Windows and Linux. LGPL-3.0-or-later.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000000'/%3E%3Ccircle cx='28' cy='28' r='14' fill='none' stroke='%23FFFFFF' stroke-width='6'/%3E%3Cline x1='38' y1='38' x2='52' y2='52' stroke='%23FFFFFF' stroke-width='7' stroke-linecap='square'/%3E%3C/svg%3E">
 <style>
@@ -203,6 +203,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 
 /* ===== Footer (black) ===== */
 .site-footer { background: var(--black); color: var(--paper); padding: 48px 0 36px; }
+.site-footer code { background: rgba(255,255,255,0.12); color: var(--paper); border-color: rgba(255,255,255,0.25); }
 .footer-logo { width: min(220px, 55%); margin-bottom: 20px; }
 .footer-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
 .footer-grid h3 { font-size: 15px; margin-bottom: 8px; }
@@ -270,18 +271,18 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <section class="hero" id="top">
   <div class="wrap">
     <img class="hero-logo" src="assets/logo_wide_white.png" alt="FileTgie white logo on black">
-    <div class="hero-tag">v0.4.0 · pure C · LGPL-3.0-or-later</div>
+    <div class="hero-tag">v0.5.1 · pure C · LGPL-3.0-or-later</div>
     <h1 data-i18n="hero.title">Lightweight, read-only, zero-dependency file statistics &amp; search CLI</h1>
     <p class="lede" data-i18n="hero.lede">Written in pure C with the standard library only, one source tree builds for Windows and Linux. Every command does one small, predictable thing and never touches your files.</p>
     <div class="cta-row">
-      <a class="btn btn-solid" data-i18n="hero.installer" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.4.0.setup.exe">Download installer (Windows)</a>
+      <a class="btn btn-solid" data-i18n="hero.installer" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.1.setup.exe">Download installer (Windows)</a>
       <a class="btn btn-ghost" data-i18n="hero.repo" href="https://github.com/SuiYe-18/FileTgie" target="_blank" rel="noopener">GitHub repository</a>
     </div>
     <div class="cta-row" style="margin-top:10px;">
-      <a class="btn btn-ghost" data-i18n="hero.portable" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.4.0.portable.zip">Windows portable ZIP</a>
-      <a class="btn btn-ghost" data-i18n="hero.linux" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.4.0.zip">Linux build from source</a>
-      <a class="btn btn-ghost" data-i18n="hero.source" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.4.0.zip">Source archive</a>
-      <a class="btn btn-ghost" data-i18n="hero.explore" href="#commands">Explore 61 commands</a>
+      <a class="btn btn-ghost" data-i18n="hero.portable" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.1.portable.zip">Windows portable ZIP</a>
+      <a class="btn btn-ghost" data-i18n="hero.linux" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.1.zip">Linux build from source</a>
+      <a class="btn btn-ghost" data-i18n="hero.source" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.1.zip">Source archive</a>
+      <a class="btn btn-ghost" data-i18n="hero.explore" href="#commands">Explore 62 commands</a>
     </div>
   </div>
 </section>
@@ -290,7 +291,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <div class="stats">
   <div class="wrap">
     <div class="stat-grid">
-      <div class="stat-cell"><div class="stat-num">61</div><div class="stat-label" data-i18n="stat.commands">built-in commands</div></div>
+      <div class="stat-cell"><div class="stat-num">62</div><div class="stat-label" data-i18n="stat.commands">built-in commands</div></div>
       <div class="stat-cell"><div class="stat-num">4</div><div class="stat-label" data-i18n="stat.langs">interface languages</div></div>
       <div class="stat-cell"><div class="stat-num">0</div><div class="stat-label" data-i18n="stat.deps">third-party dependencies</div></div>
       <div class="stat-cell"><div class="stat-num">2</div><div class="stat-label" data-i18n="stat.platforms">platforms: Windows + Linux</div></div>
@@ -343,7 +344,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <section class="commands" id="commands">
   <div class="wrap">
     <div class="eyebrow" data-i18n="commands.eyebrow">Command overview</div>
-    <h2 class="section-title" data-i18n="commands.title">61 commands, grouped by job</h2>
+    <h2 class="section-title" data-i18n="commands.title">62 commands, grouped by job</h2>
     <p class="section-sub" data-i18n-html="commands.sub">Every entry below comes from the built-in command table. <code>log</code> and <code>dellog</code> read or delete FileTgie's own log; all others are strictly read-only.</p>
     <div class="tab-row" id="tabRow" role="tablist"></div>
     <div id="cmdPanels"></div>
@@ -382,6 +383,10 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       <div class="example-head"><span class="ex-desc" data-i18n="ex6.desc">Show capacity, used and free space of every drive</span><button class="copy-btn" type="button" data-copy="FileTgie disk" data-i18n="copy">Copy</button></div>
       <pre>FileTgie disk</pre>
     </div>
+    <div class="example">
+      <div class="example-head"><span class="ex-desc" data-i18n="ex7.desc">Run a saved simple .ftg script</span><button class="copy-btn" type="button" data-copy="FileTgie run examples\demo.ftg" data-i18n="copy">Copy</button></div>
+      <pre>FileTgie run examples\demo.ftg</pre>
+    </div>
 
     <ul class="notes">
       <li data-i18n-html="note.binary"><strong>Binary units (1024):</strong> B → KB → MB → GB step by 1024 (1 KB = 1024 B, 1 MB = 1024 KB); <code>size</code>, <code>stat</code> and <code>du</code> also print exact byte counts.</li>
@@ -389,6 +394,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       <li data-i18n-html="note.exclude"><strong>Exclusions:</strong> <code>--exclude &lt;glob&gt;</code> and <code>--exclude-ext &lt;ext&gt;</code> may be repeated; they apply only to traversal commands, not to commands that take an explicit single file such as <code>lines</code> or <code>hash</code>.</li>
       <li data-i18n-html="note.help">Run with no arguments or <code>help</code> to print the full command table (exit code 0).</li>
       <li data-i18n-html="note.update"><strong>Updates:</strong> <code>checkupdate</code> is read-only; <code>update</code> manually checks GitHub and the website before a silent Windows overwrite. <code>reminder on</code> defaults to a 1-minute read-only check, <code>reminder on every 5</code> sets a 5-minute interval, <code>reminder status</code> reports the task, and <code>reminder off</code> deletes it. One notification appears for each newly discovered version.</li>
+      <li data-i18n-html="note.ftg"><strong>Simple .ftg scripts:</strong> save repeated commands in a plain-text file. Use <code>#</code> for comments, <code>set name = value</code> for variables, <code>$name</code> substitution, <code>echo</code>, <code>lang</code> and <code>exit</code>. It has no loop, condition, math or pipe; a failed line stops the script and prints its line number.</li>
     </ul>
   </div>
 </section>
@@ -462,7 +468,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
     <div class="install-grid">
       <div class="install-card">
         <h3 data-i18n="install.winTitle">Windows portable package</h3>
-        <p data-i18n-html="install.winText">The portable package contains <code>FileTgie.exe</code>, <code>FileTgieUpdater.exe</code>, README, User Manual, LICENSE and COPYING. It writes no registry keys and nothing outside the folder; unzip and run, delete the folder to uninstall. The only file written next to the executable is its own <code>filetgie.log</code>.</p>
+        <p data-i18n-html="install.winText">The portable package contains <code>FileTgie.exe</code>, <code>FileTgieUpdater.exe</code>, README, User Manual, LICENSE, COPYING and <code>examples/demo.ftg</code>. It writes no registry keys and nothing outside the folder; unzip and run, delete the folder to uninstall. The only file written next to the executable is its own <code>filetgie.log</code>.</p>
       </div>
       <div class="install-card">
         <h3 data-i18n="install.setupTitle">Windows installer and overwrite upgrade</h3>
@@ -470,13 +476,13 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       </div>
       <div class="install-card">
         <h3 data-i18n="install.linuxTitle">Linux — build from source</h3>
-        <p data-i18n-html="install.linuxText">v0.4.0 supplies Linux-compatible source code; run <code>make</code> on a Linux host and start with <code>./FileTgie --lang en help</code>. Inspection commands need no installer, administrator rights or network; <code>checkupdate</code> uses curl for GitHub. The last verified x86_64 glibc prebuilt tarball remains in the v0.3.0 Release; musl/Alpine is not guaranteed.</p>
+        <p data-i18n-html="install.linuxText">v0.5.1 adds the simple <code>run</code> script layer using only the C standard library; Linux-compatible source code remains available for <code>make</code>. The verified x86_64 glibc prebuilt package stays unchanged as v0.4.0; musl/Alpine is not guaranteed.</p>
         <pre>make</pre>
-        <a class="btn btn-ghost" data-i18n="install.linuxButton" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.4.0.zip">Build Linux from source</a>
+        <a class="btn btn-ghost" data-i18n="install.linuxButton" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.1.zip">Build Linux from source</a>
       </div>
       <div class="install-card">
         <h3 data-i18n="install.srcTitle">Source code</h3>
-        <p data-i18n-html="install.srcText">All sources live under <code>src/</code> and use only the C standard library and native platform APIs. Run <code>build.bat</code> on Windows or <code>make</code> on Linux; the Windows updater builds only on Windows.</p>
+        <p data-i18n-html="install.srcText">All sources live under <code>src/</code> and use only the C standard library and native platform APIs; <code>examples/demo.ftg</code> shows the script format. Run <code>build.bat</code> on Windows or <code>make</code> on Linux; the Windows updater builds only on Windows.</p>
         <pre>build.bat</pre>
         <p><a href="https://github.com/SuiYe-18/FileTgie" target="_blank" rel="noopener" style="font-family:var(--mono);text-decoration:underline;">github.com/SuiYe-18/FileTgie</a></p>
       </div>
@@ -500,10 +506,10 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       </div>
       <div>
         <h3 data-i18n="footer.version">Version</h3>
-        <p data-i18n-html="footer.versionText">v0.4.0 makes reminder a customizable read-only update check: <code>reminder on</code> defaults to one minute, <code>every N</code> chooses 1-1439 minutes, and daily/hourly remain available. The bundled updater checks GitHub and the website and shows one toast per new version; silent overwrite keeps previous files in a disabled .old folder. Linux prints manual cron and upgrade steps. The version source is src/commands.h (FILETGIE_VERSION).</p>
+        <p data-i18n-html="footer.versionText">v0.5.1 adds a simple <code>run</code> script layer for repeated FileTgie commands: comments, variables, echo, language switching, exit codes and direct <code>.ftg</code> execution. The read-only statistics, reminder, .old backup overwrite and colored download progress bar remain unchanged. Version source: src/commands.h (FILETGIE_VERSION).</p>
       </div>
     </div>
-    <div class="footer-bottom">Copyright (C) 2026 SuiYe_TR · FileTgie v0.4.0 · read-only file statistics &amp; search CLI</div>
+    <div class="footer-bottom">Copyright (C) 2026 SuiYe_TR · FileTgie v0.5.1 · read-only file statistics &amp; search CLI</div>
   </div>
 </footer>
 
@@ -513,14 +519,14 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 (function () {
   var SITE_I18N = {
     en: {
-      "meta.title": "FileTgie v0.4.0 — Read-only file statistics & search CLI in pure C",
+      "meta.title": "FileTgie v0.5.1 — Read-only file statistics & search CLI in pure C",
       "nav.features": "Features", "nav.commands": "Commands", "nav.quickstart": "Quick start",
       "nav.companions": "Companions", "nav.languages": "Languages", "nav.license": "License",
       "hero.title": "Lightweight, read-only, zero-dependency file statistics & search CLI",
       "hero.lede": "Written in pure C with the standard library only, one source tree builds for Windows and Linux. Every command does one small, predictable thing and never touches your files.",
       "hero.installer": "Download installer (Windows)", "hero.repo": "GitHub repository",
       "hero.portable": "Windows portable ZIP", "hero.linux": "Linux build from source", "hero.source": "Source archive",
-      "hero.explore": "Explore 61 commands",
+      "hero.explore": "Explore 62 commands",
       "stat.commands": "built-in commands", "stat.langs": "interface languages",
       "stat.deps": "third-party dependencies", "stat.platforms": "platforms: Windows + Linux",
       "features.eyebrow": "Features", "features.title": "Small by design, safe by default",
@@ -531,18 +537,20 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "f.lang.title": "Four switchable languages", "f.lang.text": "Interface messages switch between cn, en, ja and ru with <code>--lang</code>; unknown codes warn and fall back to cn.",
       "f.cross.title": "Cross-platform", "f.cross.text": "<code>src/port.c</code> isolates the Windows wide-character Win32 API from POSIX; the rest of the code is platform-independent.",
       "f.license.title": "LGPL-3.0-or-later", "f.license.text": "Free to run, study, modify and redistribute; static and dynamic linking obligations are documented in LICENSE and COPYING.",
-      "commands.eyebrow": "Command overview", "commands.title": "61 commands, grouped by job",
+      "commands.eyebrow": "Command overview", "commands.title": "62 commands, grouped by job",
       "commands.sub": "Every entry below comes from the built-in command table. <code>log</code> and <code>dellog</code> read or delete FileTgie's own log; all others are strictly read-only.",
       "quick.eyebrow": "Quick start", "quick.title": "Usage and examples",
       "ex1.desc": "Count files and folders in a folder", "ex2.desc": "Sum all text-file lines in a codebase, English UI",
       "ex3.desc": "Find log files larger than 50 MB, largest first", "ex4.desc": "Search file contents for a text snippet and report line numbers",
       "ex5.desc": "Verify two files are byte-for-byte identical", "ex6.desc": "Show capacity, used and free space of every drive",
+      "ex7.desc": "Run a saved simple .ftg script",
       "copy": "Copy", "toast.copied": "Copied to clipboard",
       "note.binary": "<strong>Binary units (1024):</strong> B → KB → MB → GB step by 1024 (1 KB = 1024 B, 1 MB = 1024 KB); <code>size</code>, <code>stat</code> and <code>du</code> also print exact byte counts.",
       "note.alias": "<strong>Language option aliases:</strong> <code>--lang</code> also accepts <code>-lang</code>, <code>-l</code>, and the equals form <code>--lang=en</code> / <code>-l=ja</code>; the code is case-insensitive and may appear before or after the command.",
       "note.exclude": "<strong>Exclusions:</strong> <code>--exclude &lt;glob&gt;</code> and <code>--exclude-ext &lt;ext&gt;</code> may be repeated; they apply only to traversal commands, not to commands that take an explicit single file such as <code>lines</code> or <code>hash</code>.",
       "note.help": "Run with no arguments or <code>help</code> to print the full command table (exit code 0).",
       "note.update": "<strong>Updates:</strong> <code>checkupdate</code> is read-only; <code>update</code> manually checks GitHub and the website before a silent Windows overwrite. <code>reminder on</code> defaults to a 1-minute read-only check, <code>reminder on every 5</code> sets a 5-minute interval, <code>reminder status</code> reports the task, and <code>reminder off</code> deletes it. One notification appears for each newly discovered version.",
+      "note.ftg": "<strong>Simple .ftg scripts:</strong> save repeated commands in a plain-text file. Use <code>#</code> for comments, <code>set name = value</code> for variables, <code>$name</code> substitution, <code>echo</code>, <code>lang</code> and <code>exit</code>. It has no loop, condition, math or pipe; a failed line stops the script and prints its line number.",
       "comp.eyebrow": "Optional companions",
       "comp.title": "Pair FileTgie with independent tools you already like",
       "comp.sub": "FileTgie does not download, call, bundle or require any companion below. Install them separately; let each tool do the job it does best, and use FileTgie for exact counts, line totals, size, hashes and directory comparison.",
@@ -560,28 +568,28 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "langs.note3": "<code>langs</code> lists the available language codes at runtime.",
       "install.eyebrow": "Get FileTgie", "install.title": "Portable package or build from source",
       "install.winTitle": "Windows portable package",
-      "install.winText": "The portable package contains <code>FileTgie.exe</code>, <code>FileTgieUpdater.exe</code>, README, User Manual, LICENSE and COPYING. It writes no registry keys and nothing outside the folder; unzip and run, delete the folder to uninstall. The only file written next to the executable is its own <code>filetgie.log</code>.",
+      "install.winText": "The portable package contains <code>FileTgie.exe</code>, <code>FileTgieUpdater.exe</code>, README, User Manual, LICENSE, COPYING and <code>examples/demo.ftg</code>. It writes no registry keys and nothing outside the folder; unzip and run, delete the folder to uninstall. The only file written next to the executable is its own <code>filetgie.log</code>.",
       "install.setupTitle": "Windows installer and overwrite upgrade",
       "install.setupText": "The installer registers App Paths and PATH under Program Files. It detects an installed copy, App Paths registration, or leftover files after a non-official deletion, and keeps the overwrite option checked by default. On overwrite, previous program files move to a disabled <code>.old</code> backup folder; the registry, PATH and shortcuts keep pointing only to the new root-folder files. The bundled updater checks GitHub and the website before launching a silent overwrite install.",
       "install.linuxTitle": "Linux — build from source",
-      "install.linuxText": "v0.4.0 supplies Linux-compatible source code; run <code>make</code> on a Linux host and start with <code>./FileTgie --lang en help</code>. Inspection commands need no installer, administrator rights or network; <code>checkupdate</code> uses curl for GitHub. The last verified x86_64 glibc prebuilt tarball remains in the v0.3.0 Release; musl/Alpine is not guaranteed.",
+      "install.linuxText": "v0.5.1 adds the simple <code>run</code> script layer using only the C standard library; Linux-compatible source code remains available for <code>make</code>. The verified x86_64 glibc prebuilt package stays unchanged as v0.4.0; musl/Alpine is not guaranteed.",
       "install.linuxButton": "Build Linux from source", "install.srcTitle": "Source code",
-      "install.srcText": "All sources live under <code>src/</code> and use only the C standard library and native platform APIs. Run <code>build.bat</code> on Windows or <code>make</code> on Linux; the Windows updater builds only on Windows.",
+      "install.srcText": "All sources live under <code>src/</code> and use only the C standard library and native platform APIs; <code>examples/demo.ftg</code> shows the script format. Run <code>build.bat</code> on Windows or <code>make</code> on Linux; the Windows updater builds only on Windows.",
       "footer.author": "Author", "footer.license": "License",
       "footer.licenseText": "LGPL-3.0-or-later (GNU Lesser General Public License, version 3 or later). Full legal text in LICENSE; plain-language linking notes in COPYING.",
       "footer.version": "Version",
-      "footer.versionText": "v0.4.0 makes reminder a customizable read-only update check: <code>reminder on</code> defaults to one minute, <code>every N</code> chooses 1-1439 minutes, and daily/hourly remain available. The bundled updater checks GitHub and the website and shows one toast per new version; silent overwrite keeps previous files in a disabled .old folder. Linux prints manual cron and upgrade steps. The version source is src/commands.h (FILETGIE_VERSION).",
+      "footer.versionText": "v0.5.1 adds a simple <code>run</code> script layer for repeated FileTgie commands: comments, variables, echo, language switching, exit codes and direct <code>.ftg</code> execution. The read-only statistics, reminder, .old backup overwrite and colored download progress bar remain unchanged. Version source: src/commands.h (FILETGIE_VERSION).",
       "groups.all": "All", "groups.system": "System & Log", "groups.stats": "Statistics",
       "groups.text": "Text & Lines", "groups.search": "Search & Find", "groups.verify": "Verify & Integrity",
       "note.all": "Showing all {n} commands from CMD_TABLE.", "note.group": "Showing {n} commands in this group."
     },
     cn: {
-      "meta.title": "FileTgie v0.4.0 — 纯 C 只读文件统计与搜索命令行工具",
+      "meta.title": "FileTgie v0.5.1 — 纯 C 只读文件统计与搜索命令行工具",
       "nav.features": "功能", "nav.commands": "命令", "nav.quickstart": "快速开始", "nav.companions": "搭配工具", "nav.languages": "界面语言", "nav.license": "许可证",
       "hero.title": "轻量、只读、零依赖的文件统计与搜索命令行工具",
       "hero.lede": "纯 C 仅用标准库编写，同一套源码可构建 Windows 与 Linux 版本。每条命令只做一件小而确定的事，绝不触碰你的文件。",
       "hero.installer": "下载安装程序（Windows）", "hero.repo": "GitHub 仓库",
-      "hero.portable": "Windows 便携 ZIP", "hero.linux": "Linux 源码构建", "hero.source": "源码包", "hero.explore": "查看 61 条命令",
+      "hero.portable": "Windows 便携 ZIP", "hero.linux": "Linux 源码构建", "hero.source": "源码包", "hero.explore": "查看 62 条命令",
       "stat.commands": "内置命令", "stat.langs": "界面语言", "stat.deps": "第三方依赖", "stat.platforms": "平台：Windows + Linux",
       "features.eyebrow": "功能", "features.title": "小而克制，默认安全", "features.sub": "每条命令只执行一个边界清晰的操作；结果明确可预期，不会出现意外副作用。",
       "f.light.title": "轻量", "f.light.text": "单个紧凑可执行文件，无需运行时、包管理器或配置文件。",
@@ -590,18 +598,20 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "f.lang.title": "四种可切换语言", "f.lang.text": "界面信息通过 <code>--lang</code> 在 cn、en、ja、ru 间切换；未知语言码会警告并回退到 cn。",
       "f.cross.title": "跨平台", "f.cross.text": "<code>src/port.c</code> 隔离 Windows 宽字符 Win32 API 与 POSIX，其余代码与平台无关。",
       "f.license.title": "LGPL-3.0-or-later", "f.license.text": "可自由运行、研究、修改和再分发；静态与动态链接义务见 LICENSE 和 COPYING。",
-      "commands.eyebrow": "命令概览", "commands.title": "61 条命令，按用途分组",
+      "commands.eyebrow": "命令概览", "commands.title": "62 条命令，按用途分组",
       "commands.sub": "以下条目来自内置命令表。<code>log</code> 与 <code>dellog</code> 读取或删除 FileTgie 自身日志，其余全部严格只读。",
       "quick.eyebrow": "快速开始", "quick.title": "用法与示例",
       "ex1.desc": "统计文件夹中的文件和文件夹数量", "ex2.desc": "在代码库中汇总所有文本文件行数，英文界面",
       "ex3.desc": "查找大于 50 MB 的日志文件，从大到小排列", "ex4.desc": "搜索文件内容中的文本片段并报告行号",
       "ex5.desc": "逐字节校验两个文件是否完全相同", "ex6.desc": "显示每个磁盘的总容量、已用空间和可用空间",
+      "ex7.desc": "运行已保存的简单 .ftg 脚本",
       "copy": "复制", "toast.copied": "已复制到剪贴板",
       "note.binary": "<strong>二进制单位（1024）：</strong>B → KB → MB → GB 均按 1024 进位；<code>size</code>、<code>stat</code>、<code>du</code> 同时输出精确字节数。",
       "note.alias": "<strong>语言参数别名：</strong><code>--lang</code> 也接受 <code>-lang</code>、<code>-l</code> 以及等号形式 <code>--lang=en</code> / <code>-l=ja</code>；语言码不区分大小写，可放在命令前后。",
       "note.exclude": "<strong>排除项：</strong><code>--exclude &lt;glob&gt;</code> 与 <code>--exclude-ext &lt;ext&gt;</code> 可重复使用；只作用于遍历命令，不作用于接收单个明确文件的命令，如 <code>lines</code> 或 <code>hash</code>。",
       "note.help": "不带参数或运行 <code>help</code> 可打印完整命令表（退出码 0）。",
       "note.update": "<strong>更新：</strong><code>checkupdate</code> 只读检查；<code>update</code> 手动检查 GitHub 与官网后，在 Windows 静默覆盖。<code>reminder on</code> 缺省每 1 分钟只读检查，<code>reminder on every 5</code> 改为每 5 分钟，<code>reminder status</code> 查看任务，<code>reminder off</code> 删除任务；每个新版本只提示一次。",
+      "note.ftg": "<strong>简单 .ftg 脚本：</strong>把重复命令保存为纯文本文件。<code>#</code> 是注释，<code>set 名称 = 值</code> 保存变量，<code>$名称</code> 替换变量，另支持 <code>echo</code>、<code>lang</code> 与 <code>exit</code>。没有循环、条件、数学或管道；某一行失败会停止并打印行号。",
       "comp.eyebrow": "可选搭配工具",
       "comp.title": "让 FileTgie 搭配你已经喜欢的独立工具",
       "comp.sub": "FileTgie 不下载、不调用、不打包、也不依赖下面任何工具。请独立安装；让每个工具做自己擅长的事，FileTgie 负责精确数量、行数、大小、哈希与目录对比。",
@@ -618,28 +628,28 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "langs.note3": "<code>langs</code> 在运行时列出可用语言码。",
       "install.eyebrow": "获取 FileTgie", "install.title": "便携包或从源码构建",
       "install.winTitle": "Windows 便携包",
-      "install.winText": "便携包包含 <code>FileTgie.exe</code>、<code>FileTgieUpdater.exe</code>、README、User Manual、LICENSE、COPYING；不写注册表，也不写文件夹外内容；解压运行，删除文件夹即卸载。可执行文件旁唯一写入的是自身 <code>filetgie.log</code>。",
+      "install.winText": "便携包包含 <code>FileTgie.exe</code>、<code>FileTgieUpdater.exe</code>、README、User Manual、LICENSE、COPYING 与 <code>examples/demo.ftg</code>；不写注册表，也不写文件夹外内容；解压运行，删除文件夹即卸载。可执行文件旁唯一写入的是自身 <code>filetgie.log</code>。",
       "install.setupTitle": "Windows 安装包与覆盖升级",
       "install.setupText": "安装包在 Program Files 注册 App Paths 与 PATH。它会检测已安装副本、App Paths 注册，或非官方删除后的残留文件，并默认勾选覆盖选项。覆盖时旧程序文件先移入禁用的 <code>.old</code> 备份文件夹；注册表、PATH 与快捷方式始终只指向根目录新文件。内置更新器会先检查 GitHub 与官网，再启动静默覆盖安装。",
       "install.linuxTitle": "Linux — 从源码构建",
-      "install.linuxText": "v0.4.0 提供兼容 Linux 的源码；在 Linux 主机执行 <code>make</code>，再从 <code>./FileTgie --lang en help</code> 开始。检查类命令不需要安装程序、管理员权限或网络；<code>checkupdate</code> 通过 curl 请求 GitHub。最后一个已验证的 x86_64 glibc 预编译包保留在 v0.3.0 Release；不保证 musl/Alpine。",
+      "install.linuxText": "v0.5.1 新增只使用 C 标准库的简单 <code>run</code> 脚本层；兼容 Linux 的源码仍可执行 <code>make</code> 构建。已验证的 x86_64 glibc 预编译包保持未改动的 v0.4.0；不保证 musl/Alpine。",
       "install.linuxButton": "获取 Linux 源码", "install.srcTitle": "源代码",
-      "install.srcText": "所有源码位于 <code>src/</code>，仅使用 C 标准库与平台原生 API。Windows 运行 <code>build.bat</code>，Linux 运行 <code>make</code>；Windows 更新器只在 Windows 构建。",
+      "install.srcText": "所有源码位于 <code>src/</code>，仅使用 C 标准库与平台原生 API；<code>examples/demo.ftg</code> 展示脚本格式。Windows 运行 <code>build.bat</code>，Linux 运行 <code>make</code>；Windows 更新器只在 Windows 构建。",
       "footer.author": "作者", "footer.license": "许可证",
       "footer.licenseText": "LGPL-3.0-or-later（GNU 宽通用公共许可证，第 3 版或更新）。完整法律文本见 LICENSE，通俗链接说明见 COPYING。",
       "footer.version": "版本",
-      "footer.versionText": "v0.4.0 把 reminder 做成可定制的只读更新检查：<code>reminder on</code> 缺省每 1 分钟，<code>every N</code> 可设置 1–1439 分钟，daily/hourly 继续兼容。内置更新器检查 GitHub 与官网，每个新版本只弹出一次通知；静默覆盖时旧文件进入禁用的 .old 文件夹。Linux 只给出手动 cron 与升级步骤。版本来源是 src/commands.h（FILETGIE_VERSION）。",
+      "footer.versionText": "v0.5.1 新增简单 <code>run</code> 脚本层，用于把重复的 FileTgie 命令保存为顺序脚本：注释、变量、echo、语言切换、退出码，也可直接执行 <code>.ftg</code>。只读统计、提醒、.old 备份覆盖与彩色下载进度条保持不变。版本来源：src/commands.h（FILETGIE_VERSION）。",
       "groups.all": "全部", "groups.system": "系统与日志", "groups.stats": "统计",
       "groups.text": "文本与行数", "groups.search": "搜索与查找", "groups.verify": "校验与完整性",
       "note.all": "显示 CMD_TABLE 中的全部 {n} 条命令。", "note.group": "显示该组中的 {n} 条命令。"
     },
     ja: {
-      "meta.title": "FileTgie v0.4.0 — 純粋なC製の読み取り専用ファイル統計・検索CLI",
+      "meta.title": "FileTgie v0.5.1 — 純粋なC製の読み取り専用ファイル統計・検索CLI",
       "nav.features": "機能", "nav.commands": "コマンド", "nav.quickstart": "クイックスタート", "nav.companions": "組み合わせ", "nav.languages": "言語", "nav.license": "ライセンス",
       "hero.title": "軽量・読み取り専用・非依存のファイル統計＆検索 CLI",
       "hero.lede": "純粋な C と標準ライブラリだけで書かれ、同一ソースから Windows と Linux をビルドできます。各コマンドは小さく予測可能な1操作だけを行い、ファイルを変更しません。",
       "hero.installer": "インストーラをダウンロード（Windows）", "hero.repo": "GitHub リポジトリ",
-      "hero.portable": "Windows ポータブル ZIP", "hero.linux": "Linux ソースビルド", "hero.source": "ソースアーカイブ", "hero.explore": "61コマンドを見る",
+      "hero.portable": "Windows ポータブル ZIP", "hero.linux": "Linux ソースビルド", "hero.source": "ソースアーカイブ", "hero.explore": "62コマンドを見る",
       "stat.commands": "内蔵コマンド", "stat.langs": "対応言語", "stat.deps": "サードパーティ依存", "stat.platforms": "対応: Windows + Linux",
       "features.eyebrow": "機能", "features.title": "設計は小さく、既定で安全", "features.sub": "各コマンドは範囲の明確な単一操作を行い、結果は分かりやすく予測でき、予期しない副作用はありません。",
       "f.light.title": "軽量", "f.light.text": "単一のコンパクトな実行ファイル。ランタイム、パッケージマネージャ、設定ファイルは不要です。",
@@ -648,18 +658,20 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "f.lang.title": "切り替え可能な4言語", "f.lang.text": "<code>--lang</code> で cn/en/ja/ru を切り替えます。未知の言語コードは警告して cn に戻ります。",
       "f.cross.title": "クロスプラットフォーム", "f.cross.text": "<code>src/port.c</code> が Windows のワイド文字 Win32 API と POSIX を分離し、他のコードはプラットフォーム非依存です。",
       "f.license.title": "LGPL-3.0-or-later", "f.license.text": "実行・研究・改変・再配布が自由。静的/動的リンク条項は LICENSE と COPYING に記載されています。",
-      "commands.eyebrow": "コマンド概要", "commands.title": "61コマンドを用途別に整理",
+      "commands.eyebrow": "コマンド概要", "commands.title": "62コマンドを用途別に整理",
       "commands.sub": "以下は内蔵コマンド表から。<code>log</code> と <code>dellog</code> は FileTgie 自身のログを読む/消すだけで、他はすべて読み取り専用です。",
       "quick.eyebrow": "クイックスタート", "quick.title": "使い方と例",
       "ex1.desc": "フォルダ内のファイルとフォルダを数える", "ex2.desc": "コードベースのテキストファイル行数を合計（英語UI）",
       "ex3.desc": "50MBを超えるログを大きい順に探す", "ex4.desc": "ファイル内容から文字列を検索し行番号を報告",
       "ex5.desc": "2ファイルがバイト単位で一致するか検証", "ex6.desc": "各ドライブの容量・使用量・空き容量を表示",
+      "ex7.desc": "保存した簡単な .ftg スクリプトを実行",
       "copy": "コピー", "toast.copied": "クリップボードにコピーしました",
       "note.binary": "<strong>2進数単位(1024):</strong>B→KB→MB→GB は1024刻み。<code>size</code>/<code>stat</code>/<code>du</code> は正確なバイト数も表示。",
       "note.alias": "<strong>言語オプション別名:</strong><code>--lang</code> は <code>-lang</code>, <code>-l</code>, <code>--lang=en</code> / <code>-l=ja</code> も受付。大文字小文字不問、コマンド前後どちらでも可。",
       "note.exclude": "<strong>除外:</strong><code>--exclude &lt;glob&gt;</code> と <code>--exclude-ext &lt;ext&gt;</code> は反復可。走査コマンドのみに適用し、<code>lines</code>/<code>hash</code> など単一ファイル指定コマンドには適用しません。",
       "note.help": "引数なし、または <code>help</code> で全コマンド表を表示（終了コード0）。",
       "note.update": "<strong>更新:</strong> <code>checkupdate</code> は読み取り専用。<code>update</code> は GitHub と公式サイトを手動で確認し、Windows で静かに上書きします。<code>reminder on</code> は既定で1分ごとの読み取り専用チェック、<code>reminder on every 5</code> は5分間隔、<code>reminder status</code> はタスク表示、<code>reminder off</code> は削除。新バージョンごとに通知は1回だけです。",
+      "note.ftg": "<strong>簡単な .ftg スクリプト:</strong> 繰り返すコマンドをテキストファイルに保存します。<code>#</code> はコメント、<code>set name = value</code> は変数、<code>$name</code> は置換、<code>echo</code>・<code>lang</code>・<code>exit</code> に対応。ループ・条件・計算・パイプはなく、失敗行で停止して行番号を出します。",
       "comp.eyebrow": "任意の組み合わせ",
       "comp.title": "好きな独立ツールと FileTgie を組み合わせる",
       "comp.sub": "FileTgie は下記ツールをダウンロード・呼び出し・同梱・依存しません。別々にインストールし、それぞれ得意な仕事を任せ、FileTgie は正確な件数・行数・サイズ・ハッシュ・ディレクトリ比較に使います。",
@@ -676,28 +688,28 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "langs.note3": "<code>langs</code> は実行時に利用可能な言語コードを列挙します。",
       "install.eyebrow": "FileTgieを入手", "install.title": "ポータブルパッケージまたはソースビルド",
       "install.winTitle": "Windowsポータブルパッケージ",
-      "install.winText": "同梱は <code>FileTgie.exe</code>、<code>FileTgieUpdater.exe</code>、README、User Manual、LICENSE、COPYING。レジストリやフォルダ外へ書き込みせず、展開して実行、フォルダ削除でアンインストール。実行ファイルの横に書くのは自身の <code>filetgie.log</code> だけです。",
+      "install.winText": "同梱は <code>FileTgie.exe</code>、<code>FileTgieUpdater.exe</code>、README、User Manual、LICENSE、COPYING、<code>examples/demo.ftg</code>。レジストリやフォルダ外へ書き込みせず、展開して実行、フォルダ削除でアンインストール。実行ファイルの横に書くのは自身の <code>filetgie.log</code> だけです。",
       "install.setupTitle": "Windowsインストーラと上書き更新",
       "install.setupText": "インストーラはProgram FilesにApp PathsとPATHを登録します。既存コピー、App Paths登録、非公式削除後の残りを検出し、上書きオプションを既定でオンにします。上書き時、旧プログラムファイルは無効な <code>.old</code> バックアップフォルダへ移動し、レジストリ・PATH・ショートカットは新しいルートフォルダのファイルだけを指します。同梱アップデータはGitHubと公式サイトを確認してから静かな上書きインストールを起動します。",
       "install.linuxTitle": "Linux — ソースからビルド",
-      "install.linuxText": "v0.4.0 は Linux 互換のソースを提供します。Linux 環境で <code>make</code> を実行し、<code>./FileTgie --lang en help</code> から始めてください。検査コマンドにインストーラ・管理者権限・ネットは不要で、<code>checkupdate</code> は GitHub へ curl で問い合わせます。最後に検証済みの x86_64 glibc プレビルド tarball は v0.3.0 Release に残っています。musl/Alpine は非保証です。",
+      "install.linuxText": "v0.5.1 は C標準ライブラリだけを使う簡単な <code>run</code> スクリプト層を追加します。Linux 互換ソースは <code>make</code> で利用可能。検証済み x86_64 glibc プレビルドは変更なしの v0.4.0 を維持。musl/Alpine は非保証です。",
       "install.linuxButton": "Linux ソースを取得", "install.srcTitle": "ソースコード",
-      "install.srcText": "全ソースは <code>src/</code> にあり、C標準ライブラリとネイティブAPIだけを使用。Windowsで <code>build.bat</code>、Linuxで <code>make</code> を実行。WindowsアップデータはWindowsでのみビルドされます。",
+      "install.srcText": "全ソースは <code>src/</code> にあり、C標準ライブラリとネイティブAPIだけを使用。<code>examples/demo.ftg</code> はスクリプト形式の例です。Windowsで <code>build.bat</code>、Linuxで <code>make</code> を実行。WindowsアップデータはWindowsでのみビルドされます。",
       "footer.author": "作者", "footer.license": "ライセンス",
       "footer.licenseText": "LGPL-3.0-or-later（GNU劣等一般公衆利用許諾書第3版以降）。完全な法的文面はLICENSE、平易なリンク説明はCOPYING。",
       "footer.version": "バージョン",
-      "footer.versionText": "v0.4.0 は reminder をカスタム可能な読み取り専用更新チェックに拡張。<code>reminder on</code> は既定1分ごと、<code>every N</code> は1–1439分を指定、daily/hourly も維持。同梱アップデータはGitHubと公式サイトを確認し、新バージョンごとに通知を1回表示。静かな上書きで旧ファイルは無効な .old に保存。Linux は手動 cron と更新手順を表示します。バージョンの基準は src/commands.h（FILETGIE_VERSION）。",
+      "footer.versionText": "v0.5.1 は、繰り返す FileTgie コマンドを順次スクリプト化する簡単な <code>run</code> 層を追加します。コメント・変数・echo・言語切替・終了コード・直接 <code>.ftg</code> 実行に対応。読み取り専用統計、reminder、.old バックアップ上書き、彩色ダウンロードバーは変更なし。版の基準は src/commands.h（FILETGIE_VERSION）。",
       "groups.all": "すべて", "groups.system": "システムとログ", "groups.stats": "統計",
       "groups.text": "テキストと行数", "groups.search": "検索", "groups.verify": "検証と整合性",
       "note.all": "CMD_TABLE の全 {n} コマンドを表示。", "note.group": "このグループの {n} コマンドを表示。"
     },
     ru: {
-      "meta.title": "FileTgie v0.4.0 — Лёгкая утилита статистики и поиска файлов на чистом C",
+      "meta.title": "FileTgie v0.5.1 — Лёгкая утилита статистики и поиска файлов на чистом C",
       "nav.features": "Возможности", "nav.commands": "Команды", "nav.quickstart": "Быстрый старт", "nav.companions": "Партнёры", "nav.languages": "Языки", "nav.license": "Лицензия",
       "hero.title": "Лёгкий инструмент статистики и поиска файлов только для чтения",
       "hero.lede": "Чистый C, только стандартная библиотека; один исходник собирается для Windows и Linux. Каждая команда делает одно предсказуемое действие и не меняет ваши файлы.",
       "hero.installer": "Скачать установщик (Windows)", "hero.repo": "Репозиторий GitHub",
-      "hero.portable": "Портативный ZIP для Windows", "hero.linux": "Сборка Linux из исходников", "hero.source": "Архив с исходниками", "hero.explore": "Посмотреть 61 команд",
+      "hero.portable": "Портативный ZIP для Windows", "hero.linux": "Сборка Linux из исходников", "hero.source": "Архив с исходниками", "hero.explore": "Посмотреть 62 команды",
       "stat.commands": "встроенных команд", "stat.langs": "языков интерфейса", "stat.deps": "сторонних зависимостей", "stat.platforms": "платформы: Windows + Linux",
       "features.eyebrow": "Возможности", "features.title": "Мал по замыслу, безопасен по умолчанию", "features.sub": "Каждая команда выполняет одну четко ограниченную операцию. Результаты ясны; неожиданных побочных эффектов нет.",
       "f.light.title": "Лёгкость", "f.light.text": "Один компактный исполняемый файл: без среды выполнения, менеджера пакетов и конфигурации.",
@@ -706,18 +718,20 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "f.lang.title": "Четыре переключаемых языка", "f.lang.text": "Интерфейс переключается между cn, en, ja, ru через <code>--lang</code>; неизвестный код предупреждает и возвращается к cn.",
       "f.cross.title": "Кроссплатформенность", "f.cross.text": "<code>src/port.c</code> отделяет широкие символы Win32 API от POSIX; остальной код не зависит от платформы.",
       "f.license.title": "LGPL-3.0-or-later", "f.license.text": "Свободно запускать, изучать, изменять и распространять; обязательства линковки описаны в LICENSE и COPYING.",
-      "commands.eyebrow": "Обзор команд", "commands.title": "61 команд по группам",
+      "commands.eyebrow": "Обзор команд", "commands.title": "62 команды по группам",
       "commands.sub": "Ниже таблица встроенных команд. <code>log</code> и <code>dellog</code> читают/удаляют собственный журнал FileTgie; остальные только чтение.",
       "quick.eyebrow": "Быстрый старт", "quick.title": "Использование и примеры",
       "ex1.desc": "Посчитать файлы и папки в каталоге", "ex2.desc": "Суммировать строки текстовых файлов в кодовой базе, английский UI",
       "ex3.desc": "Найти журналы больше 50 МБ, сначала самые большие", "ex4.desc": "Искать фрагмент в содержимом файлов и показать номера строк",
       "ex5.desc": "Побайтово проверить идентичность двух файлов", "ex6.desc": "Показать емкость, занятое и свободное место дисков",
+      "ex7.desc": "Запустить сохранённый простой скрипт .ftg",
       "copy": "Копировать", "toast.copied": "Скопировано в буфер обмена",
       "note.binary": "<strong>Двоичные единицы (1024):</strong>B→KB→MB→GB по 1024; <code>size</code>, <code>stat</code>, <code>du</code> также печатают точные байты.",
       "note.alias": "<strong>Псевдонимы языка:</strong><code>--lang</code> также принимает <code>-lang</code>, <code>-l</code>, <code>--lang=en</code> / <code>-l=ja</code>; код без учета регистра, до или после команды.",
       "note.exclude": "<strong>Исключения:</strong><code>--exclude &lt;glob&gt;</code> и <code>--exclude-ext &lt;ext&gt;</code> повторяемы; только для обходных команд, не для одиночных файлов вроде <code>lines</code> или <code>hash</code>.",
       "note.help": "Запуск без аргументов или <code>help</code> печатает полную таблицу команд (код выхода 0).",
       "note.update": "<strong>Обновления:</strong> <code>checkupdate</code> работает только на чтение; <code>update</code> вручную проверяет GitHub и сайт перед тихой заменой в Windows. <code>reminder on</code> по умолчанию проверяет каждую 1 минуту, <code>reminder on every 5</code> задаёт интервал 5 минут, <code>reminder status</code> показывает задачу, <code>reminder off</code> удаляет её. Одно уведомление для каждой новой версии.",
+      "note.ftg": "<strong>Простые скрипты .ftg:</strong> сохраните повторяющиеся команды в текстовом файле. <code>#</code> — комментарий, <code>set name = value</code> — переменная, <code>$name</code> — подстановка; поддерживаются <code>echo</code>, <code>lang</code> и <code>exit</code>. Нет циклов, условий, математики и пайпов; неудачная строка останавливает скрипт и печатает номер строки.",
       "comp.eyebrow": "Необязательные партнёры",
       "comp.title": "Свяжите FileTgie с независимыми инструментами",
       "comp.sub": "FileTgie не скачивает, не вызывает, не упаковывает и не требует приведённые ниже инструменты. Устанавливайте их отдельно: пусть каждый делает своё дело, а FileTgie считает точные количество, строки, размеры, хеши и сравнивает каталоги.",
@@ -734,24 +748,24 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "langs.note3": "<code>langs</code> выводит доступные коды языков во время выполнения.",
       "install.eyebrow": "Получить FileTgie", "install.title": "Портативный пакет или сборка из исходников",
       "install.winTitle": "Портативный пакет Windows",
-      "install.winText": "Содержит <code>FileTgie.exe</code>, <code>FileTgieUpdater.exe</code>, README, User Manual, LICENSE, COPYING. Не пишет реестр и файлы вне папки; распакуйте и запустите, удаление папки удаляет программу. Рядом записывается только собственный <code>filetgie.log</code>.",
+      "install.winText": "Содержит <code>FileTgie.exe</code>, <code>FileTgieUpdater.exe</code>, README, User Manual, LICENSE, COPYING и <code>examples/demo.ftg</code>. Не пишет реестр и файлы вне папки; распакуйте и запустите, удаление папки удаляет программу. Рядом записывается только собственный <code>filetgie.log</code>.",
       "install.setupTitle": "Установщик Windows и обновление с заменой",
       "install.setupText": "Установщик регистрирует App Paths и PATH в Program Files. Он находит установленную копию, регистрацию App Paths или остатки после неофициального удаления и оставляет замену включённой по умолчанию. При замене прежние файлы программы перемещаются в отключённую папку резервной копии <code>.old</code>; реестр, PATH и ярлыки продолжают указывать только на новые файлы в корне. Встроенный апдейтер проверяет GitHub и сайт перед тихой установкой с заменой.",
       "install.linuxTitle": "Linux — сборка из исходников",
-      "install.linuxText": "v0.4.0 поставляется с совместимым с Linux исходным кодом; выполните <code>make</code> на Linux-хосте и начните с <code>./FileTgie --lang en help</code>. Командам проверки не нужны установщик, права администратора и сеть; <code>checkupdate</code> запрашивает GitHub через curl. Последний проверенный x86_64 glibc-бинарник остаётся в релизе v0.3.0; musl/Alpine не гарантируется.",
+      "install.linuxText": "v0.5.1 добавляет простой слой скриптов <code>run</code> только на стандартной библиотеке C; совместимый с Linux исходный код собирается через <code>make</code>. Проверенный бинарник x86_64 glibc остаётся без изменений в v0.4.0; musl/Alpine не гарантируется.",
       "install.linuxButton": "Получить исходники для Linux", "install.srcTitle": "Исходный код",
-      "install.srcText": "Все исходники в <code>src/</code>; только стандартная библиотека C и родные API. На Windows запустите <code>build.bat</code>, на Linux — <code>make</code>; Windows-апдейтер собирается только на Windows.",
+      "install.srcText": "Все исходники в <code>src/</code>; только стандартная библиотека C и родные API; <code>examples/demo.ftg</code> показывает формат скрипта. На Windows запустите <code>build.bat</code>, на Linux — <code>make</code>; Windows-апдейтер собирается только на Windows.",
       "footer.author": "Автор", "footer.license": "Лицензия",
       "footer.licenseText": "LGPL-3.0-or-later (GNU LGPL, версия 3 или позже). Полный юридический текст в LICENSE, пояснение линковки в COPYING.",
       "footer.version": "Версия",
-      "footer.versionText": "v0.4.0 делает reminder настраиваемой проверкой только на чтение: <code>reminder on</code> по умолчанию каждую минуту, <code>every N</code> задаёт 1–1439 минут, daily/hourly сохранены. Встроенный апдейтер проверяет GitHub и сайт и показывает одно уведомление для новой версии; тихая замена сохраняет прежние файлы в отключённой .old. Linux печатает ручные cron и шаги обновления. Источник версии: src/commands.h (FILETGIE_VERSION).",
+      "footer.versionText": "v0.5.1 добавляет простой слой <code>run</code> для повторяющихся команд FileTgie: комментарии, переменные, echo, переключение языка, коды выхода и прямой запуск <code>.ftg</code>. Статистика только для чтения, reminder, замена с .old и цветная полоса загрузки без изменений. Источник версии: src/commands.h (FILETGIE_VERSION).",
       "groups.all": "Все", "groups.system": "Система и журнал", "groups.stats": "Статистика",
       "groups.text": "Текст и строки", "groups.search": "Поиск", "groups.verify": "Проверка и целостность",
       "note.all": "Показаны все {n} команд из CMD_TABLE.", "note.group": "Показаны {n} команд этой группы."
     }
   };
 
-  // ===== Command data: names and English descriptions from README, names verified against CMD_TABLE (61) =====
+  // ===== Command data: names and English descriptions from README, names verified against CMD_TABLE (62) =====
   var GROUPS = [
     {
       id: "all", label: "All",
@@ -764,6 +778,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         ["checkupdate", "checkupdate", "Query GitHub for the latest release and compare versions without installing."],
         ["update", "update", "On Windows check GitHub and the website, download the newer installer, and launch the silent overwrite; on Linux print manual upgrade steps."],
         ["reminder", "reminder on [every N|daily HH:MM|hourly] | status | off", "Enable, query or remove the optional Windows user-level task; default checks every 1 minute, with one notification per new version; Linux prints manual cron guidance."],
+        ["run", "run <script.ftg>", "Run a simple plain-text .ftg script line by line; supports comments, variables, echo, lang and exit."],
         ["stat", "stat <path>", "Detailed file or directory info: size and three timestamps."],
         ["count", "count <dir>", "Recursively count files and folders."],
         ["lines", "lines <file>", "Count the lines of a single file."],
@@ -829,7 +844,8 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         ["dellog", "dellog", "Delete only FileTgie's own run log; touches nothing else."],
         ["checkupdate", "checkupdate", "Query GitHub for the latest release and compare versions without installing."],
         ["update", "update", "On Windows download and launch the newer installer; on Linux print manual upgrade steps."],
-        ["reminder", "reminder on [daily HH:MM|hourly] | status | off", "Enable, query or remove the optional user-level scheduled update-check reminder; Linux prints manual cron guidance."]
+        ["reminder", "reminder on [daily HH:MM|hourly] | status | off", "Enable, query or remove the optional user-level scheduled update-check reminder; Linux prints manual cron guidance."],
+        ["run", "run <script.ftg>", "Run a simple plain-text .ftg script line by line; supports comments, variables, echo, lang and exit."]
       ]
     },
     {

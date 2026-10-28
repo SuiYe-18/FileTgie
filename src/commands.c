@@ -213,6 +213,242 @@ int cmd_help(const LangPack* L, int argc, char** argv) {
     return 0;
 }
 
+/* ================================================================== */
+/* v0.5.1: simple .ftg script runner / 简单 .ftg 脚本运行器              */
+/* ================================================================== */
+#define FTG_LINE_CAP 4096
+#define FTG_TOKEN_CAP 32
+#define FTG_VAR_CAP 32
+#define FTG_VAR_NAME_CAP 64
+#define FTG_VAR_VALUE_CAP 2048
+
+typedef struct {
+    char name[FTG_VAR_NAME_CAP];
+    char value[FTG_VAR_VALUE_CAP];
+} FtgVar;
+
+static FtgVar g_ftg_vars[FTG_VAR_CAP];
+static int g_ftg_var_n = 0;
+
+static void ftg_reset_vars(void) { g_ftg_var_n = 0; }
+
+static const char* ftg_get_var(const char* name) {
+    for (int i = 0; i < g_ftg_var_n; i++)
+        if (ft_strcase_eq(g_ftg_vars[i].name, name)) return g_ftg_vars[i].value;
+    return NULL;
+}
+
+static void ftg_trim(char* s) {
+    char* p = s;
+    while (isspace((unsigned char)*p)) p++;
+    if (p != s) memmove(s, p, strlen(p) + 1);
+    size_t l = strlen(s);
+    while (l > 0 && (s[l-1] == '\r' || s[l-1] == '\n' || s[l-1] == ' ' || s[l-1] == '\t'))
+        s[--l] = '\0';
+}
+
+static void ftg_free_tokens(char** tok, int n) {
+    for (int i = 0; i < n; i++) free(tok[i]);
+}
+
+/* Quote-aware tokenizer: "..." and '...' keep spaces; returns token count,
+ * -1 on allocation/overflow, -2 on an unclosed quote. */
+static int ftg_tokenize(const char* src, char* out[], int max) {
+    int n = 0;
+    const char* p = src;
+    while (*p) {
+        while (isspace((unsigned char)*p)) p++;
+        if (!*p) break;
+        char* tok = (char*)malloc(strlen(p) + 1);
+        if (!tok) return -1;
+        size_t j = 0;
+        char quote = 0;
+        while (*p) {
+            if (quote) {
+                if (*p == quote) { quote = 0; p++; }
+                else tok[j++] = *p++;
+            } else if (*p == '"' || *p == '\'') {
+                quote = *p++;
+            } else if (isspace((unsigned char)*p)) {
+                break;
+            } else {
+                tok[j++] = *p++;
+            }
+        }
+        if (quote) { free(tok); ftg_free_tokens(out, n); return -2; }
+        tok[j] = '\0';
+        out[n++] = tok;
+        if (n >= max) { ftg_free_tokens(out, n); return -1; }
+    }
+    return n;
+}
+
+/* Expand $name and ${name}; unknown names are left untouched so the
+ * underlying command can report the problem instead of guessing. */
+static void ftg_expand(const char* in, char* out, size_t cap) {
+    size_t o = 0;
+    const char* p = in;
+    while (*p && o + 1 < cap) {
+        if (*p == '$') {
+            p++;
+            char name[FTG_VAR_NAME_CAP];
+            size_t k = 0;
+            if (*p == '{') {
+                p++;
+                while (*p && *p != '}' && k + 1 < sizeof(name)) name[k++] = *p++;
+                if (*p == '}') p++;
+            } else {
+                while ((isalnum((unsigned char)*p) || *p == '_') && k + 1 < sizeof(name))
+                    name[k++] = *p++;
+            }
+            name[k] = '\0';
+            const char* v = ftg_get_var(name);
+            if (v) {
+                size_t vl = strlen(v);
+                if (o + vl < cap) { memcpy(out + o, v, vl); o += vl; }
+            } else {
+                if (o + 2 < cap) out[o++] = '$';
+                size_t vl = strlen(name);
+                if (o + vl < cap) { memcpy(out + o, name, vl); o += vl; }
+            }
+        } else {
+            out[o++] = *p++;
+        }
+    }
+    out[o] = '\0';
+}
+
+static void ftg_strip_quotes(char* s) {
+    size_t l = strlen(s);
+    if (l >= 2 && ((s[0] == '"' && s[l-1] == '"') || (s[0] == '\'' && s[l-1] == '\''))) {
+        memmove(s, s + 1, l - 2);
+        s[l - 2] = '\0';
+    }
+}
+
+static int ftg_valid_name(const char* s) {
+    if (!s || !*s) return 0;
+    if (!isalpha((unsigned char)s[0]) && s[0] != '_') return 0;
+    for (const char* p = s + 1; *p; p++)
+        if (!isalnum((unsigned char)*p) && *p != '_') return 0;
+    return 1;
+}
+
+static int ftg_set_var(const char* name, const char* value) {
+    if (!ftg_valid_name(name)) return 1;
+    for (int i = 0; i < g_ftg_var_n; i++) {
+        if (ft_strcase_eq(g_ftg_vars[i].name, name)) {
+            snprintf(g_ftg_vars[i].value, sizeof(g_ftg_vars[i].value), "%s", value);
+            return 0;
+        }
+    }
+    if (g_ftg_var_n >= FTG_VAR_CAP) return 1;
+    snprintf(g_ftg_vars[g_ftg_var_n].name, sizeof(g_ftg_vars[g_ftg_var_n].name), "%s", name);
+    snprintf(g_ftg_vars[g_ftg_var_n].value, sizeof(g_ftg_vars[g_ftg_var_n].value), "%s", value);
+    g_ftg_var_n++;
+    return 0;
+}
+
+static int cmd_run(const LangPack* L, int argc, char** argv) {
+    if (need(L, argc, 2, L->run_usage)) return 1;
+    if (check_extra(L, argc, 2, argv)) return 1;
+    if (check_file(L, argv[1])) return 1;
+
+    ftg_reset_vars();
+    int nlines = 0;
+    char** lines = read_lines(argv[1], &nlines);
+    if (!lines) { printf(L->err_access, argv[1]); printf("\n"); return 1; }
+
+    const LangPack* cur = L;
+    int rc = 0;
+    for (int li = 0; li < nlines; li++) {
+        char raw[FTG_LINE_CAP];
+        snprintf(raw, sizeof(raw), "%s", lines[li]);
+        ftg_trim(raw);
+        if (!*raw || raw[0] == '#') continue;
+
+        char* tok[FTG_TOKEN_CAP];
+        int nt = ftg_tokenize(raw, tok, FTG_TOKEN_CAP);
+        if (nt == -2) { printf(L->run_bad_quote); printf("\n"); rc = 1; break; }
+        if (nt < 0) { printf(L->err_generic); printf("\n"); rc = 1; break; }
+
+        if (ft_strcase_eq(tok[0], "set")) {
+            char* eq = strchr(raw, '=');
+            if (!eq || nt < 2) {
+                printf(L->run_bad_set); printf("\n"); ftg_free_tokens(tok, nt); rc = 1; break;
+            }
+            const char* np = raw + strlen(tok[0]);
+            while (isspace((unsigned char)*np)) np++;
+            char name[FTG_VAR_NAME_CAP];
+            size_t nn = (size_t)(eq - np);
+            if (nn >= sizeof(name)) { ftg_free_tokens(tok, nt); printf(L->run_bad_set); printf("\n"); rc = 1; break; }
+            memcpy(name, np, nn);
+            name[nn] = '\0';
+            ftg_trim(name);
+            const char* vp = eq + 1;
+            while (isspace((unsigned char)*vp)) vp++;
+            char value[FTG_VAR_VALUE_CAP];
+            ftg_expand(vp, value, sizeof(value));
+            ftg_strip_quotes(value);
+            if (ftg_set_var(name, value) != 0) {
+                printf(L->run_bad_set); printf("\n"); ftg_free_tokens(tok, nt); rc = 1; break;
+            }
+        } else if (ft_strcase_eq(tok[0], "echo")) {
+            char msg[FTG_LINE_CAP];
+            msg[0] = '\0';
+            for (int i = 1; i < nt; i++) {
+                char part[FTG_LINE_CAP];
+                ftg_expand(tok[i], part, sizeof(part));
+                if (i > 1) strncat(msg, " ", sizeof(msg) - strlen(msg) - 1);
+                strncat(msg, part, sizeof(msg) - strlen(msg) - 1);
+            }
+            printf("%s\n", msg);
+        } else if (ft_strcase_eq(tok[0], "lang")) {
+            if (nt != 2) { printf(L->err_args, L->run_usage); printf("\n"); ftg_free_tokens(tok, nt); rc = 1; break; }
+            cur = lang_get(tok[1]);
+        } else if (ft_strcase_eq(tok[0], "exit")) {
+            if (nt == 1) { rc = 0; }
+            else if (nt == 2) {
+                long long code = 0;
+                if (parse_int_nonneg(cur, tok[1], &code) != 0) { ftg_free_tokens(tok, nt); rc = 1; break; }
+                rc = (int)code;
+            } else {
+                printf(L->err_args, L->run_usage); printf("\n"); ftg_free_tokens(tok, nt); rc = 1; break;
+            }
+            ftg_free_tokens(tok, nt);
+            break;
+        } else {
+            char* exp[FTG_TOKEN_CAP];
+            char expbuf[FTG_TOKEN_CAP][FTG_LINE_CAP];
+            for (int i = 0; i < nt; i++) {
+                ftg_expand(tok[i], expbuf[i], sizeof(expbuf[i]));
+                exp[i] = expbuf[i];
+            }
+            int found = 0;
+            for (int i = 0; i < CMD_COUNT; i++) {
+                if (ft_strcase_eq(exp[0], CMD_TABLE[i].name)) {
+                    found = 1;
+                    rc = CMD_TABLE[i].fn(cur, nt, exp);
+                    break;
+                }
+            }
+            if (!found) {
+                printf(cur->err_unknown, exp[0]); printf("\n");
+                rc = 1;
+            }
+            if (rc != 0) {
+                printf(L->run_line_error, li + 1, raw); printf("\n");
+                ftg_free_tokens(tok, nt);
+                break;
+            }
+        }
+        ftg_free_tokens(tok, nt);
+    }
+
+    free_lines(lines, nlines);
+    return rc;
+}
+
 static int cmd_version(const LangPack* L, int argc, char** argv) {
     if (check_extra(L, argc, 1, argv)) return 1;
     printf(L->ver_line, FILETGIE_VERSION);
@@ -1636,6 +1872,7 @@ const CommandEntry CMD_TABLE[] = {
     { "checkupdate", cmd_checkupdate, OFF(h_checkupdate) },
     { "update",      cmd_update,      OFF(h_update) },
     { "reminder",    cmd_reminder,    OFF(h_reminder) },
+    { "run",         cmd_run,         OFF(h_run) },
     { "stat",        cmd_stat,       OFF(h_stat) },
     { "count",       cmd_count,       OFF(h_count) },
     { "lines",       cmd_lines,       OFF(h_lines) },

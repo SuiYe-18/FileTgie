@@ -215,6 +215,15 @@ typedef struct {
     const char* rem_bad_schedule;  /* invalid schedule syntax             */
     const char* rem_scheduler_failed; /* Windows task configuration failed */
     const char* rem_linux_manual;  /* Linux cron guidance                */
+
+    /* --- v0.5.1: simple .ftg script runner (appended; keep 4 packs in sync) --- */
+    const char* h_run;             /* run command help text              */
+    const char* run_usage;          /* run syntax                         */
+    const char* run_notfound;      /* script file missing: %s            */
+    const char* run_bad_set;        /* invalid set syntax                 */
+    const char* run_bad_quote;      /* unclosed quote in script           */
+    const char* run_line_error;     /* line %d failed: %s                 */
+    const char* run_unknown_var;    /* unknown variable: %s               */
 } LangPack;
 
 /* 按语言码（cn/en/ja/ru）返回对应包，无法识别时回退到 cn。

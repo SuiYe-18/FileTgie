@@ -166,7 +166,15 @@ static const LangPack ZH = {
     "更新提醒未开启。",
     "定时格式无效：reminder on [every 1-1439|daily HH:MM|hourly] | off | status",
     "无法配置 Windows 计划任务。",
-    "Linux 不自动管理 crontab；请手动添加定时任务运行 checkupdate。"
+    "Linux 不自动管理 crontab；请手动添加定时任务运行 checkupdate。",
+    /* v0.5.1 .ftg script runner */
+    "运行一个简单的 .ftg 脚本，按顺序执行 FileTgie 命令",
+    "run <script.ftg>",
+    "脚本文件不存在: %s",
+    "set 写法无效：set 名称 = 值（名称以字母或 _ 开头）",
+    "脚本中有未闭合的引号。",
+    "第 %d 行执行失败: %s",
+    "未知变量: %s"
 };
 
 /* ------------------------------------------------------------------ */
@@ -320,7 +328,15 @@ static const LangPack EN = {
     "Update reminder is not enabled.",
     "Invalid schedule: reminder on [every 1-1439|daily HH:MM|hourly] | off | status",
     "Could not configure the Windows scheduled task.",
-    "Linux does not manage crontab; add a cron job to run checkupdate manually."
+    "Linux does not manage crontab; add a cron job to run checkupdate manually.",
+    /* v0.5.1 .ftg script runner */
+    "Run a simple .ftg script that executes FileTgie commands in order",
+    "run <script.ftg>",
+    "Script file not found: %s",
+    "Invalid set syntax: set name = value (name starts with a letter or _)",
+    "Unclosed quote in the script.",
+    "Line %d failed: %s",
+    "Unknown variable: %s"
 };
 
 /* ------------------------------------------------------------------ */
@@ -474,7 +490,15 @@ static const LangPack JA = {
     "更新通知は無効です。",
     "スケジュールが不正です: reminder on [every 1-1439|daily HH:MM|hourly] | off | status",
     "Windows タスクを設定できませんでした。",
-    "Linux は crontab を管理しません。手動で cron ジョブを追加し checkupdate を実行してください。"
+    "Linux は crontab を管理しません。手動で cron ジョブを追加し checkupdate を実行してください。",
+    /* v0.5.1 .ftg script runner */
+    "簡単な .ftg スクリプトを実行し、FileTgie コマンドを順番に流す",
+    "run <script.ftg>",
+    "スクリプトが見つかりません: %s",
+    "set の書式が不正です: set 名前 = 値（名前は英字または _ で開始）",
+    "スクリプトの引用符が閉じていません。",
+    "%d 行目で失敗: %s",
+    "不明な変数: %s"
 };
 
 /* ------------------------------------------------------------------ */
@@ -628,7 +652,15 @@ static const LangPack RU = {
     "Напоминание об обновлении не включено.",
     "Неверное расписание: reminder on [every 1-1439|daily HH:MM|hourly] | off | status",
     "Не удалось настроить задачу Windows.",
-    "Linux не управляет crontab; добавьте задачу cron для ручного запуска checkupdate."
+    "Linux не управляет crontab; добавьте задачу cron для ручного запуска checkupdate.",
+    /* v0.5.1 .ftg script runner */
+    "Запустить простой скрипт .ftg и выполнить команды FileTgie по порядку",
+    "run <script.ftg>",
+    "Скрипт не найден: %s",
+    "Неверный синтаксис set: set имя = значение (имя начинается с буквы или _)",
+    "В скрипте незакрытая кавычка.",
+    "Ошибка в строке %d: %s",
+    "Неизвестная переменная: %s"
 };
 
 /* 全部语言包的注册表，顺序即 lang_list_all 的输出顺序。

@@ -1,4 +1,4 @@
-# FileTgie v0.4.1
+# FileTgie v0.5.1
 
 > A lightweight, read-only, zero-dependency file statistics and search CLI written in pure C.
 > One source tree builds for Windows and Linux; every command only reads and never modifies your files.
@@ -12,14 +12,15 @@
 | Package | Link |
 | --- | --- |
 | Official website | https://suiye-18.github.io/filetgie-official-website/ |
-| Windows installer | [FileTgie.windows.0.4.1.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.4.1.setup.exe) |
-| Windows portable ZIP | [FileTgie.windows.0.4.1.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.4.1.portable.zip) |
+| Windows installer | [FileTgie.windows.0.5.1.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.1.setup.exe) |
+| Windows portable ZIP | [FileTgie.windows.0.5.1.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.1.portable.zip) |
 | Linux x86_64 glibc | Verified unchanged [v0.4.0 tarball](https://github.com/SuiYe-18/FileTgie/releases/download/v0.4.0/FileTgie.linux.0.4.0.tar.gz); other distributions build from source with `make` |
-| Source archive | [FileTgie.source.0.4.1.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.4.1.zip) |
+| Source archive | [FileTgie.source.0.5.1.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.1.zip) |
 
 ## Highlights
 
-- **61 built-in commands** for counting, line statistics, directory comparison, file search, checksums, encoding checks, duplicates, disk space, verification and optional update reminders.
+- **62 built-in commands** for counting, line statistics, directory comparison, file search, checksums, encoding checks, duplicates, disk space, verification, optional update reminders, and a simple `.ftg` script runner.
+- **Simple `.ftg` scripts:** save a repeatable sequence of FileTgie commands in a plain-text file with `set`, `$variable`, `echo`, `lang`, comments and `exit`; no programming experience is required.
 - **Read-only by default:** every inspection command only reads files; it never modifies, deletes or moves user data. The explicit `update` command and bundled `FileTgieUpdater.exe` only upgrade FileTgie itself; `reminder` creates or removes one FileTgie-owned scheduled task; on Linux they print manual steps and never replace the binary.
 - **Pure C, zero third-party dependency:** C standard library plus native Windows/POSIX APIs only.
 - **Four interface languages:** switch messages with `--lang cn|en|ja|ru`.
@@ -39,6 +40,7 @@ FileTgie --lang en reminder on
 FileTgie --lang en reminder on every 5
 FileTgie --lang en reminder status
 FileTgie --lang en reminder off
+FileTgie run examples\demo.ftg
 ```
 
 * 核心理念：**一步一步慢慢来** —— 每个命令只做一件小事，结果清晰、可预期。
@@ -64,11 +66,13 @@ FileTgie --lang en reminder off
 * **patch（.x）**：只用于小补丁、小插曲（修小问题、文案微调），不进入
   minor 的进位序列。
 
-当前版本为 `0.4.1`：这是 `0.4.0` 的 Windows 补丁版，保留 1 分钟缺省只读检查、
-`reminder on every N`（1–1439 分钟自定义间隔）、`daily HH:MM` 与 `hourly`，以及按
-版本号去重的系统通知。本次只改进独立更新器的前台下载体验：下载开始前显示白色 `=`
-进度条，已完成字节显示绿色 `>`，剩余部分保持白色 `=`；临时文件、无效 URL、网络会话、
-连接、无响应、HTTP 状态、重定向与磁盘写入失败都会输出明确错误，不再只显示笼统失败。
+当前版本为 `0.5.1`：新增简单的 `.ftg` 代码式启动层。用户可以在纯文本脚本中按顺序写
+已有 FileTgie 命令，用 `set 名称 = 值` 保存路径或常用文本，用 `$名称` / `${名称}`
+替换变量，用 `echo` 输出提示，用 `lang en|ja|ru|cn` 切换本脚本语言，用 `#` 写注释，
+用 `exit 0` 提前结束；脚本逐行执行，任一命令失败即停止并返回非零退出码。`.ftg` 不是
+通用编程语言，没有循环、条件判断、数学运算或管道，目的是让没有编程基础的用户也能把
+常用统计流程保存成一个文件。
+
 `checkupdate` 只查询 GitHub Release 并比较版本；Windows 的 `update` 调用独立更新器，
 同时检查 GitHub 与官网，后台下载新版安装包并静默覆盖；Linux 只给出手动源码升级
 命令，不替换二进制。安装包会检测已安装 FileTgie 或旧版残留，并提供“覆盖安装”勾选；
@@ -112,8 +116,9 @@ make
 
 * 历史实机验证：GCC 11.4.0（Ubuntu 22.04 / x86_64 / glibc）曾以
   `-O2 -Wall -Wextra` 零警告编译，并在 C99/GNU99/C11/GNU11/GNU17 标准下通过。
-* 预期可编译：支持 C99 的 GCC 5+ 与现代 glibc；v0.4.0 的 x86_64 glibc 预编译包
-  已实机验证，v0.4.1 未改动 Linux 平台代码，未逐版本实测更低 GCC。
+* 预期可编译：支持 C99 的 GCC 5+ 与现代 glibc；v0.5.1 新增脚本层只使用 C 标准库与
+  现有平台抽象，不引入新的 Linux 系统调用，未改动的 v0.4.0 x86_64 glibc 预编译包仍
+  可作为历史参考，未逐版本实测更低 GCC。
 * musl/Alpine 不保证；其他发行版直接 `make` 从源码构建。Clang 本次未实测。
 
 ## 通用用法
@@ -134,6 +139,47 @@ FileTgie [--lang cn|en|ja|ru] [--exclude <通配符>] [--exclude-ext <扩展名>
 
 * 不带任何参数或输入 `help` 显示完整命令表（退出码 0）。
 
+### `.ftg` 代码式启动（简单顺序脚本）
+
+`.ftg` 是 FileTgie 自带的纯文本顺序脚本，不是完整编程语言。它只把已有命令按行保存下来，
+方便重复执行；没有循环、条件判断、数学运算、管道或后台任务。
+
+```ftg
+# 以 # 开头的行是注释 / comment line
+set folder = "D:\Docs"
+set report = $folder\summary.txt
+
+echo Inspecting $folder
+exists $folder
+count $folder
+linesdir $folder
+lang en
+version
+exit 0
+```
+
+执行方式：
+
+```
+FileTgie run demo.ftg
+FileTgie demo.ftg
+```
+
+可用符号与关键字：
+
+| 写法 | 作用 |
+| --- | --- |
+| `#` | 整行注释，不执行 |
+| `set 名称 = 值` | 保存变量；名称以字母或 `_` 开头，只允许字母、数字、下划线 |
+| `$名称` / `${名称}` | 替换前面保存的变量 |
+| `"..."` / `'...'` | 包裹带空格的路径或文字 |
+| `echo 文字` | 输出一行文字，支持变量替换 |
+| `lang cn|en|ja|ru` | 只切换当前脚本的输出语言 |
+| `exit [0]` | 提前结束；可写非零退出码 |
+| 其他行 | 原样作为 FileTgie 命令执行 |
+
+脚本从上到下逐行运行；某一行返回错误时立即停止，并把失败行号打印出来。
+
 * 语言示例：
 
 
@@ -144,7 +190,7 @@ FileTgie -lang ja lines ./a.txt
 FileTgie -l ru disk
 ```
 
-## 命令一览（61 个；检查/统计类命令只读；`log` / `dellog` 只读写 FileTgie 自身日志；`update` 仅按用户显式触发更新 FileTgie 自身；`reminder` 只创建/删除 FileTgie 自己的计划任务）
+## 命令一览（62 个；检查/统计类命令只读；`log` / `dellog` 只读写 FileTgie 自身日志；`update` 仅按用户显式触发更新 FileTgie 自身；`reminder` 只创建/删除 FileTgie 自己的计划任务；`run` 只执行脚本中已有的只读/受控命令）
 
 
 
@@ -158,6 +204,7 @@ FileTgie -l ru disk
 | checkupdate | `checkupdate`           | 查询 GitHub 最新 Release 并比较版本，只报告不安装 |
 | update      | `update`                | Windows 调用独立更新器检查 GitHub/官网并后台覆盖；Linux 只打印手动升级步骤 |
 | reminder    | `reminder on [every N|daily HH:MM|hourly]` / `reminder status` / `reminder off` | Windows 开启/查询/删除可选的用户级定时更新检查提醒；缺省每 1 分钟，`every N` 为 1–1439 分钟，每个新版本只通知一次；Linux 只打印手动 cron 说明 |
+| run         | `run <脚本.ftg>` 或直接给出 `<脚本.ftg>` | 逐行执行简单 `.ftg` 脚本：`#` 注释、`set 名称 = 值`、`$名称` 变量、`echo`、`lang`、`exit` |
 | stat        | `stat <路径>`             | 文件 / 目录详细信息（大小、三个时间）        |
 | count       | `count <目录>`            | 递归统计文件数与文件夹数                |
 | lines       | `lines <文件>`            | 统计单个文件行数                    |
@@ -307,19 +354,18 @@ Use `fd -u` when the candidate set must include hidden files and paths ignored b
 
 ## 便携包与安装程序
 
-* **Windows 绿色便携包**（`FileTgie.windows.0.4.1.portable.zip`）：含
+* **Windows 绿色便携包**（`FileTgie.windows.0.5.1.portable.zip`）：含
   `FileTgie.exe`、`FileTgieUpdater.exe`、`README.md`、`User Manual.txt`、`LICENSE`、
-  `COPYING`。便携模式不写注册表、不写入 Program Files，除 exe 旁自身的
+  `COPYING` 与 `examples\demo.ftg`。便携模式不写注册表、不写入 Program Files，除 exe 旁自身的
   `filetgie.log` 外不写用户位置，解压即用、删文件夹即卸载。
 
 * **Linux 构建**：源码包在 Linux 执行 `make` 即可生成 `FileTgie`；检查与统计
-  命令为 POSIX 只读路径，`update` / `reminder` 在 Linux 只打印手动步骤，不替换
-  二进制、不修改 crontab。v0.4.1 只改动 Windows 专用更新器，Linux 代码保持不变；
-  已验证的 x86_64 glibc 预编译包仍为 v0.4.0 tarball，其他发行版或新版本请用
-  `make` 从源码构建。
+  命令为 POSIX 只读路径，`.ftg` 脚本层只使用 C 标准库与现有平台抽象，`update` /
+  `reminder` 在 Linux 只打印手动步骤，不替换二进制、不修改 crontab。其他发行版或新版本
+  请用 `make` 从源码构建。
 
 * **安装程序**：提供 Inno Setup 6 脚本 `installer\installer.iss`，编译出
-  `FileTgie.windows.0.4.1.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
+  `FileTgie.windows.0.5.1.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
   /桌面（默认不勾选）快捷方式、标准卸载项，以及默认勾选的“覆盖安装”选项；安装前
   检测已注册的 FileTgie、App Paths 与旧版残留文件，不勾选覆盖时需另选目录。覆盖时
   先把旧的 `FileTgie.exe`、`FileTgieUpdater.exe` 和文档移动到安装目录 `.old` 备份，
@@ -373,9 +419,11 @@ FileTgie/
 ├─ NOTICE            # 版权与许可声明
 ├─ installer/
 │  └─ installer.iss  # Inno Setup 6 脚本（缺图标容错）
+├─ examples/
+│  └─ demo.ftg      # 简单 .ftg 顺序脚本示例
 └─ src/
    ├─ main.c         # 入口、--lang/--exclude 参数解析、分发、运行日志
-   ├─ commands.c    # 61 个子命令实现（含 log / dellog / checkupdate / update / reminder）
+   ├─ commands.c    # 62 个子命令实现（含 log / dellog / checkupdate / update / reminder / run）
    ├─ commands.h    # 命令表与 FILETGIE_VERSION 唯一版本来源
    ├─ update.c      # GitHub Release 手动更新检测、Windows 安装包更新与可选提醒任务
    ├─ update.h

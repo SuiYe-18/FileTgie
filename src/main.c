@@ -75,6 +75,13 @@ static int neg_number_like(const char* s) {
     return 1;
 }
 
+/* A bare *.ftg path is dispatched to run without typing the run command.
+ * 直接给出 *.ftg 路径时，自动交给 run 执行。 */
+static int ends_with_ftg(const char* s) {
+    size_t l = strlen(s);
+    return l >= 4 && ft_strcase_eq(s + l - 4, ".ftg");
+}
+
 int main(int argc_raw, char** argv_raw) {
 #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
@@ -174,15 +181,24 @@ int main(int argc_raw, char** argv_raw) {
         cmd_help(Lfinal, 0, NULL);
         rc = 0;
     } else {
+        char* auto_args[3] = { NULL, NULL, NULL };
+        char** dispatch = rest;
+        int dn = n;
+        if (n > 0 && ends_with_ftg(rest[0])) {
+            auto_args[0] = (char*)"run";
+            auto_args[1] = rest[0];
+            dispatch = auto_args;
+            dn = 2;
+        }
         rc = -1;
         for (int i = 0; i < CMD_COUNT; i++) {
-            if (ft_strcase_eq(rest[0], CMD_TABLE[i].name)) {
-                rc = CMD_TABLE[i].fn(Lfinal, n, rest);
+            if (ft_strcase_eq(dispatch[0], CMD_TABLE[i].name)) {
+                rc = CMD_TABLE[i].fn(Lfinal, dn, dispatch);
                 break;
             }
         }
         if (rc == -1) {
-            printf(Lfinal->err_unknown, rest[0]);
+            printf(Lfinal->err_unknown, dispatch[0]);
             printf("\n");
             rc = 1;
         }

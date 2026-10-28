@@ -1,0 +1,18 @@
+# FileTgie .ftg demo script / FileTgie .ftg 示例脚本
+# Run / 运行: FileTgie run examples\demo.ftg
+# A line starting with # is a comment / 以 # 开头的行是注释。
+
+# Save a reusable path value. Spaces need quotes.
+# 保存可重复使用的路径；带空格的值需要引号。
+set folder = .
+
+echo Demo script started / 示例脚本已开始
+exists $folder
+count $folder
+
+# Switch only this script's output language.
+# 只切换本脚本内的输出语言。
+lang en
+version
+
+exit 0
