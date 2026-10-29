@@ -281,8 +281,11 @@ static int http_download(const char* url_in, const char* dest, int background,
                 }
                 received += n;
                 if (expected > 0) {
-                    int percent = (int)((received * 100 + expected / 2) / expected);
-                    int filled = (int)((received * FT_BAR_WIDTH + expected / 2) / expected);
+                    /* Floor (not round): a segment lights only once its 5%
+                     * share is fully reached, so 0-4.99% keeps 20 white '='
+                     * and the first '>' appears exactly at 5%. */
+                    int percent = (int)(received * 100 / expected);
+                    int filled = (int)(received * FT_BAR_WIDTH / expected);
                     if (filled != last_filled) {
                         print_progress(filled, percent, background);
                         last_filled = filled;
