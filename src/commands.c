@@ -2,10 +2,10 @@
  * SPDX-License-Identifier: LGPL-3.0-or-later
  * Copyright (C) 2026 SuiYe_TR (https://github.com/Suiye-18)
  *
- * 【本文件】全部 58 个子命令的实现与命令表 CMD_TABLE：先定义参数/路径校验等
+ * 【本文件】全部 63 个子命令的实现与命令表 CMD_TABLE：先定义参数/路径校验等
  * 内部助手，再按功能分组实现各 cmd_*，最后由 CMD_TABLE 把命令名接到处理函数。
  *
- * All 58 subcommand implementations and the CMD_TABLE registry: internal
+ * All 63 subcommand implementations and the CMD_TABLE registry: internal
  * validation helpers first, cmd_* handlers grouped by feature, then the
  * table mapping each command name to its handler.
  */
@@ -211,6 +211,46 @@ int cmd_help(const LangPack* L, int argc, char** argv) {
     }
     printf("\n--lang cn|en|ja|ru  %s\n", L->lang_now);
     return 0;
+}
+
+/* ================================================================== */
+/* v0.5.3: help-<command> per-command detail help                       */
+/* ================================================================== */
+/* `help-<command>` (e.g. `help-lines`) prints the localized description,
+ * usage and example of one registered command in the current language.
+ * The target after the `help-` prefix matches case-insensitively. A bare
+ * `help-` (no target) and an unknown target both print a localized error and
+ * return 1; a known target returns 0. */
+static int cmd_helpcmd(const LangPack* L, int argc, char** argv) {
+    const char* tok = argv[0];
+    const char* target = tok;
+    if (strlen(tok) >= 5 &&
+        tolower((unsigned char)tok[0]) == 'h' &&
+        tolower((unsigned char)tok[1]) == 'e' &&
+        tolower((unsigned char)tok[2]) == 'l' &&
+        tolower((unsigned char)tok[3]) == 'p' &&
+        tok[4] == '-')
+        target = tok + 5;
+
+    if (*target == '\0') {
+        printf(L->hp_missing); printf("\n");
+        return 1;
+    }
+    if (check_extra(L, argc, 1, argv)) return 1;
+
+    for (int i = 0; i < CMD_COUNT; i++) {
+        if (ft_strcase_eq(CMD_TABLE[i].name, "help-")) continue;
+        if (ft_strcase_eq(target, CMD_TABLE[i].name)) {
+            const char* desc = *(const char**)((const char*)L + CMD_TABLE[i].help_off);
+            printf(L->hp_title, CMD_TABLE[i].name); printf("\n");
+            printf("%s\n", desc);
+            printf("\n%s\n", L->hp_usage);
+            printf("%s\n", L->hp_example);
+            return 0;
+        }
+    }
+    printf(L->hp_unknown, target); printf("\n");
+    return 1;
 }
 
 /* ================================================================== */
@@ -1865,6 +1905,7 @@ static int cmd_findpath(const LangPack* L, int argc, char** argv) {
 #define OFF(m) offsetof(LangPack, m)
 const CommandEntry CMD_TABLE[] = {
     { "help",        cmd_help,        OFF(h_help) },
+    { "help-",      cmd_helpcmd,    OFF(h_helpprefix) },
     { "version",     cmd_version,     OFF(h_version) },
     { "langs",       cmd_langs,      OFF(h_langs) },
     { "log",         cmd_log,        OFF(h_log) },

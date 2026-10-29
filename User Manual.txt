@@ -1,11 +1,11 @@
 ﻿==============================================================
- FileTgie v0.5.1 - Beginner User Manual / 新手用户手册
+ FileTgie v0.5.3 - Beginner User Manual / 新手用户手册
 ==============================================================
 
 by SuiYe_TR (Suiye-18) - Single Author
 GitHub: https://github.com/Suiye-18
 License: LGPL-3.0-or-later
-Version: v0.5.1
+Version: v0.5.3
 
 This manual is written in English with a Chinese translation under
 each paragraph. Commands, options and numbers come only from the
@@ -116,18 +116,20 @@ PATH 修改需要管理员权限。
 
 Linux build / Linux 构建
 
-v0.5.1 adds a platform-independent .ftg script layer; the Linux-compatible
+v0.5.3 adds the `help-<command>` per-command detail help; the platform-
+independent .ftg script layer from v0.5.1 is unchanged. The Linux-compatible
 source code remains available for `make`, after which run
 `./FileTgie --lang en help` and optionally copy FileTgie into a directory in
 PATH. Inspection commands need no installer, administrator rights or network;
 checkupdate uses curl to query GitHub. The older verified x86_64 glibc
-prebuilt tarball remains the unchanged v0.4.0 Release package; build v0.5.1
+prebuilt tarball remains the unchanged v0.4.0 Release package; build v0.5.3
 from source on Linux.
 
-v0.5.1 新增平台无关的 .ftg 脚本层；兼容 Linux 的源码仍可执行 `make` 构建，
-然后运行 `./FileTgie --lang en help`，也可按需把 FileTgie 复制到 PATH 目录。检查类
-命令不需要安装程序、管理员权限或网络；checkupdate 通过 curl 查询 GitHub。较早验证过的
-x86_64 glibc 预编译包保持为未改动的 v0.4.0 Release 包；Linux 请从源码构建 v0.5.1。
+v0.5.3 新增 `help-<命令>` 单命令详细帮助；v0.5.1 的平台无关 .ftg 脚本层保持不变。
+兼容 Linux 的源码仍可执行 `make` 构建，然后运行 `./FileTgie --lang en help`，也可按需把
+FileTgie 复制到 PATH 目录。检查类命令不需要安装程序、管理员权限或网络；checkupdate
+通过 curl 查询 GitHub。较早验证过的 x86_64 glibc 预编译包保持为未改动的 v0.4.0 Release
+包；Linux 请从源码构建 v0.5.3。
 
 Building from source / 从源码构建
 
@@ -258,7 +260,7 @@ echo prints text; lang changes only this script's language; exit stops early.
 
 
 ==============================================================
-5. Command Reference / 命令参考 (62 commands / 62 条命令)
+5. Command Reference / 命令参考 (63 commands / 63 条命令)
 ==============================================================
 
 Each entry gives: command name, syntax, one English-purpose line,
@@ -687,7 +689,7 @@ CN: Windows 端启动同目录的 FileTgieUpdater.exe；它同时检查 GitHub �
 Example: FileTgie --lang en update
 Standalone check:   FileTgieUpdater.exe --check
 Notify-only check:  FileTgieUpdater.exe --check --notify
-Background mode:    FileTgieUpdater.exe --background --current=0.5.1
+Background mode:    FileTgieUpdater.exe --background --current=0.5.3
 Silent upgrade task: the installer uses /MERGETASKS=overwrite for the .old backup/replacement path.
 
 61) reminder
@@ -713,7 +715,7 @@ Daily:    FileTgie --lang en reminder on daily 09:00
 Status:   FileTgie --lang en reminder status
 Disable:  FileTgie --lang en reminder off
 Standalone updater: FileTgieUpdater.exe --check --notify
-Background mode:    FileTgieUpdater.exe --background --current=0.5.1
+Background mode:    FileTgieUpdater.exe --background --current=0.5.3
 
 62) run
 Syntax: run <script.ftg>
@@ -731,6 +733,21 @@ exit [退出码] 可提前结束。以 .ftg 结尾的路径也可以直接给出
 立即停止并打印失败行号。
 Example: FileTgie run examples\demo.ftg
 Direct:  FileTgie examples\demo.ftg
+
+63) help-<command>
+Syntax: help-<command>
+EN: Print the localized detailed help (description, usage and example) of
+one registered command in the current --lang language. The target name after
+the hyphen matches case-insensitively. A bare "help-" with no target, or an
+unknown target, prints a clear localized error and returns a non-zero exit
+code; a known target returns 0.
+CN: 在当前 --lang 语言下打印指定已注册命令的本地化详细帮助（说明、用法与示例）。
+连字符后的目标命令名大小写不敏感匹配；help- 后缺目标或目标不存在时打印清晰的
+本地化错误并返回非零退出码；已知目标返回 0。
+Example: FileTgie help-lines
+Case-insensitive: FileTgie --lang en help-LINES
+Missing target:  FileTgie help-        (rc=1)
+Unknown target:  FileTgie help-nosuchcmd (rc=1)
 
 
 ==============================================================

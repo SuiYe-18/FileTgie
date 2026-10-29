@@ -197,6 +197,26 @@ int main(int argc_raw, char** argv_raw) {
                 break;
             }
         }
+        /* help-<command> pseudo-command: a token starting with "help-"
+         * (case-insensitive) routes to the help- entry, which strips the
+         * prefix and looks the target up itself. */
+        if (rc == -1 && strlen(dispatch[0]) >= 5) {
+            int is_help_prefix = 1;
+            static const char hpref[] = "help-";
+            for (int k = 0; k < 5; k++)
+                if (tolower((unsigned char)dispatch[0][k]) != tolower((unsigned char)hpref[k])) {
+                    is_help_prefix = 0;
+                    break;
+                }
+            if (is_help_prefix) {
+                for (int i = 0; i < CMD_COUNT; i++) {
+                    if (ft_strcase_eq(CMD_TABLE[i].name, "help-")) {
+                        rc = CMD_TABLE[i].fn(Lfinal, dn, dispatch);
+                        break;
+                    }
+                }
+            }
+        }
         if (rc == -1) {
             printf(Lfinal->err_unknown, dispatch[0]);
             printf("\n");

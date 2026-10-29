@@ -174,7 +174,14 @@ static const LangPack ZH = {
     "set 写法无效：set 名称 = 值（名称以字母或 _ 开头）",
     "脚本中有未闭合的引号。",
     "第 %d 行执行失败: %s",
-    "未知变量: %s"
+    "未知变量: %s",
+    /* v0.5.3 per-command detail help: help-<command> */
+    "显示指定命令的详细帮助：help-<命令>（如 help-lines）",
+    "命令: %s",
+    "用法: FileTgie <命令> [参数...]；可在命令前后加 --lang cn|en|ja|ru 切换输出语言；输入 help 查看全部命令",
+    "示例: FileTgie help-lines",
+    "缺少目标命令：用法 help-<命令>（如 help-lines），输入 help 查看命令列表",
+    "未知命令「%s」，输入 help 查看命令列表"
 };
 
 /* ------------------------------------------------------------------ */
@@ -336,7 +343,14 @@ static const LangPack EN = {
     "Invalid set syntax: set name = value (name starts with a letter or _)",
     "Unclosed quote in the script.",
     "Line %d failed: %s",
-    "Unknown variable: %s"
+    "Unknown variable: %s",
+    /* v0.5.3 per-command detail help: help-<command> */
+    "Show detailed help for one command: help-<command> (e.g. help-lines)",
+    "Command: %s",
+    "Usage: FileTgie <command> [args...]; add --lang cn|en|ja|ru before or after to switch the output language; run help for the full list",
+    "Example: FileTgie help-lines",
+    "Missing target command: use help-<command> (for example help-lines); type help for the command list",
+    "Unknown command '%s'; type help for the command list"
 };
 
 /* ------------------------------------------------------------------ */
@@ -498,7 +512,14 @@ static const LangPack JA = {
     "set の書式が不正です: set 名前 = 値（名前は英字または _ で開始）",
     "スクリプトの引用符が閉じていません。",
     "%d 行目で失敗: %s",
-    "不明な変数: %s"
+    "不明な変数: %s",
+    /* v0.5.3 per-command detail help: help-<command> */
+    "個別コマンドの詳細ヘルプを表示: help-<command>（例 help-lines）",
+    "コマンド: %s",
+    "使い方: FileTgie <command> [引数...]；--lang cn|en|ja|ru で出力言語を切り替えられます；help で全コマンドを表示",
+    "例: FileTgie help-lines",
+    "対象コマンドがありません: help-<command>（例 help-lines）の形で指定してください。help で一覧表示",
+    "不明なコマンド「%s」。help でコマンド一覧を表示"
 };
 
 /* ------------------------------------------------------------------ */
@@ -660,7 +681,14 @@ static const LangPack RU = {
     "Неверный синтаксис set: set имя = значение (имя начинается с буквы или _)",
     "В скрипте незакрытая кавычка.",
     "Ошибка в строке %d: %s",
-    "Неизвестная переменная: %s"
+    "Неизвестная переменная: %s",
+    /* v0.5.3 per-command detail help: help-<command> */
+    "Подробная справка по одной команде: help-<command> (например help-lines)",
+    "Команда: %s",
+    "Использование: FileTgie <command> [аргументы...]; --lang cn|en|ja|ru переключает язык вывода; help показывает полный список",
+    "Пример: FileTgie help-lines",
+    "Не указана целевая команда: используйте help-<command> (например help-lines); help — список команд",
+    "Неизвестная команда '%s'; наберите help для списка команд"
 };
 
 /* 全部语言包的注册表，顺序即 lang_list_all 的输出顺序。

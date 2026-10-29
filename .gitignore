@@ -15,12 +15,9 @@ FileTgie.exe
 filetgie.log
 *.log
 
-# Read-only test corpus (not part of the shipped project)
-src2/
-
-# Local scratch / backup / QA screenshots
-_backup/
+# Local scratch / QA screenshots
 _tool/
+archive/
 _shots/
 _stage_*/
 __pycache__/

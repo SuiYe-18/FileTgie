@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FileTgie v0.5.1 — Read-only file statistics &amp; search CLI in pure C</title>
+<title>FileTgie v0.5.3 — Read-only file statistics &amp; search CLI in pure C</title>
 <meta name="description" content="FileTgie is a lightweight, read-only, zero-dependency file statistics and search command-line tool written in pure C for Windows and Linux. LGPL-3.0-or-later.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000000'/%3E%3Ccircle cx='28' cy='28' r='14' fill='none' stroke='%23FFFFFF' stroke-width='6'/%3E%3Cline x1='38' y1='38' x2='52' y2='52' stroke='%23FFFFFF' stroke-width='7' stroke-linecap='square'/%3E%3C/svg%3E">
 <style>
@@ -271,18 +271,18 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <section class="hero" id="top">
   <div class="wrap">
     <img class="hero-logo" src="assets/logo_wide_white.png" alt="FileTgie white logo on black">
-    <div class="hero-tag">v0.5.1 · pure C · LGPL-3.0-or-later</div>
+    <div class="hero-tag">v0.5.3 · pure C · LGPL-3.0-or-later</div>
     <h1 data-i18n="hero.title">Lightweight, read-only, zero-dependency file statistics &amp; search CLI</h1>
     <p class="lede" data-i18n="hero.lede">Written in pure C with the standard library only, one source tree builds for Windows and Linux. Every command does one small, predictable thing and never touches your files.</p>
     <div class="cta-row">
-      <a class="btn btn-solid" data-i18n="hero.installer" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.1.setup.exe">Download installer (Windows)</a>
+      <a class="btn btn-solid" data-i18n="hero.installer" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.3/FileTgie.windows.0.5.3.setup.exe">Download installer (Windows)</a>
       <a class="btn btn-ghost" data-i18n="hero.repo" href="https://github.com/SuiYe-18/FileTgie" target="_blank" rel="noopener">GitHub repository</a>
     </div>
     <div class="cta-row" style="margin-top:10px;">
-      <a class="btn btn-ghost" data-i18n="hero.portable" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.1.portable.zip">Windows portable ZIP</a>
-      <a class="btn btn-ghost" data-i18n="hero.linux" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.1.zip">Linux build from source</a>
-      <a class="btn btn-ghost" data-i18n="hero.source" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.1.zip">Source archive</a>
-      <a class="btn btn-ghost" data-i18n="hero.explore" href="#commands">Explore 62 commands</a>
+      <a class="btn btn-ghost" data-i18n="hero.portable" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.3/FileTgie.windows.0.5.3.portable.zip">Windows portable ZIP</a>
+      <a class="btn btn-ghost" data-i18n="hero.linux" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.3/FileTgie.source.0.5.3.zip">Linux build from source</a>
+      <a class="btn btn-ghost" data-i18n="hero.source" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.3/FileTgie.source.0.5.3.zip">Source archive</a>
+      <a class="btn btn-ghost" data-i18n="hero.explore" href="#commands">Explore 63 commands</a>
     </div>
   </div>
 </section>
@@ -291,7 +291,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <div class="stats">
   <div class="wrap">
     <div class="stat-grid">
-      <div class="stat-cell"><div class="stat-num">62</div><div class="stat-label" data-i18n="stat.commands">built-in commands</div></div>
+      <div class="stat-cell"><div class="stat-num">63</div><div class="stat-label" data-i18n="stat.commands">built-in commands</div></div>
       <div class="stat-cell"><div class="stat-num">4</div><div class="stat-label" data-i18n="stat.langs">interface languages</div></div>
       <div class="stat-cell"><div class="stat-num">0</div><div class="stat-label" data-i18n="stat.deps">third-party dependencies</div></div>
       <div class="stat-cell"><div class="stat-num">2</div><div class="stat-label" data-i18n="stat.platforms">platforms: Windows + Linux</div></div>
@@ -344,7 +344,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <section class="commands" id="commands">
   <div class="wrap">
     <div class="eyebrow" data-i18n="commands.eyebrow">Command overview</div>
-    <h2 class="section-title" data-i18n="commands.title">62 commands, grouped by job</h2>
+    <h2 class="section-title" data-i18n="commands.title">63 commands, grouped by job</h2>
     <p class="section-sub" data-i18n-html="commands.sub">Every entry below comes from the built-in command table. <code>log</code> and <code>dellog</code> read or delete FileTgie's own log; all others are strictly read-only.</p>
     <div class="tab-row" id="tabRow" role="tablist"></div>
     <div id="cmdPanels"></div>
@@ -386,6 +386,10 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
     <div class="example">
       <div class="example-head"><span class="ex-desc" data-i18n="ex7.desc">Run a saved simple .ftg script</span><button class="copy-btn" type="button" data-copy="FileTgie run examples\demo.ftg" data-i18n="copy">Copy</button></div>
       <pre>FileTgie run examples\demo.ftg</pre>
+    </div>
+    <div class="example">
+      <div class="example-head"><span class="ex-desc" data-i18n="ex8.desc">Show the help text of a single command, e.g. lines</span><button class="copy-btn" type="button" data-copy="FileTgie help-lines" data-i18n="copy">Copy</button></div>
+      <pre>FileTgie help-lines</pre>
     </div>
 
     <ul class="notes">
@@ -478,7 +482,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         <h3 data-i18n="install.linuxTitle">Linux — build from source</h3>
         <p data-i18n-html="install.linuxText">v0.5.1 adds the simple <code>run</code> script layer using only the C standard library; Linux-compatible source code remains available for <code>make</code>. The verified x86_64 glibc prebuilt package stays unchanged as v0.4.0; musl/Alpine is not guaranteed.</p>
         <pre>make</pre>
-        <a class="btn btn-ghost" data-i18n="install.linuxButton" href="https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.1.zip">Build Linux from source</a>
+        <a class="btn btn-ghost" data-i18n="install.linuxButton" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.3/FileTgie.source.0.5.3.zip">Build Linux from source</a>
       </div>
       <div class="install-card">
         <h3 data-i18n="install.srcTitle">Source code</h3>
@@ -509,7 +513,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         <p data-i18n-html="footer.versionText">v0.5.1 adds a simple <code>run</code> script layer for repeated FileTgie commands: comments, variables, echo, language switching, exit codes and direct <code>.ftg</code> execution. The read-only statistics, reminder, .old backup overwrite and colored download progress bar remain unchanged. Version source: src/commands.h (FILETGIE_VERSION).</p>
       </div>
     </div>
-    <div class="footer-bottom">Copyright (C) 2026 SuiYe_TR · FileTgie v0.5.1 · read-only file statistics &amp; search CLI</div>
+    <div class="footer-bottom">Copyright (C) 2026 SuiYe_TR · FileTgie v0.5.3 · read-only file statistics &amp; search CLI</div>
   </div>
 </footer>
 
@@ -519,14 +523,14 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 (function () {
   var SITE_I18N = {
     en: {
-      "meta.title": "FileTgie v0.5.1 — Read-only file statistics & search CLI in pure C",
+      "meta.title": "FileTgie v0.5.3 — Read-only file statistics & search CLI in pure C",
       "nav.features": "Features", "nav.commands": "Commands", "nav.quickstart": "Quick start",
       "nav.companions": "Companions", "nav.languages": "Languages", "nav.license": "License",
       "hero.title": "Lightweight, read-only, zero-dependency file statistics & search CLI",
       "hero.lede": "Written in pure C with the standard library only, one source tree builds for Windows and Linux. Every command does one small, predictable thing and never touches your files.",
       "hero.installer": "Download installer (Windows)", "hero.repo": "GitHub repository",
       "hero.portable": "Windows portable ZIP", "hero.linux": "Linux build from source", "hero.source": "Source archive",
-      "hero.explore": "Explore 62 commands",
+      "hero.explore": "Explore 63 commands",
       "stat.commands": "built-in commands", "stat.langs": "interface languages",
       "stat.deps": "third-party dependencies", "stat.platforms": "platforms: Windows + Linux",
       "features.eyebrow": "Features", "features.title": "Small by design, safe by default",
@@ -537,13 +541,14 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "f.lang.title": "Four switchable languages", "f.lang.text": "Interface messages switch between cn, en, ja and ru with <code>--lang</code>; unknown codes warn and fall back to cn.",
       "f.cross.title": "Cross-platform", "f.cross.text": "<code>src/port.c</code> isolates the Windows wide-character Win32 API from POSIX; the rest of the code is platform-independent.",
       "f.license.title": "LGPL-3.0-or-later", "f.license.text": "Free to run, study, modify and redistribute; static and dynamic linking obligations are documented in LICENSE and COPYING.",
-      "commands.eyebrow": "Command overview", "commands.title": "62 commands, grouped by job",
+      "commands.eyebrow": "Command overview", "commands.title": "63 commands, grouped by job",
       "commands.sub": "Every entry below comes from the built-in command table. <code>log</code> and <code>dellog</code> read or delete FileTgie's own log; all others are strictly read-only.",
       "quick.eyebrow": "Quick start", "quick.title": "Usage and examples",
       "ex1.desc": "Count files and folders in a folder", "ex2.desc": "Sum all text-file lines in a codebase, English UI",
       "ex3.desc": "Find log files larger than 50 MB, largest first", "ex4.desc": "Search file contents for a text snippet and report line numbers",
       "ex5.desc": "Verify two files are byte-for-byte identical", "ex6.desc": "Show capacity, used and free space of every drive",
       "ex7.desc": "Run a saved simple .ftg script",
+      "ex8.desc": "Show the help text of a single command, e.g. lines",
       "copy": "Copy", "toast.copied": "Copied to clipboard",
       "note.binary": "<strong>Binary units (1024):</strong> B → KB → MB → GB step by 1024 (1 KB = 1024 B, 1 MB = 1024 KB); <code>size</code>, <code>stat</code> and <code>du</code> also print exact byte counts.",
       "note.alias": "<strong>Language option aliases:</strong> <code>--lang</code> also accepts <code>-lang</code>, <code>-l</code>, and the equals form <code>--lang=en</code> / <code>-l=ja</code>; the code is case-insensitive and may appear before or after the command.",
@@ -584,12 +589,12 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "note.all": "Showing all {n} commands from CMD_TABLE.", "note.group": "Showing {n} commands in this group."
     },
     cn: {
-      "meta.title": "FileTgie v0.5.1 — 纯 C 只读文件统计与搜索命令行工具",
+      "meta.title": "FileTgie v0.5.3 — 纯 C 只读文件统计与搜索命令行工具",
       "nav.features": "功能", "nav.commands": "命令", "nav.quickstart": "快速开始", "nav.companions": "搭配工具", "nav.languages": "界面语言", "nav.license": "许可证",
       "hero.title": "轻量、只读、零依赖的文件统计与搜索命令行工具",
       "hero.lede": "纯 C 仅用标准库编写，同一套源码可构建 Windows 与 Linux 版本。每条命令只做一件小而确定的事，绝不触碰你的文件。",
       "hero.installer": "下载安装程序（Windows）", "hero.repo": "GitHub 仓库",
-      "hero.portable": "Windows 便携 ZIP", "hero.linux": "Linux 源码构建", "hero.source": "源码包", "hero.explore": "查看 62 条命令",
+      "hero.portable": "Windows 便携 ZIP", "hero.linux": "Linux 源码构建", "hero.source": "源码包", "hero.explore": "查看 63 条命令",
       "stat.commands": "内置命令", "stat.langs": "界面语言", "stat.deps": "第三方依赖", "stat.platforms": "平台：Windows + Linux",
       "features.eyebrow": "功能", "features.title": "小而克制，默认安全", "features.sub": "每条命令只执行一个边界清晰的操作；结果明确可预期，不会出现意外副作用。",
       "f.light.title": "轻量", "f.light.text": "单个紧凑可执行文件，无需运行时、包管理器或配置文件。",
@@ -598,13 +603,14 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "f.lang.title": "四种可切换语言", "f.lang.text": "界面信息通过 <code>--lang</code> 在 cn、en、ja、ru 间切换；未知语言码会警告并回退到 cn。",
       "f.cross.title": "跨平台", "f.cross.text": "<code>src/port.c</code> 隔离 Windows 宽字符 Win32 API 与 POSIX，其余代码与平台无关。",
       "f.license.title": "LGPL-3.0-or-later", "f.license.text": "可自由运行、研究、修改和再分发；静态与动态链接义务见 LICENSE 和 COPYING。",
-      "commands.eyebrow": "命令概览", "commands.title": "62 条命令，按用途分组",
+      "commands.eyebrow": "命令概览", "commands.title": "63 条命令，按用途分组",
       "commands.sub": "以下条目来自内置命令表。<code>log</code> 与 <code>dellog</code> 读取或删除 FileTgie 自身日志，其余全部严格只读。",
       "quick.eyebrow": "快速开始", "quick.title": "用法与示例",
       "ex1.desc": "统计文件夹中的文件和文件夹数量", "ex2.desc": "在代码库中汇总所有文本文件行数，英文界面",
       "ex3.desc": "查找大于 50 MB 的日志文件，从大到小排列", "ex4.desc": "搜索文件内容中的文本片段并报告行号",
       "ex5.desc": "逐字节校验两个文件是否完全相同", "ex6.desc": "显示每个磁盘的总容量、已用空间和可用空间",
       "ex7.desc": "运行已保存的简单 .ftg 脚本",
+      "ex8.desc": "查看单条命令的帮助，例如 lines",
       "copy": "复制", "toast.copied": "已复制到剪贴板",
       "note.binary": "<strong>二进制单位（1024）：</strong>B → KB → MB → GB 均按 1024 进位；<code>size</code>、<code>stat</code>、<code>du</code> 同时输出精确字节数。",
       "note.alias": "<strong>语言参数别名：</strong><code>--lang</code> 也接受 <code>-lang</code>、<code>-l</code> 以及等号形式 <code>--lang=en</code> / <code>-l=ja</code>；语言码不区分大小写，可放在命令前后。",
@@ -644,12 +650,12 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "note.all": "显示 CMD_TABLE 中的全部 {n} 条命令。", "note.group": "显示该组中的 {n} 条命令。"
     },
     ja: {
-      "meta.title": "FileTgie v0.5.1 — 純粋なC製の読み取り専用ファイル統計・検索CLI",
+      "meta.title": "FileTgie v0.5.3 — 純粋なC製の読み取り専用ファイル統計・検索CLI",
       "nav.features": "機能", "nav.commands": "コマンド", "nav.quickstart": "クイックスタート", "nav.companions": "組み合わせ", "nav.languages": "言語", "nav.license": "ライセンス",
       "hero.title": "軽量・読み取り専用・非依存のファイル統計＆検索 CLI",
       "hero.lede": "純粋な C と標準ライブラリだけで書かれ、同一ソースから Windows と Linux をビルドできます。各コマンドは小さく予測可能な1操作だけを行い、ファイルを変更しません。",
       "hero.installer": "インストーラをダウンロード（Windows）", "hero.repo": "GitHub リポジトリ",
-      "hero.portable": "Windows ポータブル ZIP", "hero.linux": "Linux ソースビルド", "hero.source": "ソースアーカイブ", "hero.explore": "62コマンドを見る",
+      "hero.portable": "Windows ポータブル ZIP", "hero.linux": "Linux ソースビルド", "hero.source": "ソースアーカイブ", "hero.explore": "63コマンドを見る",
       "stat.commands": "内蔵コマンド", "stat.langs": "対応言語", "stat.deps": "サードパーティ依存", "stat.platforms": "対応: Windows + Linux",
       "features.eyebrow": "機能", "features.title": "設計は小さく、既定で安全", "features.sub": "各コマンドは範囲の明確な単一操作を行い、結果は分かりやすく予測でき、予期しない副作用はありません。",
       "f.light.title": "軽量", "f.light.text": "単一のコンパクトな実行ファイル。ランタイム、パッケージマネージャ、設定ファイルは不要です。",
@@ -658,13 +664,14 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "f.lang.title": "切り替え可能な4言語", "f.lang.text": "<code>--lang</code> で cn/en/ja/ru を切り替えます。未知の言語コードは警告して cn に戻ります。",
       "f.cross.title": "クロスプラットフォーム", "f.cross.text": "<code>src/port.c</code> が Windows のワイド文字 Win32 API と POSIX を分離し、他のコードはプラットフォーム非依存です。",
       "f.license.title": "LGPL-3.0-or-later", "f.license.text": "実行・研究・改変・再配布が自由。静的/動的リンク条項は LICENSE と COPYING に記載されています。",
-      "commands.eyebrow": "コマンド概要", "commands.title": "62コマンドを用途別に整理",
+      "commands.eyebrow": "コマンド概要", "commands.title": "63コマンドを用途別に整理",
       "commands.sub": "以下は内蔵コマンド表から。<code>log</code> と <code>dellog</code> は FileTgie 自身のログを読む/消すだけで、他はすべて読み取り専用です。",
       "quick.eyebrow": "クイックスタート", "quick.title": "使い方と例",
       "ex1.desc": "フォルダ内のファイルとフォルダを数える", "ex2.desc": "コードベースのテキストファイル行数を合計（英語UI）",
       "ex3.desc": "50MBを超えるログを大きい順に探す", "ex4.desc": "ファイル内容から文字列を検索し行番号を報告",
       "ex5.desc": "2ファイルがバイト単位で一致するか検証", "ex6.desc": "各ドライブの容量・使用量・空き容量を表示",
       "ex7.desc": "保存した簡単な .ftg スクリプトを実行",
+      "ex8.desc": "単一コマンドのヘルプを表示（例: lines）",
       "copy": "コピー", "toast.copied": "クリップボードにコピーしました",
       "note.binary": "<strong>2進数単位(1024):</strong>B→KB→MB→GB は1024刻み。<code>size</code>/<code>stat</code>/<code>du</code> は正確なバイト数も表示。",
       "note.alias": "<strong>言語オプション別名:</strong><code>--lang</code> は <code>-lang</code>, <code>-l</code>, <code>--lang=en</code> / <code>-l=ja</code> も受付。大文字小文字不問、コマンド前後どちらでも可。",
@@ -704,12 +711,12 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "note.all": "CMD_TABLE の全 {n} コマンドを表示。", "note.group": "このグループの {n} コマンドを表示。"
     },
     ru: {
-      "meta.title": "FileTgie v0.5.1 — Лёгкая утилита статистики и поиска файлов на чистом C",
+      "meta.title": "FileTgie v0.5.3 — Лёгкая утилита статистики и поиска файлов на чистом C",
       "nav.features": "Возможности", "nav.commands": "Команды", "nav.quickstart": "Быстрый старт", "nav.companions": "Партнёры", "nav.languages": "Языки", "nav.license": "Лицензия",
       "hero.title": "Лёгкий инструмент статистики и поиска файлов только для чтения",
       "hero.lede": "Чистый C, только стандартная библиотека; один исходник собирается для Windows и Linux. Каждая команда делает одно предсказуемое действие и не меняет ваши файлы.",
       "hero.installer": "Скачать установщик (Windows)", "hero.repo": "Репозиторий GitHub",
-      "hero.portable": "Портативный ZIP для Windows", "hero.linux": "Сборка Linux из исходников", "hero.source": "Архив с исходниками", "hero.explore": "Посмотреть 62 команды",
+      "hero.portable": "Портативный ZIP для Windows", "hero.linux": "Сборка Linux из исходников", "hero.source": "Архив с исходниками", "hero.explore": "Посмотреть 63 команды",
       "stat.commands": "встроенных команд", "stat.langs": "языков интерфейса", "stat.deps": "сторонних зависимостей", "stat.platforms": "платформы: Windows + Linux",
       "features.eyebrow": "Возможности", "features.title": "Мал по замыслу, безопасен по умолчанию", "features.sub": "Каждая команда выполняет одну четко ограниченную операцию. Результаты ясны; неожиданных побочных эффектов нет.",
       "f.light.title": "Лёгкость", "f.light.text": "Один компактный исполняемый файл: без среды выполнения, менеджера пакетов и конфигурации.",
@@ -718,13 +725,14 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "f.lang.title": "Четыре переключаемых языка", "f.lang.text": "Интерфейс переключается между cn, en, ja, ru через <code>--lang</code>; неизвестный код предупреждает и возвращается к cn.",
       "f.cross.title": "Кроссплатформенность", "f.cross.text": "<code>src/port.c</code> отделяет широкие символы Win32 API от POSIX; остальной код не зависит от платформы.",
       "f.license.title": "LGPL-3.0-or-later", "f.license.text": "Свободно запускать, изучать, изменять и распространять; обязательства линковки описаны в LICENSE и COPYING.",
-      "commands.eyebrow": "Обзор команд", "commands.title": "62 команды по группам",
+      "commands.eyebrow": "Обзор команд", "commands.title": "63 команды по группам",
       "commands.sub": "Ниже таблица встроенных команд. <code>log</code> и <code>dellog</code> читают/удаляют собственный журнал FileTgie; остальные только чтение.",
       "quick.eyebrow": "Быстрый старт", "quick.title": "Использование и примеры",
       "ex1.desc": "Посчитать файлы и папки в каталоге", "ex2.desc": "Суммировать строки текстовых файлов в кодовой базе, английский UI",
       "ex3.desc": "Найти журналы больше 50 МБ, сначала самые большие", "ex4.desc": "Искать фрагмент в содержимом файлов и показать номера строк",
       "ex5.desc": "Побайтово проверить идентичность двух файлов", "ex6.desc": "Показать емкость, занятое и свободное место дисков",
       "ex7.desc": "Запустить сохранённый простой скрипт .ftg",
+      "ex8.desc": "Показать справку одной команды, например lines",
       "copy": "Копировать", "toast.copied": "Скопировано в буфер обмена",
       "note.binary": "<strong>Двоичные единицы (1024):</strong>B→KB→MB→GB по 1024; <code>size</code>, <code>stat</code>, <code>du</code> также печатают точные байты.",
       "note.alias": "<strong>Псевдонимы языка:</strong><code>--lang</code> также принимает <code>-lang</code>, <code>-l</code>, <code>--lang=en</code> / <code>-l=ja</code>; код без учета регистра, до или после команды.",
@@ -765,12 +773,13 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
     }
   };
 
-  // ===== Command data: names and English descriptions from README, names verified against CMD_TABLE (62) =====
+  // ===== Command data: names and English descriptions from README, names verified against CMD_TABLE (63) =====
   var GROUPS = [
     {
       id: "all", label: "All",
       items: [
         ["help", "help", "Show the full command table."],
+        ["help-<command>", "help-<command> (e.g. help-lines)", "Print the localized help text of a single command; append its name, e.g. help-lines."],
         ["version", "version", "Print the FileTgie version from FILETGIE_VERSION."],
         ["langs", "langs", "List the available interface language codes."],
         ["log", "log", "Print FileTgie's own run log (filetgie.log next to the executable)."],
@@ -838,6 +847,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       id: "system", label: "System & Log",
       items: [
         ["help", "help", "Show the full command table."],
+        ["help-<command>", "help-<command> (e.g. help-lines)", "Print the localized help text of a single command; append its name, e.g. help-lines."],
         ["version", "version", "Print the FileTgie version from FILETGIE_VERSION."],
         ["langs", "langs", "List the available interface language codes."],
         ["log", "log", "Print FileTgie's own run log (filetgie.log next to the executable)."],

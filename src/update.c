@@ -106,10 +106,41 @@ static void json_field(const char* body, const char* key, char* out, size_t len)
 }
 
 #ifdef _WIN32
-/* Find the first download URL whose name contains both windows and suffix. */
+/* Find the nearest JSON key at or before start without a full parser. */
+static const char* find_previous_key(const char* start, const char* key,
+                                     const char* floor) {
+    size_t klen = strlen(key);
+    for (const char* p = start; p >= floor + klen; p--) {
+        if (strncmp(p - klen, key, klen) == 0) return p - klen;
+    }
+    return NULL;
+}
+
+/* Prefer the reachable GitHub API asset endpoint; browser_download_url points
+ * at github.com, which can time out on networks where api.github.com works. */
 static int extract_asset(const char* body, const char* suffix, char* out, size_t len) {
     const char* p = body;
     out[0] = '\0';
+    while ((p = strstr(p, suffix)) != NULL) {
+        const char* name_key = find_previous_key(p, "\"name\"", body);
+        char name[256];
+        json_copy_string(name_key ? json_value_start(name_key, "name") : NULL,
+                         name, sizeof(name));
+        const char* url_key = name_key ? find_previous_key(name_key, "\"url\"", body) : NULL;
+        const char* value = url_key ? json_value_start(url_key, "url") : NULL;
+        if (value && strstr(name, "windows") && strstr(name, suffix)) {
+            char url[2048];
+            json_copy_string(value, url, sizeof(url));
+            if (url[0] && strstr(url, "/releases/assets/")) {
+                snprintf(out, len, "%s", url);
+                return 0;
+            }
+        }
+        p++;
+    }
+
+    /* Legacy fallback for older/minimal Release payloads. */
+    p = body;
     while ((p = json_value_start(p, "browser_download_url")) != NULL) {
         char url[2048];
         json_copy_string(p, url, sizeof(url));
@@ -174,6 +205,7 @@ static int win_http_text(const char* url_in, ft_buf_t* out) {
             WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME,
             WINHTTP_NO_PROXY_BYPASS, 0);
         if (!session) return 0;
+        WinHttpSetTimeouts(session, 15000, 15000, 30000, 60000);
 
         wchar_t* whost = NULL;
         wchar_t* wpath = NULL;
@@ -247,6 +279,7 @@ static int win_http_download(const char* url_in, const char* dest) {
         HINTERNET session = WinHttpOpen(L"FileTgie/0.2",
             WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME,
             WINHTTP_NO_PROXY_BYPASS, 0);
+        if (session) WinHttpSetTimeouts(session, 15000, 15000, 30000, 60000);
         wchar_t* whost = NULL;
         wchar_t* wpath = NULL;
         int ready = session && to_wide(host, &whost) == 0 && to_wide(path, &wpath) == 0;
@@ -255,8 +288,9 @@ static int win_http_download(const char* url_in, const char* dest) {
             WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, WINHTTP_FLAG_SECURE) : NULL;
         DWORD status = 0;
 
-        if (request && WinHttpSendRequest(request, L"User-Agent: FileTgie\r\n",
-            (DWORD)-1L, WINHTTP_NO_REQUEST_DATA, 0, 0, 0) &&
+        if (request && WinHttpSendRequest(request,
+                L"Accept: application/octet-stream\r\nUser-Agent: FileTgie\r\n",
+                (DWORD)-1L, WINHTTP_NO_REQUEST_DATA, 0, 0, 0) &&
             WinHttpReceiveResponse(request, NULL)) {
             DWORD size = sizeof(status);
             WinHttpQueryHeaders(request,

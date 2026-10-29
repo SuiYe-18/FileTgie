@@ -110,6 +110,9 @@ static int http_get(const char* url_in, Buf* out) {
             WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME,
             WINHTTP_NO_PROXY_BYPASS, 0);
         if (!session) return 0;
+        /* Explicit bounds avoid an indefinite WinHTTP wait when github.com's
+         * download host is unreachable but api.github.com still responds. */
+        WinHttpSetTimeouts(session, 15000, 15000, 30000, 60000);
 
         wchar_t* whost = NULL;
         wchar_t* wpath = NULL;
@@ -214,6 +217,7 @@ static int http_download(const char* url_in, const char* dest, int background,
             set_error(err, err_len, "Cannot open WinHTTP network session (error %lu).", GetLastError());
             break;
         }
+        WinHttpSetTimeouts(session, 15000, 15000, 30000, 60000);
 
         wchar_t* whost = NULL;
         wchar_t* wpath = NULL;
@@ -226,7 +230,8 @@ static int http_download(const char* url_in, const char* dest, int background,
         }
 
         DWORD status = 0;
-        if (request && WinHttpSendRequest(request, L"User-Agent: FileTgieUpdater\r\n",
+        if (request && WinHttpSendRequest(request,
+                L"Accept: application/octet-stream\r\nUser-Agent: FileTgieUpdater\r\n",
                 (DWORD)-1L, WINHTTP_NO_REQUEST_DATA, 0, 0, 0) &&
             WinHttpReceiveResponse(request, NULL)) {
             DWORD size = sizeof(status);
@@ -326,6 +331,37 @@ static void json_copy(const char* start, char* out, size_t len) {
     while (start[n] && start[n] != '"' && n + 1 < len) n++;
     memcpy(out, start, n);
     out[n] = '\0';
+}
+
+/* Find the nearest JSON key at or before start, used to associate an asset
+ * name with its preceding API asset URL without a full JSON parser. */
+static const char* find_previous_key(const char* start, const char* key,
+                                     const char* floor) {
+    size_t klen = strlen(key);
+    for (const char* p = start; p >= floor + klen; p--) {
+        if (strncmp(p - klen, key, klen) == 0) return p - klen;
+    }
+    return NULL;
+}
+
+/* Prefer api.github.com/.../assets/<id>, because the browser_download_url
+ * host github.com may time out even when the API host remains reachable. */
+static int extract_setup_asset_api(const char* body, char* out, size_t len) {
+    out[0] = '\0';
+    const char* p = body;
+    while ((p = strstr(p, ".setup.exe")) != NULL) {
+        const char* name_key = find_previous_key(p, "\"name\"", body);
+        char name[256];
+        json_copy(name_key ? json_value(name_key, "name") : NULL, name, sizeof(name));
+        const char* url_key = name_key ? find_previous_key(name_key, "\"url\"", body) : NULL;
+        const char* value = url_key ? json_value(url_key, "url") : NULL;
+        if (value && strstr(name, "windows") && strstr(name, ".setup.exe")) {
+            json_copy(value, out, len);
+            if (out[0] && strstr(out, "/releases/assets/")) return 0;
+        }
+        p++;
+    }
+    return -1;
 }
 
 static int website_version(const char* html, int v[3]) {
@@ -472,15 +508,17 @@ int main(int argc, char** argv) {
         json_copy(json_value(gh.data, "tag_name"), tag, sizeof(tag));
         int gv[3];
         if (parse_semver(tag, gv) && (latest[0] < 0 || cmp_semver(gv, latest) > 0)) memcpy(latest, gv, sizeof(latest));
-        const char* p = gh.data;
-        while ((p = json_value(p, "browser_download_url")) != NULL) {
-            char url[2048];
-            json_copy(p, url, sizeof(url));
-            if (strstr(url, "windows") && strstr(url, ".setup.exe")) {
-                snprintf(asset, sizeof(asset), "%s", url);
-                break;
+        if (extract_setup_asset_api(gh.data, asset, sizeof(asset)) != 0) {
+            const char* p = gh.data;
+            while ((p = json_value(p, "browser_download_url")) != NULL) {
+                char url[2048];
+                json_copy(p, url, sizeof(url));
+                if (strstr(url, "windows") && strstr(url, ".setup.exe")) {
+                    snprintf(asset, sizeof(asset), "%s", url);
+                    break;
+                }
+                p += strlen(url);
             }
-            p += strlen(url);
         }
     }
     if (site_ok && site.data) {

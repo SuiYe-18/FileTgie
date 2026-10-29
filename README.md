@@ -1,4 +1,4 @@
-# FileTgie v0.5.1
+# FileTgie v0.5.3
 
 > A lightweight, read-only, zero-dependency file statistics and search CLI written in pure C.
 > One source tree builds for Windows and Linux; every command only reads and never modifies your files.
@@ -12,14 +12,14 @@
 | Package | Link |
 | --- | --- |
 | Official website | https://suiye-18.github.io/filetgie-official-website/ |
-| Windows installer | [FileTgie.windows.0.5.1.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.1.setup.exe) |
-| Windows portable ZIP | [FileTgie.windows.0.5.1.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.1.portable.zip) |
+| Windows installer | [FileTgie.windows.0.5.3.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.3.setup.exe) |
+| Windows portable ZIP | [FileTgie.windows.0.5.3.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.3.portable.zip) |
 | Linux x86_64 glibc | Verified unchanged [v0.4.0 tarball](https://github.com/SuiYe-18/FileTgie/releases/download/v0.4.0/FileTgie.linux.0.4.0.tar.gz); other distributions build from source with `make` |
-| Source archive | [FileTgie.source.0.5.1.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.1.zip) |
+| Source archive | [FileTgie.source.0.5.3.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.3.zip) |
 
 ## Highlights
 
-- **62 built-in commands** for counting, line statistics, directory comparison, file search, checksums, encoding checks, duplicates, disk space, verification, optional update reminders, and a simple `.ftg` script runner.
+- **63 built-in commands** for counting, line statistics, directory comparison, file search, checksums, encoding checks, duplicates, disk space, verification, optional update reminders, a simple `.ftg` script runner, and a `help-<command>` per-command detail help.
 - **Simple `.ftg` scripts:** save a repeatable sequence of FileTgie commands in a plain-text file with `set`, `$variable`, `echo`, `lang`, comments and `exit`; no programming experience is required.
 - **Read-only by default:** every inspection command only reads files; it never modifies, deletes or moves user data. The explicit `update` command and bundled `FileTgieUpdater.exe` only upgrade FileTgie itself; `reminder` creates or removes one FileTgie-owned scheduled task; on Linux they print manual steps and never replace the binary.
 - **Pure C, zero third-party dependency:** C standard library plus native Windows/POSIX APIs only.
@@ -31,6 +31,7 @@ Common uses: file counting, line counting, directory size, filename/content sear
 
 ```bash
 FileTgie count ./src
+FileTgie help-lines
 FileTgie --lang en linesdir ./src
 FileTgie findlarge ./logs 50
 FileTgie compare a.bin b.bin
@@ -66,12 +67,14 @@ FileTgie run examples\demo.ftg
 * **patch（.x）**：只用于小补丁、小插曲（修小问题、文案微调），不进入
   minor 的进位序列。
 
-当前版本为 `0.5.1`：新增简单的 `.ftg` 代码式启动层。用户可以在纯文本脚本中按顺序写
-已有 FileTgie 命令，用 `set 名称 = 值` 保存路径或常用文本，用 `$名称` / `${名称}`
-替换变量，用 `echo` 输出提示，用 `lang en|ja|ru|cn` 切换本脚本语言，用 `#` 写注释，
-用 `exit 0` 提前结束；脚本逐行执行，任一命令失败即停止并返回非零退出码。`.ftg` 不是
-通用编程语言，没有循环、条件判断、数学运算或管道，目的是让没有编程基础的用户也能把
-常用统计流程保存成一个文件。
+当前版本为 `0.5.3`：新增 `help-<命令>` 详细帮助（例如 `FileTgie help-lines`），在
+当前 `--lang` 语言下打印指定命令的说明、用法与示例；目标命令名大小写不敏感，缺少目标
+或目标不存在时给出清晰的非零错误。`0.5.1` 引入的简单 `.ftg` 代码式启动层保持不变：
+用户可以在纯文本脚本中按顺序写已有 FileTgie 命令，用 `set 名称 = 值` 保存路径或常用
+文本，用 `$名称` / `${名称}` 替换变量，用 `echo` 输出提示，用 `lang en|ja|ru|cn`
+切换本脚本语言，用 `#` 写注释，用 `exit 0` 提前结束；脚本逐行执行，任一命令失败即
+停止并返回非零退出码。`.ftg` 不是通用编程语言，没有循环、条件判断、数学运算或管道，
+目的是让没有编程基础的用户也能把常用统计流程保存成一个文件。
 
 `checkupdate` 只查询 GitHub Release 并比较版本；Windows 的 `update` 调用独立更新器，
 同时检查 GitHub 与官网，后台下载新版安装包并静默覆盖；Linux 只给出手动源码升级
@@ -190,13 +193,14 @@ FileTgie -lang ja lines ./a.txt
 FileTgie -l ru disk
 ```
 
-## 命令一览（62 个；检查/统计类命令只读；`log` / `dellog` 只读写 FileTgie 自身日志；`update` 仅按用户显式触发更新 FileTgie 自身；`reminder` 只创建/删除 FileTgie 自己的计划任务；`run` 只执行脚本中已有的只读/受控命令）
+## 命令一览（63 个；检查/统计类命令只读；`log` / `dellog` 只读写 FileTgie 自身日志；`update` 仅按用户显式触发更新 FileTgie 自身；`reminder` 只创建/删除 FileTgie 自己的计划任务；`run` 只执行脚本中已有的只读/受控命令；`help-<命令>` 只打印指定命令的本地化详细帮助）
 
 
 
 | 命令          | 用法                      | 作用                          |
 | ----------- | ----------------------- | --------------------------- |
 | help        | `help`                  | 显示帮助                        |
+| help-<command> | `help-lines`          | 显示指定命令的本地化详细帮助（格式/用法/示例），目标名大小写不敏感；缺目标或未知目标返回非零错误 |
 | version     | `version`               | 显示版本                        |
 | langs       | `langs`                 | 列出可用语言                      |
 | log         | `log`                   | 打印 FileTgie 自身运行日志            |
@@ -354,7 +358,7 @@ Use `fd -u` when the candidate set must include hidden files and paths ignored b
 
 ## 便携包与安装程序
 
-* **Windows 绿色便携包**（`FileTgie.windows.0.5.1.portable.zip`）：含
+* **Windows 绿色便携包**（`FileTgie.windows.0.5.3.portable.zip`）：含
   `FileTgie.exe`、`FileTgieUpdater.exe`、`README.md`、`User Manual.txt`、`LICENSE`、
   `COPYING` 与 `examples\demo.ftg`。便携模式不写注册表、不写入 Program Files，除 exe 旁自身的
   `filetgie.log` 外不写用户位置，解压即用、删文件夹即卸载。
@@ -365,7 +369,7 @@ Use `fd -u` when the candidate set must include hidden files and paths ignored b
   请用 `make` 从源码构建。
 
 * **安装程序**：提供 Inno Setup 6 脚本 `installer\installer.iss`，编译出
-  `FileTgie.windows.0.5.1.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
+  `FileTgie.windows.0.5.3.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
   /桌面（默认不勾选）快捷方式、标准卸载项，以及默认勾选的“覆盖安装”选项；安装前
   检测已注册的 FileTgie、App Paths 与旧版残留文件，不勾选覆盖时需另选目录。覆盖时
   先把旧的 `FileTgie.exe`、`FileTgieUpdater.exe` 和文档移动到安装目录 `.old` 备份，
@@ -423,7 +427,7 @@ FileTgie/
 │  └─ demo.ftg      # 简单 .ftg 顺序脚本示例
 └─ src/
    ├─ main.c         # 入口、--lang/--exclude 参数解析、分发、运行日志
-   ├─ commands.c    # 62 个子命令实现（含 log / dellog / checkupdate / update / reminder / run）
+   ├─ commands.c    # 63 个子命令实现（含 log / dellog / checkupdate / update / reminder / run / help-）
    ├─ commands.h    # 命令表与 FILETGIE_VERSION 唯一版本来源
    ├─ update.c      # GitHub Release 手动更新检测、Windows 安装包更新与可选提醒任务
    ├─ update.h

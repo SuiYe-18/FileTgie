@@ -224,6 +224,14 @@ typedef struct {
     const char* run_bad_quote;      /* unclosed quote in script           */
     const char* run_line_error;     /* line %d failed: %s                 */
     const char* run_unknown_var;    /* unknown variable: %s               */
+
+    /* --- v0.5.3: per-command detail help `help-<command>` (appended; keep 4 packs in sync) --- */
+    const char* h_helpprefix;  /* help-<command> short table description   */
+    const char* hp_title;       /* "Command: %s" header for the target     */
+    const char* hp_usage;        /* generic usage line for the target        */
+    const char* hp_example;      /* example invocation line                  */
+    const char* hp_missing;      /* bare "help-" with no target              */
+    const char* hp_unknown;      /* unknown target command: %s               */
 } LangPack;
 
 /* 按语言码（cn/en/ja/ru）返回对应包，无法识别时回退到 cn。
