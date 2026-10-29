@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FileTgie v0.5.3 — Read-only file statistics &amp; search CLI in pure C</title>
+<title>FileTgie v0.5.4 — Read-only file statistics &amp; search CLI in pure C</title>
 <meta name="description" content="FileTgie is a lightweight, read-only, zero-dependency file statistics and search command-line tool written in pure C for Windows and Linux. LGPL-3.0-or-later.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000000'/%3E%3Ccircle cx='28' cy='28' r='14' fill='none' stroke='%23FFFFFF' stroke-width='6'/%3E%3Cline x1='38' y1='38' x2='52' y2='52' stroke='%23FFFFFF' stroke-width='7' stroke-linecap='square'/%3E%3C/svg%3E">
 <style>
@@ -271,17 +271,17 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 <section class="hero" id="top">
   <div class="wrap">
     <img class="hero-logo" src="assets/logo_wide_white.png" alt="FileTgie white logo on black">
-    <div class="hero-tag">v0.5.3 · pure C · LGPL-3.0-or-later</div>
+    <div class="hero-tag">v0.5.4 · pure C · LGPL-3.0-or-later</div>
     <h1 data-i18n="hero.title">Lightweight, read-only, zero-dependency file statistics &amp; search CLI</h1>
     <p class="lede" data-i18n="hero.lede">Written in pure C with the standard library only, one source tree builds for Windows and Linux. Every command does one small, predictable thing and never touches your files.</p>
     <div class="cta-row">
-      <a class="btn btn-solid" data-i18n="hero.installer" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.3/FileTgie.windows.0.5.3.setup.exe">Download installer (Windows)</a>
+      <a class="btn btn-solid" data-i18n="hero.installer" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.4/FileTgie.windows.0.5.4.setup.exe">Download installer (Windows)</a>
       <a class="btn btn-ghost" data-i18n="hero.repo" href="https://github.com/SuiYe-18/FileTgie" target="_blank" rel="noopener">GitHub repository</a>
     </div>
     <div class="cta-row" style="margin-top:10px;">
-      <a class="btn btn-ghost" data-i18n="hero.portable" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.3/FileTgie.windows.0.5.3.portable.zip">Windows portable ZIP</a>
-      <a class="btn btn-ghost" data-i18n="hero.linux" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.3/FileTgie.source.0.5.3.zip">Linux build from source</a>
-      <a class="btn btn-ghost" data-i18n="hero.source" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.3/FileTgie.source.0.5.3.zip">Source archive</a>
+      <a class="btn btn-ghost" data-i18n="hero.portable" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.4/FileTgie.windows.0.5.4.portable.zip">Windows portable ZIP</a>
+      <a class="btn btn-ghost" data-i18n="hero.linux" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.4/FileTgie.source.0.5.4.zip">Linux build from source</a>
+      <a class="btn btn-ghost" data-i18n="hero.source" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.4/FileTgie.source.0.5.4.zip">Source archive</a>
       <a class="btn btn-ghost" data-i18n="hero.explore" href="#commands">Explore 63 commands</a>
     </div>
   </div>
@@ -482,7 +482,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         <h3 data-i18n="install.linuxTitle">Linux — build from source</h3>
         <p data-i18n-html="install.linuxText">v0.5.1 adds the simple <code>run</code> script layer using only the C standard library; Linux-compatible source code remains available for <code>make</code>. The verified x86_64 glibc prebuilt package stays unchanged as v0.4.0; musl/Alpine is not guaranteed.</p>
         <pre>make</pre>
-        <a class="btn btn-ghost" data-i18n="install.linuxButton" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.3/FileTgie.source.0.5.3.zip">Build Linux from source</a>
+        <a class="btn btn-ghost" data-i18n="install.linuxButton" href="https://github.com/SuiYe-18/FileTgie/releases/download/v0.5.4/FileTgie.source.0.5.4.zip">Build Linux from source</a>
       </div>
       <div class="install-card">
         <h3 data-i18n="install.srcTitle">Source code</h3>
@@ -513,7 +513,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         <p data-i18n-html="footer.versionText">v0.5.1 adds a simple <code>run</code> script layer for repeated FileTgie commands: comments, variables, echo, language switching, exit codes and direct <code>.ftg</code> execution. The read-only statistics, reminder, .old backup overwrite and colored download progress bar remain unchanged. Version source: src/commands.h (FILETGIE_VERSION).</p>
       </div>
     </div>
-    <div class="footer-bottom">Copyright (C) 2026 SuiYe_TR · FileTgie v0.5.3 · read-only file statistics &amp; search CLI</div>
+    <div class="footer-bottom">Copyright (C) 2026 SuiYe_TR · FileTgie v0.5.4 · read-only file statistics &amp; search CLI</div>
   </div>
 </footer>
 
@@ -523,7 +523,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
 (function () {
   var SITE_I18N = {
     en: {
-      "meta.title": "FileTgie v0.5.3 — Read-only file statistics & search CLI in pure C",
+      "meta.title": "FileTgie v0.5.4 — Read-only file statistics & search CLI in pure C",
       "nav.features": "Features", "nav.commands": "Commands", "nav.quickstart": "Quick start",
       "nav.companions": "Companions", "nav.languages": "Languages", "nav.license": "License",
       "hero.title": "Lightweight, read-only, zero-dependency file statistics & search CLI",
@@ -555,7 +555,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "note.exclude": "<strong>Exclusions:</strong> <code>--exclude &lt;glob&gt;</code> and <code>--exclude-ext &lt;ext&gt;</code> may be repeated; they apply only to traversal commands, not to commands that take an explicit single file such as <code>lines</code> or <code>hash</code>.",
       "note.help": "Run with no arguments or <code>help</code> to print the full command table (exit code 0).",
       "note.update": "<strong>Updates:</strong> <code>checkupdate</code> is read-only; <code>update</code> manually checks GitHub and the website before a silent Windows overwrite. <code>reminder on</code> defaults to a 1-minute read-only check, <code>reminder on every 5</code> sets a 5-minute interval, <code>reminder status</code> reports the task, and <code>reminder off</code> deletes it. One notification appears for each newly discovered version.",
-      "note.ftg": "<strong>Simple .ftg scripts:</strong> save repeated commands in a plain-text file. Use <code>#</code> for comments, <code>set name = value</code> for variables, <code>$name</code> substitution, <code>echo</code>, <code>lang</code> and <code>exit</code>. It has no loop, condition, math or pipe; a failed line stops the script and prints its line number.",
+      "note.ftg": "<strong>Simple .ftg scripts:</strong> save repeated commands in a plain-text file. Use <code>#</code> for comments, <code>set name = value</code> (quote values that contain spaces), <code>$name</code>/<code>${name}</code> substitution, <code>echo</code>, <code>lang cn|en|ja|ru</code> and <code>exit [code]</code>. It has no loop, condition, math, pipe, redirect or function; a missing script, unclosed quote, invalid set, unknown variable (<code>Unknown variable: %s</code>), extra arguments, invalid exit code or invalid language fail with a non-zero code, and a failed line stops the script and prints its line number.",
       "comp.eyebrow": "Optional companions",
       "comp.title": "Pair FileTgie with independent tools you already like",
       "comp.sub": "FileTgie does not download, call, bundle or require any companion below. Install them separately; let each tool do the job it does best, and use FileTgie for exact counts, line totals, size, hashes and directory comparison.",
@@ -583,13 +583,13 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "footer.author": "Author", "footer.license": "License",
       "footer.licenseText": "LGPL-3.0-or-later (GNU Lesser General Public License, version 3 or later). Full legal text in LICENSE; plain-language linking notes in COPYING.",
       "footer.version": "Version",
-      "footer.versionText": "v0.5.1 adds a simple <code>run</code> script layer for repeated FileTgie commands: comments, variables, echo, language switching, exit codes and direct <code>.ftg</code> execution. The read-only statistics, reminder, .old backup overwrite and colored download progress bar remain unchanged. Version source: src/commands.h (FILETGIE_VERSION).",
+      "footer.versionText": "v0.5.4 refines the per-command detail help (help-lines, help-reminder) from a per-command registry: each target prints its own Format, Usage and Examples instead of a shared generic template; the .ftg runner reports clearer errors (unknown variable: <code>Unknown variable: %s</code>; invalid set, unclosed quote, invalid language, invalid exit code and extra arguments); the updater logic is unchanged. v0.5.1 added a simple <code>run</code> script layer for repeated FileTgie commands: comments, variables, echo, language switching, exit codes and direct <code>.ftg</code> execution. The read-only statistics, reminder, .old backup overwrite and colored download progress bar remain unchanged. Version source: src/commands.h (FILETGIE_VERSION).",
       "groups.all": "All", "groups.system": "System & Log", "groups.stats": "Statistics",
       "groups.text": "Text & Lines", "groups.search": "Search & Find", "groups.verify": "Verify & Integrity",
       "note.all": "Showing all {n} commands from CMD_TABLE.", "note.group": "Showing {n} commands in this group."
     },
     cn: {
-      "meta.title": "FileTgie v0.5.3 — 纯 C 只读文件统计与搜索命令行工具",
+      "meta.title": "FileTgie v0.5.4 — 纯 C 只读文件统计与搜索命令行工具",
       "nav.features": "功能", "nav.commands": "命令", "nav.quickstart": "快速开始", "nav.companions": "搭配工具", "nav.languages": "界面语言", "nav.license": "许可证",
       "hero.title": "轻量、只读、零依赖的文件统计与搜索命令行工具",
       "hero.lede": "纯 C 仅用标准库编写，同一套源码可构建 Windows 与 Linux 版本。每条命令只做一件小而确定的事，绝不触碰你的文件。",
@@ -617,7 +617,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "note.exclude": "<strong>排除项：</strong><code>--exclude &lt;glob&gt;</code> 与 <code>--exclude-ext &lt;ext&gt;</code> 可重复使用；只作用于遍历命令，不作用于接收单个明确文件的命令，如 <code>lines</code> 或 <code>hash</code>。",
       "note.help": "不带参数或运行 <code>help</code> 可打印完整命令表（退出码 0）。",
       "note.update": "<strong>更新：</strong><code>checkupdate</code> 只读检查；<code>update</code> 手动检查 GitHub 与官网后，在 Windows 静默覆盖。<code>reminder on</code> 缺省每 1 分钟只读检查，<code>reminder on every 5</code> 改为每 5 分钟，<code>reminder status</code> 查看任务，<code>reminder off</code> 删除任务；每个新版本只提示一次。",
-      "note.ftg": "<strong>简单 .ftg 脚本：</strong>把重复命令保存为纯文本文件。<code>#</code> 是注释，<code>set 名称 = 值</code> 保存变量，<code>$名称</code> 替换变量，另支持 <code>echo</code>、<code>lang</code> 与 <code>exit</code>。没有循环、条件、数学或管道；某一行失败会停止并打印行号。",
+      "note.ftg": "<strong>简单 .ftg 脚本：</strong>把重复命令保存为纯文本文件。<code>#</code> 是注释，<code>set 名称 = 值</code> 保存变量（带空格的值加引号），<code>$名称</code>/<code>${名称}</code> 替换变量，另支持 <code>echo</code>、<code>lang cn|en|ja|ru</code> 与 <code>exit [code]</code>。没有循环、条件、数学、管道、重定向或函数；脚本缺失、未闭合引号、非法 set、未知变量（<code>Unknown variable: %s</code>）、多余参数、非法退出码或非法语言均返回非零，某一行失败会停止并打印行号。",
       "comp.eyebrow": "可选搭配工具",
       "comp.title": "让 FileTgie 搭配你已经喜欢的独立工具",
       "comp.sub": "FileTgie 不下载、不调用、不打包、也不依赖下面任何工具。请独立安装；让每个工具做自己擅长的事，FileTgie 负责精确数量、行数、大小、哈希与目录对比。",
@@ -644,13 +644,13 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "footer.author": "作者", "footer.license": "许可证",
       "footer.licenseText": "LGPL-3.0-or-later（GNU 宽通用公共许可证，第 3 版或更新）。完整法律文本见 LICENSE，通俗链接说明见 COPYING。",
       "footer.version": "版本",
-      "footer.versionText": "v0.5.1 新增简单 <code>run</code> 脚本层，用于把重复的 FileTgie 命令保存为顺序脚本：注释、变量、echo、语言切换、退出码，也可直接执行 <code>.ftg</code>。只读统计、提醒、.old 备份覆盖与彩色下载进度条保持不变。版本来源：src/commands.h（FILETGIE_VERSION）。",
+      "footer.versionText": "v0.5.4 完善逐命令详细帮助（help-lines、help-reminder）：帮助内容来自逐命令注册表，每个目标打印自身的格式（Format）、用法（Usage）与示例（Examples），不再是共享通用模板；.ftg 运行器错误更清晰（未知变量报 <code>Unknown variable: %s</code>；非法 set、未闭合引号、非法语言、非法退出码、多余参数均报错）；更新器逻辑不变。v0.5.1 新增简单 <code>run</code> 脚本层，用于把重复的 FileTgie 命令保存为顺序脚本：注释、变量、echo、语言切换、退出码，也可直接执行 <code>.ftg</code>。只读统计、提醒、.old 备份覆盖与彩色下载进度条保持不变。版本来源：src/commands.h（FILETGIE_VERSION）。",
       "groups.all": "全部", "groups.system": "系统与日志", "groups.stats": "统计",
       "groups.text": "文本与行数", "groups.search": "搜索与查找", "groups.verify": "校验与完整性",
       "note.all": "显示 CMD_TABLE 中的全部 {n} 条命令。", "note.group": "显示该组中的 {n} 条命令。"
     },
     ja: {
-      "meta.title": "FileTgie v0.5.3 — 純粋なC製の読み取り専用ファイル統計・検索CLI",
+      "meta.title": "FileTgie v0.5.4 — 純粋なC製の読み取り専用ファイル統計・検索CLI",
       "nav.features": "機能", "nav.commands": "コマンド", "nav.quickstart": "クイックスタート", "nav.companions": "組み合わせ", "nav.languages": "言語", "nav.license": "ライセンス",
       "hero.title": "軽量・読み取り専用・非依存のファイル統計＆検索 CLI",
       "hero.lede": "純粋な C と標準ライブラリだけで書かれ、同一ソースから Windows と Linux をビルドできます。各コマンドは小さく予測可能な1操作だけを行い、ファイルを変更しません。",
@@ -678,7 +678,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "note.exclude": "<strong>除外:</strong><code>--exclude &lt;glob&gt;</code> と <code>--exclude-ext &lt;ext&gt;</code> は反復可。走査コマンドのみに適用し、<code>lines</code>/<code>hash</code> など単一ファイル指定コマンドには適用しません。",
       "note.help": "引数なし、または <code>help</code> で全コマンド表を表示（終了コード0）。",
       "note.update": "<strong>更新:</strong> <code>checkupdate</code> は読み取り専用。<code>update</code> は GitHub と公式サイトを手動で確認し、Windows で静かに上書きします。<code>reminder on</code> は既定で1分ごとの読み取り専用チェック、<code>reminder on every 5</code> は5分間隔、<code>reminder status</code> はタスク表示、<code>reminder off</code> は削除。新バージョンごとに通知は1回だけです。",
-      "note.ftg": "<strong>簡単な .ftg スクリプト:</strong> 繰り返すコマンドをテキストファイルに保存します。<code>#</code> はコメント、<code>set name = value</code> は変数、<code>$name</code> は置換、<code>echo</code>・<code>lang</code>・<code>exit</code> に対応。ループ・条件・計算・パイプはなく、失敗行で停止して行番号を出します。",
+      "note.ftg": "<strong>簡単な .ftg スクリプト:</strong> 繰り返すコマンドをテキストファイルに保存します。<code>#</code> はコメント、<code>set name = value</code> は変数（スペースを含む値は引用符）、<code>$name</code>/<code>${name}</code> は置換、<code>echo</code>・<code>lang cn|en|ja|ru</code>・<code>exit [code]</code> に対応。ループ・条件・計算・パイプ・リダイレクト・関数はなく、スクリプト不在・未閉じ引用符・不正 set・未知変数（<code>Unknown variable: %s</code>）・余分な引数・不正終了コード・不正言語は非ゼロで失敗、失敗行で停止して行番号を出します。",
       "comp.eyebrow": "任意の組み合わせ",
       "comp.title": "好きな独立ツールと FileTgie を組み合わせる",
       "comp.sub": "FileTgie は下記ツールをダウンロード・呼び出し・同梱・依存しません。別々にインストールし、それぞれ得意な仕事を任せ、FileTgie は正確な件数・行数・サイズ・ハッシュ・ディレクトリ比較に使います。",
@@ -705,13 +705,13 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "footer.author": "作者", "footer.license": "ライセンス",
       "footer.licenseText": "LGPL-3.0-or-later（GNU劣等一般公衆利用許諾書第3版以降）。完全な法的文面はLICENSE、平易なリンク説明はCOPYING。",
       "footer.version": "バージョン",
-      "footer.versionText": "v0.5.1 は、繰り返す FileTgie コマンドを順次スクリプト化する簡単な <code>run</code> 層を追加します。コメント・変数・echo・言語切替・終了コード・直接 <code>.ftg</code> 実行に対応。読み取り専用統計、reminder、.old バックアップ上書き、彩色ダウンロードバーは変更なし。版の基準は src/commands.h（FILETGIE_VERSION）。",
+      "footer.versionText": "v0.5.4 は単一コマンド詳細ヘルプ（help-lines、help-reminder）を逐命令レジストリから改良します。各対象が共有テンプレートではなく自身の Format・Usage・Examples を出力。.ftg ランナーのエラーを明確化（未知変数は <code>Unknown variable: %s</code>、不正 set、未閉じ引用符、不正言語、不正終了コード、余分な引数を報告）。アップデータのロジックは変更なし。v0.5.1 は、繰り返す FileTgie コマンドを順次スクリプト化する簡単な <code>run</code> 層を追加します。コメント・変数・echo・言語切替・終了コード・直接 <code>.ftg</code> 実行に対応。読み取り専用統計、reminder、.old バックアップ上書き、彩色ダウンロードバーは変更なし。版の基準は src/commands.h（FILETGIE_VERSION）。",
       "groups.all": "すべて", "groups.system": "システムとログ", "groups.stats": "統計",
       "groups.text": "テキストと行数", "groups.search": "検索", "groups.verify": "検証と整合性",
       "note.all": "CMD_TABLE の全 {n} コマンドを表示。", "note.group": "このグループの {n} コマンドを表示。"
     },
     ru: {
-      "meta.title": "FileTgie v0.5.3 — Лёгкая утилита статистики и поиска файлов на чистом C",
+      "meta.title": "FileTgie v0.5.4 — Лёгкая утилита статистики и поиска файлов на чистом C",
       "nav.features": "Возможности", "nav.commands": "Команды", "nav.quickstart": "Быстрый старт", "nav.companions": "Партнёры", "nav.languages": "Языки", "nav.license": "Лицензия",
       "hero.title": "Лёгкий инструмент статистики и поиска файлов только для чтения",
       "hero.lede": "Чистый C, только стандартная библиотека; один исходник собирается для Windows и Linux. Каждая команда делает одно предсказуемое действие и не меняет ваши файлы.",
@@ -739,7 +739,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "note.exclude": "<strong>Исключения:</strong><code>--exclude &lt;glob&gt;</code> и <code>--exclude-ext &lt;ext&gt;</code> повторяемы; только для обходных команд, не для одиночных файлов вроде <code>lines</code> или <code>hash</code>.",
       "note.help": "Запуск без аргументов или <code>help</code> печатает полную таблицу команд (код выхода 0).",
       "note.update": "<strong>Обновления:</strong> <code>checkupdate</code> работает только на чтение; <code>update</code> вручную проверяет GitHub и сайт перед тихой заменой в Windows. <code>reminder on</code> по умолчанию проверяет каждую 1 минуту, <code>reminder on every 5</code> задаёт интервал 5 минут, <code>reminder status</code> показывает задачу, <code>reminder off</code> удаляет её. Одно уведомление для каждой новой версии.",
-      "note.ftg": "<strong>Простые скрипты .ftg:</strong> сохраните повторяющиеся команды в текстовом файле. <code>#</code> — комментарий, <code>set name = value</code> — переменная, <code>$name</code> — подстановка; поддерживаются <code>echo</code>, <code>lang</code> и <code>exit</code>. Нет циклов, условий, математики и пайпов; неудачная строка останавливает скрипт и печатает номер строки.",
+      "note.ftg": "<strong>Простые скрипты .ftg:</strong> сохраните повторяющиеся команды в текстовом файле. <code>#</code> — комментарий, <code>set name = value</code> — переменная (значения с пробелами берите в кавычки), <code>$name</code>/<code>${name}</code> — подстановка; поддерживаются <code>echo</code>, <code>lang cn|en|ja|ru</code> и <code>exit [code]</code>. Нет циклов, условий, математики, пайпов, перенаправлений и функций; отсутствие скрипта, незакрытая кавычка, неверный set, неизвестная переменная (<code>Unknown variable: %s</code>), лишние аргументы, неверный код выхода или неверный язык дают ненулевой код, а неудачная строка останавливает скрипт и печатает номер строки.",
       "comp.eyebrow": "Необязательные партнёры",
       "comp.title": "Свяжите FileTgie с независимыми инструментами",
       "comp.sub": "FileTgie не скачивает, не вызывает, не упаковывает и не требует приведённые ниже инструменты. Устанавливайте их отдельно: пусть каждый делает своё дело, а FileTgie считает точные количество, строки, размеры, хеши и сравнивает каталоги.",
@@ -766,7 +766,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       "footer.author": "Автор", "footer.license": "Лицензия",
       "footer.licenseText": "LGPL-3.0-or-later (GNU LGPL, версия 3 или позже). Полный юридический текст в LICENSE, пояснение линковки в COPYING.",
       "footer.version": "Версия",
-      "footer.versionText": "v0.5.1 добавляет простой слой <code>run</code> для повторяющихся команд FileTgie: комментарии, переменные, echo, переключение языка, коды выхода и прямой запуск <code>.ftg</code>. Статистика только для чтения, reminder, замена с .old и цветная полоса загрузки без изменений. Источник версии: src/commands.h (FILETGIE_VERSION).",
+      "footer.versionText": "v0.5.4 улучшает подробную справку по каждой команде (help-lines, help-reminder) из реестра команд: каждая цель печатает собственные Format, Usage и Examples вместо общего шаблона; раннер .ftg даёт более ясные ошибки (неизвестная переменная: <code>Unknown variable: %s</code>; неверный set, незакрытая кавычка, неверный язык, неверный код выхода, лишние аргументы); логика апдейтера без изменений. v0.5.1 добавляет простой слой <code>run</code> для повторяющихся команд FileTgie: комментарии, переменные, echo, переключение языка, коды выхода и прямой запуск <code>.ftg</code>. Статистика только для чтения, reminder, замена с .old и цветная полоса загрузки без изменений. Источник версии: src/commands.h (FILETGIE_VERSION).",
       "groups.all": "Все", "groups.system": "Система и журнал", "groups.stats": "Статистика",
       "groups.text": "Текст и строки", "groups.search": "Поиск", "groups.verify": "Проверка и целостность",
       "note.all": "Показаны все {n} команд из CMD_TABLE.", "note.group": "Показаны {n} команд этой группы."
@@ -779,7 +779,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       id: "all", label: "All",
       items: [
         ["help", "help", "Show the full command table."],
-        ["help-<command>", "help-<command> (e.g. help-lines)", "Print the localized help text of a single command; append its name, e.g. help-lines."],
+        ["help-<command>", "help-lines | help-reminder", "From the per-command registry, print that target's own Format, Usage and Examples (not a shared generic template); target name is case-insensitive; missing/unknown target or extra arguments return non-zero."],
         ["version", "version", "Print the FileTgie version from FILETGIE_VERSION."],
         ["langs", "langs", "List the available interface language codes."],
         ["log", "log", "Print FileTgie's own run log (filetgie.log next to the executable)."],
@@ -787,7 +787,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         ["checkupdate", "checkupdate", "Query GitHub for the latest release and compare versions without installing."],
         ["update", "update", "On Windows check GitHub and the website, download the newer installer, and launch the silent overwrite; on Linux print manual upgrade steps."],
         ["reminder", "reminder on [every N|daily HH:MM|hourly] | status | off", "Enable, query or remove the optional Windows user-level task; default checks every 1 minute, with one notification per new version; Linux prints manual cron guidance."],
-        ["run", "run <script.ftg>", "Run a simple plain-text .ftg script line by line; supports comments, variables, echo, lang and exit."],
+        ["run", "run <script.ftg>", "Run a simple plain-text .ftg script line by line: # comments, set name = value, $name/${name}, echo, lang cn|en|ja|ru, exit [code]; missing script, unclosed quote, invalid set, unknown variable, extra arguments, invalid exit code or invalid language fail non-zero."],
         ["stat", "stat <path>", "Detailed file or directory info: size and three timestamps."],
         ["count", "count <dir>", "Recursively count files and folders."],
         ["lines", "lines <file>", "Count the lines of a single file."],
@@ -847,7 +847,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
       id: "system", label: "System & Log",
       items: [
         ["help", "help", "Show the full command table."],
-        ["help-<command>", "help-<command> (e.g. help-lines)", "Print the localized help text of a single command; append its name, e.g. help-lines."],
+        ["help-<command>", "help-lines | help-reminder", "From the per-command registry, print that target's own Format, Usage and Examples (not a shared generic template); target name is case-insensitive; missing/unknown target or extra arguments return non-zero."],
         ["version", "version", "Print the FileTgie version from FILETGIE_VERSION."],
         ["langs", "langs", "List the available interface language codes."],
         ["log", "log", "Print FileTgie's own run log (filetgie.log next to the executable)."],

@@ -1,4 +1,4 @@
-# FileTgie v0.5.3
+# FileTgie v0.5.4
 
 > A lightweight, read-only, zero-dependency file statistics and search CLI written in pure C.
 > One source tree builds for Windows and Linux; every command only reads and never modifies your files.
@@ -12,10 +12,10 @@
 | Package | Link |
 | --- | --- |
 | Official website | https://suiye-18.github.io/filetgie-official-website/ |
-| Windows installer | [FileTgie.windows.0.5.3.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.3.setup.exe) |
-| Windows portable ZIP | [FileTgie.windows.0.5.3.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.3.portable.zip) |
+| Windows installer | [FileTgie.windows.0.5.4.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.4.setup.exe) |
+| Windows portable ZIP | [FileTgie.windows.0.5.4.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.4.portable.zip) |
 | Linux x86_64 glibc | Verified unchanged [v0.4.0 tarball](https://github.com/SuiYe-18/FileTgie/releases/download/v0.4.0/FileTgie.linux.0.4.0.tar.gz); other distributions build from source with `make` |
-| Source archive | [FileTgie.source.0.5.3.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.3.zip) |
+| Source archive | [FileTgie.source.0.5.4.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.4.zip) |
 
 ## Highlights
 
@@ -67,14 +67,20 @@ FileTgie run examples\demo.ftg
 * **patch（.x）**：只用于小补丁、小插曲（修小问题、文案微调），不进入
   minor 的进位序列。
 
-当前版本为 `0.5.3`：新增 `help-<命令>` 详细帮助（例如 `FileTgie help-lines`），在
-当前 `--lang` 语言下打印指定命令的说明、用法与示例；目标命令名大小写不敏感，缺少目标
+当前版本为 `0.5.4`：完善 `help-<命令>` 逐命令详细帮助——帮助内容来自逐命令注册表，
+在当前 `--lang` 语言下打印目标命令自身的格式（Format）、用法（Usage）与示例
+（Examples），不再是所有命令共用的通用模板；`.ftg` 运行器错误更清晰：未知变量明确
+报错 `Unknown variable: %s`（不再把 `$名称` 原样透传给命令），非法 `set` 写法、未闭合
+引号、非法语言码、非法退出码、多余参数都会给出本地化错误并返回非零；更新器逻辑不变。
+
+`0.5.3` 新增 `help-<命令>` 详细帮助（例如 `FileTgie help-lines`、`FileTgie help-reminder`），
+在当前 `--lang` 语言下打印指定命令的说明、用法与示例；目标命令名大小写不敏感，缺少目标
 或目标不存在时给出清晰的非零错误。`0.5.1` 引入的简单 `.ftg` 代码式启动层保持不变：
 用户可以在纯文本脚本中按顺序写已有 FileTgie 命令，用 `set 名称 = 值` 保存路径或常用
-文本，用 `$名称` / `${名称}` 替换变量，用 `echo` 输出提示，用 `lang en|ja|ru|cn`
-切换本脚本语言，用 `#` 写注释，用 `exit 0` 提前结束；脚本逐行执行，任一命令失败即
-停止并返回非零退出码。`.ftg` 不是通用编程语言，没有循环、条件判断、数学运算或管道，
-目的是让没有编程基础的用户也能把常用统计流程保存成一个文件。
+文本，用 `$名称` / `${名称}` 替换变量，用 `echo` 输出提示，用 `lang cn|en|ja|ru`
+切换本脚本语言，用 `#` 写注释，用 `exit [code]` 提前结束；脚本逐行执行，任一命令失败即
+停止并返回非零退出码。`.ftg` 不是通用编程语言，没有循环、条件判断、数学运算、管道、
+重定向或函数，目的是让没有编程基础的用户也能把常用统计流程保存成一个文件。
 
 `checkupdate` 只查询 GitHub Release 并比较版本；Windows 的 `update` 调用独立更新器，
 同时检查 GitHub 与官网，后台下载新版安装包并静默覆盖；Linux 只给出手动源码升级
@@ -144,18 +150,22 @@ FileTgie [--lang cn|en|ja|ru] [--exclude <通配符>] [--exclude-ext <扩展名>
 
 ### `.ftg` 代码式启动（简单顺序脚本）
 
-`.ftg` 是 FileTgie 自带的纯文本顺序脚本，不是完整编程语言。它只把已有命令按行保存下来，
-方便重复执行；没有循环、条件判断、数学运算、管道或后台任务。
+`.ftg` 是 FileTgie 自带的纯文本顺序脚本，**不是编程语言**。它只把已有命令按行保存下来，
+方便重复执行；没有循环、条件判断、数学运算、管道、重定向（`<`/`>`）或函数定义，也不能
+启动后台任务。脚本里的普通行只能委派（调用）已经存在的 FileTgie 命令，不能发明新命令。
 
 ```ftg
 # 以 # 开头的行是注释 / comment line
-set folder = "D:\Docs"
-set report = $folder\summary.txt
+# 带空格的路径值要用引号包起来 / quote a path that contains spaces
+set folder = "D:\My Docs"
 
-echo Inspecting $folder
-exists $folder
-count $folder
-linesdir $folder
+echo Inspecting $folder / 目标文件夹 ${folder}
+# 把 $folder 改成你自己的真实文件夹后，即可传给命令，例如 count $folder
+exists .
+count .
+du .
+
+# 只切换本脚本后续命令的输出语言 / switch only this script's language
 lang en
 version
 exit 0
@@ -173,15 +183,26 @@ FileTgie demo.ftg
 | 写法 | 作用 |
 | --- | --- |
 | `#` | 整行注释，不执行 |
-| `set 名称 = 值` | 保存变量；名称以字母或 `_` 开头，只允许字母、数字、下划线 |
+| `set 名称 = 值` | 保存变量；名称以字母或 `_` 开头，只允许字母、数字、下划线；带空格的值用 `"..."` 或 `'...'` 包住 |
 | `$名称` / `${名称}` | 替换前面保存的变量 |
 | `"..."` / `'...'` | 包裹带空格的路径或文字 |
 | `echo 文字` | 输出一行文字，支持变量替换 |
-| `lang cn|en|ja|ru` | 只切换当前脚本的输出语言 |
-| `exit [0]` | 提前结束；可写非零退出码 |
-| 其他行 | 原样作为 FileTgie 命令执行 |
+| `lang cn|en|ja|ru` | 只切换当前脚本后续命令的输出语言 |
+| `exit [code]` | 提前结束；缺省为 `0`，可写非零数字退出码 |
+| 其他行 | 原样委派为已有 FileTgie 命令执行 |
 
 脚本从上到下逐行运行；某一行返回错误时立即停止，并把失败行号打印出来。
+
+脚本错误情形（均返回非零退出码，不会静默继续）：
+
+* **脚本缺失**：给出的 `.ftg` 文件不存在，报“Script file not found: %s”。
+* **空脚本**：文件为空或只有注释时正常结束，返回 0，不执行任何命令。
+* **未闭合引号**：一行里的 `"` 或 `'` 没有配对，报“Unclosed quote in the script.”。
+* **非法 `set`**：缺少 `=`、变量名不符合规则（非字母/`_` 开头，或含字母数字下划线以外字符），报“Invalid set syntax: set name = value (name starts with a letter or _)”。
+* **未知变量**：`$名称` / `${名称}` 引用了从未 `set` 的变量，明确报“Unknown variable: %s”，不再把 `$名称` 原样透传给命令。
+* **多余参数**：`lang`、`exit` 等关键字或目标命令收到多余尾随参数，报参数错误。
+* **非法退出码**：`exit` 后不是非负整数（负数、小数、非数字），报退出码错误。
+* **非法语言**：`lang` 后跟 `cn|en|ja|ru` 以外的语言码，报语言错误。
 
 * 语言示例：
 
@@ -200,7 +221,7 @@ FileTgie -l ru disk
 | 命令          | 用法                      | 作用                          |
 | ----------- | ----------------------- | --------------------------- |
 | help        | `help`                  | 显示帮助                        |
-| help-<command> | `help-lines`          | 按逐命令注册表打印目标命令自身的格式/用法/示例（非共享通用模板），目标名大小写不敏感；缺目标或未知目标返回非零错误 |
+| help-<command> | `help-lines` / `help-reminder` | 按目标自身的逐命令注册表打印 Format/Usage/Examples（格式/用法/示例取自该命令自己的参数校验，非共享通用模板；如 `help-reminder` 给出 reminder 自己的用法与示例）；目标名大小写不敏感；缺目标、未知目标或多余参数返回非零，已知目标返回 0 |
 | version     | `version`               | 显示版本                        |
 | langs       | `langs`                 | 列出可用语言                      |
 | log         | `log`                   | 打印 FileTgie 自身运行日志            |
@@ -208,7 +229,7 @@ FileTgie -l ru disk
 | checkupdate | `checkupdate`           | 查询 GitHub 最新 Release 并比较版本，只报告不安装 |
 | update      | `update`                | Windows 调用独立更新器检查 GitHub/官网并后台覆盖；Linux 只打印手动升级步骤 |
 | reminder    | `reminder on [every N|daily HH:MM|hourly]` / `reminder status` / `reminder off` | Windows 开启/查询/删除可选的用户级定时更新检查提醒；缺省每 1 分钟，`every N` 为 1–1439 分钟，每个新版本只通知一次；Linux 只打印手动 cron 说明 |
-| run         | `run <脚本.ftg>` 或直接给出 `<脚本.ftg>` | 逐行执行简单 `.ftg` 脚本：`#` 注释、`set 名称 = 值`、`$名称` 变量、`echo`、`lang`、`exit` |
+| run         | `run <脚本.ftg>` 或直接给出 `<脚本.ftg>` | 逐行执行简单 `.ftg` 脚本：`#` 注释、`set 名称 = 值`、`$名称`/`${名称}` 变量、`echo`、`lang cn|en|ja|ru`、`exit [code]`；缺失脚本、未闭合引号、非法 `set`、未知变量（`Unknown variable: %s`）、多余参数、非法退出码或非法语言均报清晰错误并返回非零 |
 | stat        | `stat <路径>`             | 文件 / 目录详细信息（大小、三个时间）        |
 | count       | `count <目录>`            | 递归统计文件数与文件夹数                |
 | lines       | `lines <文件>`            | 统计单个文件行数                    |
@@ -358,7 +379,7 @@ Use `fd -u` when the candidate set must include hidden files and paths ignored b
 
 ## 便携包与安装程序
 
-* **Windows 绿色便携包**（`FileTgie.windows.0.5.3.portable.zip`）：含
+* **Windows 绿色便携包**（`FileTgie.windows.0.5.4.portable.zip`）：含
   `FileTgie.exe`、`FileTgieUpdater.exe`、`README.md`、`User Manual.txt`、`LICENSE`、
   `COPYING` 与 `examples\demo.ftg`。便携模式不写注册表、不写入 Program Files，除 exe 旁自身的
   `filetgie.log` 外不写用户位置，解压即用、删文件夹即卸载。
@@ -369,7 +390,7 @@ Use `fd -u` when the candidate set must include hidden files and paths ignored b
   请用 `make` 从源码构建。
 
 * **安装程序**：提供 Inno Setup 6 脚本 `installer\installer.iss`，编译出
-  `FileTgie.windows.0.5.3.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
+  `FileTgie.windows.0.5.4.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
   /桌面（默认不勾选）快捷方式、标准卸载项，以及默认勾选的“覆盖安装”选项；安装前
   检测已注册的 FileTgie、App Paths 与旧版残留文件，不勾选覆盖时需另选目录。覆盖时
   先把旧的 `FileTgie.exe`、`FileTgieUpdater.exe` 和文档移动到安装目录 `.old` 备份，

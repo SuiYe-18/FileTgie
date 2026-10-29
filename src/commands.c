@@ -263,9 +263,9 @@ static const HelpDetail HELP_DETAIL[] = {
       "Windows: manage the optional FileTgieReminder user-level scheduled task. 'off' deletes it; 'status' reports whether it exists; 'on' defaults to every 1 minute; 'every N' sets a read-only interval of 1 to 1439 minutes; 'daily HH:MM' sets a fixed time (default 09:00, HH:MM 24-hour); 'hourly' runs once an hour. An unknown schedule prints the invalid-schedule error, rc=1. Linux only prints manual cron guidance and never changes crontab.",
       "FileTgie reminder status\nFileTgie reminder on every 5\nFileTgie reminder on daily 09:00\nFileTgie reminder off" },
     { "run",
-      "run <script.ftg>\n<program>.ftg",
-      "Execute a simple plain-text .ftg script line by line (# comments, set name = value, $name/${name}, echo, lang cn|en|ja|ru, exit [code]). A path ending in .ftg may be passed directly without 'run'. The script only calls existing commands; one failing line stops the script with its line number.",
-      "FileTgie run examples\\demo.ftg\nFileTgie examples\\demo.ftg" },
+      "run <script.ftg>\n<script.ftg>   (bare .ftg path also works)",
+      "Execute a simple plain-text .ftg script top to bottom: # whole-line comments, set name = value, $name/${name} substitution, echo, in-script lang cn|en|ja|ru, exit [code], quoted paths, and delegation to existing commands only. Missing script, invalid set, unknown variable, unclosed quote, invalid lang code and non-integer exit code all stop the script with a clear error (rc=1); a failing delegated line stops with its line number. An empty (0-line or all-comment) script prints a friendly note and exits 0.",
+      "FileTgie run myscript.ftg\nFileTgie myscript.ftg" },
     { "stat",
       "stat <path>",
       "Show detailed info of a file or directory: human-readable size plus exact bytes and modified/created/accessed times. <path> must exist (file or directory).",
@@ -296,11 +296,11 @@ static const HelpDetail HELP_DETAIL[] = {
       "FileTgie --lang en dirdiff ./old ./new" },
     { "tree",
       "tree <dir> [depth]",
-      "Print the directory tree. Optional [depth] is a non-negative integer; default 20, 0 allowed. Traversal command: --exclude/--exclude-ext apply.",
+      "Print the directory tree using direct folder enumeration. Optional [depth] is a non-negative integer; default 20, 0 allowed. --exclude/--exclude-ext do not apply to tree.",
       "FileTgie tree D:\\Projects\nFileTgie tree D:\\Projects 3" },
     { "list",
       "list <dir>",
-      "List one directory level (type, size, modified time, name); does not recurse.",
+      "List one directory level (type, size, modified time, name); does not recurse. --exclude/--exclude-ext apply to the listed entries.",
       "FileTgie list D:\\Photos" },
     { "findname",
       "findname <dir> <wildcard>",
@@ -308,7 +308,7 @@ static const HelpDetail HELP_DETAIL[] = {
       "FileTgie findname D:\\docs *.txt" },
     { "findext",
       "findext <dir> <ext>",
-      "Find files by extension; a leading dot is optional (txt and .txt are equal) and matching is case-insensitive. Traversal command: --exclude/--exclude-ext apply.",
+      "Find files by extension; pass <ext> WITHOUT a leading dot (txt, not .txt) and matching is case-insensitive. Traversal command: --exclude/--exclude-ext apply.",
       "FileTgie findext D:\\docs txt" },
     { "findcontent",
       "findcontent <dir> <text>",
@@ -316,7 +316,7 @@ static const HelpDetail HELP_DETAIL[] = {
       "FileTgie findcontent ./src \"TODO\"" },
     { "findempty",
       "findempty <dir>",
-      "Find empty (0-byte) files under <dir>. Traversal command: --exclude/--exclude-ext apply.",
+      "Find empty entries under <dir>: 0-byte files and folders with no entries at all. Traversal command: --exclude/--exclude-ext apply.",
       "FileTgie findempty D:\\temp" },
     { "findlarge",
       "findlarge <dir> <MB>",
@@ -356,11 +356,11 @@ static const HelpDetail HELP_DETAIL[] = {
       "FileTgie istext script.py" },
     { "exists",
       "exists <path>",
-      "Check whether <path> exists: file, directory, or not found.",
-      "FileTgie exists D:\\docs" },
+      "Check whether <path> exists: prints file or directory when found (rc=0), otherwise reports none and returns rc=1.",
+      "FileTgie exists D:\\docs\nFileTgie exists D:\\missing" },
     { "compare",
       "compare <fileA> <fileB>",
-      "Compare two files byte by byte and report the first differing byte offset; reports identical when equal. Both must be regular files.",
+      "Compare two files byte by byte and report the first differing byte offset; reports identical when equal (rc=0) and differs with the offset when unequal (rc=1). Both must be regular files.",
       "FileTgie compare a.bin b.bin" },
     { "head",
       "head <file> [N]",
@@ -472,7 +472,7 @@ static const HelpDetail HELP_DETAIL[] = {
       "FileTgie findrange D:\\Photos 0.4 0.6" },
     { "findexts",
       "findexts <dir> <ext1,ext2,...>",
-      "Find files matching several extensions at once, comma-separated; spaces around entries are trimmed, case-insensitive, leading dot optional. Traversal command: --exclude/--exclude-ext apply.",
+      "Find files matching several extensions at once, comma-separated; spaces around entries are trimmed, matching is case-insensitive, and each extension is given WITHOUT a leading dot. Traversal command: --exclude/--exclude-ext apply.",
       "FileTgie findexts D:\\docs txt,md,log" },
     { "findpath",
       "findpath <dir> <substring>",
@@ -589,9 +589,12 @@ static int ftg_tokenize(const char* src, char* out[], int max) {
     return n;
 }
 
-/* Expand $name and ${name}; unknown names are left untouched so the
- * underlying command can report the problem instead of guessing. */
-static void ftg_expand(const char* in, char* out, size_t cap) {
+/* Expand $name and ${name}. Returns 0 on success. Returns 1 when an
+ * undefined variable (or a malformed, unclosed ${...}) is referenced:
+ * *unknown receives the offending name so the runner can stop with
+ * run_unknown_var instead of passing the literal $name through to the
+ * underlying command. */
+static int ftg_expand(const char* in, char* out, size_t cap, char* unknown, size_t usize) {
     size_t o = 0;
     const char* p = in;
     while (*p && o + 1 < cap) {
@@ -603,6 +606,12 @@ static void ftg_expand(const char* in, char* out, size_t cap) {
                 p++;
                 while (*p && *p != '}' && k + 1 < sizeof(name)) name[k++] = *p++;
                 if (*p == '}') p++;
+                else {
+                    /* opened '{' but never closed: malformed reference */
+                    name[k] = '\0';
+                    if (unknown) snprintf(unknown, usize, "%s", name);
+                    return 1;
+                }
             } else {
                 while ((isalnum((unsigned char)*p) || *p == '_') && k + 1 < sizeof(name))
                     name[k++] = *p++;
@@ -613,15 +622,22 @@ static void ftg_expand(const char* in, char* out, size_t cap) {
                 size_t vl = strlen(v);
                 if (o + vl < cap) { memcpy(out + o, v, vl); o += vl; }
             } else {
-                if (o + 2 < cap) out[o++] = '$';
-                size_t vl = strlen(name);
-                if (o + vl < cap) { memcpy(out + o, name, vl); o += vl; }
+                if (unknown) snprintf(unknown, usize, "%s", name);
+                return 1;
             }
         } else {
             out[o++] = *p++;
         }
     }
     out[o] = '\0';
+    return 0;
+}
+
+/* Accept only the four interface language codes for an in-script `lang`
+ * directive; unknown codes are an error here (no silent fallback). */
+static int ftg_valid_lang(const char* code) {
+    return ft_strcase_eq(code, "cn") || ft_strcase_eq(code, "en") ||
+           ft_strcase_eq(code, "ja") || ft_strcase_eq(code, "ru");
 }
 
 static void ftg_strip_quotes(char* s) {
@@ -658,7 +674,11 @@ static int ftg_set_var(const char* name, const char* value) {
 static int cmd_run(const LangPack* L, int argc, char** argv) {
     if (need(L, argc, 2, L->run_usage)) return 1;
     if (check_extra(L, argc, 2, argv)) return 1;
-    if (check_file(L, argv[1])) return 1;
+    /* Distinguish a missing script from a directory passed by mistake; the
+     * missing-script message is localized to the runner, not the generic
+     * path error. */
+    if (ft_is_dir(argv[1])) { printf(L->err_need_file, argv[1]); printf("\n"); return 1; }
+    if (!ft_is_file(argv[1])) { printf(L->run_notfound, argv[1]); printf("\n"); return 1; }
 
     ftg_reset_vars();
     int nlines = 0;
@@ -667,11 +687,13 @@ static int cmd_run(const LangPack* L, int argc, char** argv) {
 
     const LangPack* cur = L;
     int rc = 0;
+    int saw_line = 0; /* any non-comment, non-blank line (drives the empty check) */
     for (int li = 0; li < nlines; li++) {
         char raw[FTG_LINE_CAP];
         snprintf(raw, sizeof(raw), "%s", lines[li]);
         ftg_trim(raw);
         if (!*raw || raw[0] == '#') continue;
+        saw_line = 1;
 
         char* tok[FTG_TOKEN_CAP];
         int nt = ftg_tokenize(raw, tok, FTG_TOKEN_CAP);
@@ -679,38 +701,48 @@ static int cmd_run(const LangPack* L, int argc, char** argv) {
         if (nt < 0) { printf(L->err_generic); printf("\n"); rc = 1; break; }
 
         if (ft_strcase_eq(tok[0], "set")) {
-            char* eq = strchr(raw, '=');
-            if (!eq || nt < 2) {
+            /* set <name> = <value...>: name token, a literal '=' token, then
+             * the rest of the line forms the (quoted, expanded) value. */
+            if (nt < 3 || !ftg_valid_name(tok[1]) || !ft_strcase_eq(tok[2], "=")) {
                 printf(L->run_bad_set); printf("\n"); ftg_free_tokens(tok, nt); rc = 1; break;
             }
-            const char* np = raw + strlen(tok[0]);
-            while (isspace((unsigned char)*np)) np++;
-            char name[FTG_VAR_NAME_CAP];
-            size_t nn = (size_t)(eq - np);
-            if (nn >= sizeof(name)) { ftg_free_tokens(tok, nt); printf(L->run_bad_set); printf("\n"); rc = 1; break; }
-            memcpy(name, np, nn);
-            name[nn] = '\0';
-            ftg_trim(name);
-            const char* vp = eq + 1;
-            while (isspace((unsigned char)*vp)) vp++;
             char value[FTG_VAR_VALUE_CAP];
-            ftg_expand(vp, value, sizeof(value));
+            value[0] = '\0';
+            int badvar = 0;
+            for (int i = 3; i < nt; i++) {
+                char part[FTG_VAR_VALUE_CAP];
+                char unk[FTG_VAR_NAME_CAP] = {0};
+                if (ftg_expand(tok[i], part, sizeof(part), unk, sizeof(unk)) != 0) {
+                    printf(L->run_unknown_var, unk); printf("\n"); badvar = 1; break;
+                }
+                if (i > 3) strncat(value, " ", sizeof(value) - strlen(value) - 1);
+                strncat(value, part, sizeof(value) - strlen(value) - 1);
+            }
+            if (badvar) { ftg_free_tokens(tok, nt); rc = 1; break; }
             ftg_strip_quotes(value);
-            if (ftg_set_var(name, value) != 0) {
+            if (ftg_set_var(tok[1], value) != 0) {
                 printf(L->run_bad_set); printf("\n"); ftg_free_tokens(tok, nt); rc = 1; break;
             }
         } else if (ft_strcase_eq(tok[0], "echo")) {
             char msg[FTG_LINE_CAP];
             msg[0] = '\0';
+            int badvar = 0;
             for (int i = 1; i < nt; i++) {
                 char part[FTG_LINE_CAP];
-                ftg_expand(tok[i], part, sizeof(part));
+                char unk[FTG_VAR_NAME_CAP] = {0};
+                if (ftg_expand(tok[i], part, sizeof(part), unk, sizeof(unk)) != 0) {
+                    printf(L->run_unknown_var, unk); printf("\n"); badvar = 1; break;
+                }
                 if (i > 1) strncat(msg, " ", sizeof(msg) - strlen(msg) - 1);
                 strncat(msg, part, sizeof(msg) - strlen(msg) - 1);
             }
+            if (badvar) { ftg_free_tokens(tok, nt); rc = 1; break; }
             printf("%s\n", msg);
         } else if (ft_strcase_eq(tok[0], "lang")) {
             if (nt != 2) { printf(L->err_args, L->run_usage); printf("\n"); ftg_free_tokens(tok, nt); rc = 1; break; }
+            if (!ftg_valid_lang(tok[1])) {
+                printf(L->run_bad_lang); printf("\n"); ftg_free_tokens(tok, nt); rc = 1; break;
+            }
             cur = lang_get(tok[1]);
         } else if (ft_strcase_eq(tok[0], "exit")) {
             if (nt == 1) { rc = 0; }
@@ -726,10 +758,15 @@ static int cmd_run(const LangPack* L, int argc, char** argv) {
         } else {
             char* exp[FTG_TOKEN_CAP];
             char expbuf[FTG_TOKEN_CAP][FTG_LINE_CAP];
+            int badvar = 0;
             for (int i = 0; i < nt; i++) {
-                ftg_expand(tok[i], expbuf[i], sizeof(expbuf[i]));
+                char unk[FTG_VAR_NAME_CAP] = {0};
+                if (ftg_expand(tok[i], expbuf[i], sizeof(expbuf[i]), unk, sizeof(unk)) != 0) {
+                    printf(L->run_unknown_var, unk); printf("\n"); badvar = 1; break;
+                }
                 exp[i] = expbuf[i];
             }
+            if (badvar) { ftg_free_tokens(tok, nt); rc = 1; break; }
             int found = 0;
             for (int i = 0; i < CMD_COUNT; i++) {
                 if (ft_strcase_eq(exp[0], CMD_TABLE[i].name)) {
@@ -752,6 +789,8 @@ static int cmd_run(const LangPack* L, int argc, char** argv) {
     }
 
     free_lines(lines, nlines);
+    /* 0 lines or only comments: friendly note, still a clean exit (rc=0). */
+    if (!saw_line) { printf(L->run_empty); printf("\n"); return 0; }
     return rc;
 }
 

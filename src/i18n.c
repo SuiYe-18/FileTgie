@@ -182,7 +182,10 @@ static const LangPack ZH = {
     "用法:",
     "示例:",
     "缺少目标命令：用法 help-<命令>（如 help-lines），输入 help 查看命令列表",
-    "未知命令「%s」，输入 help 查看命令列表"
+    "未知命令「%s」，输入 help 查看命令列表",
+    /* v0.5.4 .ftg runner hardening */
+    "脚本为空：没有可执行的命令行（0 行或全部为 # 注释），未执行任何命令。",
+    "脚本内 lang 语言码无效：只能写 lang cn|en|ja|ru，未知语言不会静默回退。"
 };
 
 /* ------------------------------------------------------------------ */
@@ -352,7 +355,10 @@ static const LangPack EN = {
     "Usage:",
     "Examples:",
     "Missing target command: use help-<command> (for example help-lines); type help for the command list",
-    "Unknown command '%s'; type help for the command list"
+    "Unknown command '%s'; type help for the command list",
+    /* v0.5.4 .ftg runner hardening */
+    "Empty script: no executable lines (0 lines or only # comments); nothing was run.",
+    "Invalid language code in script: only lang cn|en|ja|ru is allowed; an unknown code is not silently fallen back to."
 };
 
 /* ------------------------------------------------------------------ */
@@ -522,7 +528,10 @@ static const LangPack JA = {
     "使い方:",
     "例:",
     "対象コマンドがありません: help-<command>（例 help-lines）の形で指定してください。help で一覧表示",
-    "不明なコマンド「%s」。help でコマンド一覧を表示"
+    "不明なコマンド「%s」。help でコマンド一覧を表示",
+    /* v0.5.4 .ftg runner hardening */
+    "空のスクリプト: 実行可能な行がありません（0 行または # コメントのみ）。何も実行されませんでした。",
+    "スクリプト内の lang コードが不正です: lang cn|en|ja|ru のみ使用可能。不明な言語には黙ってフォールバックしません。"
 };
 
 /* ------------------------------------------------------------------ */
@@ -692,7 +701,10 @@ static const LangPack RU = {
     "Использование:",
     "Примеры:",
     "Не указана целевая команда: используйте help-<command> (например help-lines); help — список команд",
-    "Неизвестная команда '%s'; наберите help для списка команд"
+    "Неизвестная команда '%s'; наберите help для списка команд",
+    /* v0.5.4 .ftg runner hardening */
+    "Пустой скрипт: нет исполняемых строк (0 строк или только комментарии #); ничего не выполнено.",
+    "Неверный код языка в скрипте: разрешён только lang cn|en|ja|ru; неизвестный код не заменяется молча на cn."
 };
 
 /* 全部语言包的注册表，顺序即 lang_list_all 的输出顺序。

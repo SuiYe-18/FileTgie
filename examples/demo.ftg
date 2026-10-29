@@ -1,17 +1,26 @@
 # FileTgie .ftg demo script / FileTgie .ftg 示例脚本
 # Run / 运行: FileTgie run examples\demo.ftg
 # A line starting with # is a comment / 以 # 开头的行是注释。
+# This script only delegates existing read-only commands; it has no loop,
+# condition, math, pipe, redirect or function / 本脚本只委派已有只读命令，
+# 没有循环、条件、算术、管道、重定向或函数。
 
-# Save a reusable path value. Spaces need quotes.
-# 保存可重复使用的路径；带空格的值需要引号。
-set folder = .
+# Save one reusable path variable; quote a value that contains spaces.
+# 保存一个可复用路径变量；带空格的值要用引号包起来。
+# Replace this with a folder on your own machine, e.g. count $folder.
+# 把它改成你自己的文件夹后即可使用，例如 count $folder。
+set folder = "D:\My Docs"
 
+# Print a hint line; $folder and ${folder} are substituted / 输出提示行，$folder 与 ${folder} 会被替换。
 echo Demo script started / 示例脚本已开始
-exists $folder
-count $folder
+echo Target folder: $folder / 目标文件夹: ${folder}
 
-# Switch only this script's output language.
-# 只切换本脚本内的输出语言。
+# Real read-only commands on the current directory / 对当前目录执行真实只读命令：
+exists .
+count .
+du .
+
+# Switch only this script's output language from here on / 只切换本脚本后续命令的输出语言。
 lang en
 version
 
