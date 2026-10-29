@@ -45,7 +45,7 @@ extern int g_dellog_cleared;
 /* 版本号唯一来源，version 命令与帮助横幅都读取它，不在别处硬编码。
  * Single source of truth for the version; read by version and the help banner. */
 #ifndef FILETGIE_VERSION
-#define FILETGIE_VERSION "0.5.4"
+#define FILETGIE_VERSION "0.5.5"
 #endif
 
 #ifdef __cplusplus

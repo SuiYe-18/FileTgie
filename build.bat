@@ -7,7 +7,7 @@ if errorlevel 1 (
   echo BUILD FAILED
   exit /b 1
 )
-gcc -O2 -Wall -Wextra -o FileTgieUpdater.exe src\updater_main.c -lwinhttp -lshell32
+gcc -O2 -Wall -Wextra -o FileTgieUpdater.exe src\updater_main.c -lwinhttp -lshell32 -luser32
 if errorlevel 1 (
   echo BUILD FAILED: FileTgieUpdater.exe
   exit /b 1

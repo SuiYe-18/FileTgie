@@ -25,7 +25,7 @@
 #include <stdarg.h>
 
 #define FT_GITHUB_API "https://api.github.com/repos/SuiYe-18/FileTgie/releases/latest"
-#define FT_BAR_WIDTH 21
+#define FT_BAR_WIDTH 20
 #define FT_WEBSITE "https://suiye-18.github.io/filetgie-official-website/"
 #define FT_RELEASE_URL "https://github.com/SuiYe-18/FileTgie/releases/latest"
 
@@ -173,8 +173,11 @@ static void set_error(char* err, size_t len, const char* fmt, ...) {
     va_end(args);
 }
 
-/* White = before the bytes arrive; green > shows completed bytes, white = remains. */
-static void print_progress(int filled, int background) {
+/* Twenty segments, each equal to 5%. Green > means bytes received; white =
+ * means bytes still waiting. The bar is redrawn only when a segment changes.
+ * A negative percent means the total size is unknown (no Content-Length and
+ * no Release API asset size); no percentage number is fabricated in that case. */
+static void print_progress(int filled, int percent, int background) {
     if (background) return;
     if (filled < 0) filled = 0;
     if (filled > FT_BAR_WIDTH) filled = FT_BAR_WIDTH;
@@ -190,11 +193,12 @@ static void print_progress(int filled, int background) {
     SetConsoleTextAttribute(out, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
     for (int i = filled; i < FT_BAR_WIDTH; i++) fputc('=', stdout);
     SetConsoleTextAttribute(out, original);
+    if (percent >= 0 && percent <= 100) printf(" %3d%%", percent);
     fflush(stdout);
 }
 
 static int http_download(const char* url_in, const char* dest, int background,
-                        char* err, size_t err_len) {
+                        ULONGLONG known_size, char* err, size_t err_len) {
     char url[2048];
     snprintf(url, sizeof(url), "%s", url_in);
     FILE* f = fopen(dest, "wb");
@@ -243,8 +247,9 @@ static int http_download(const char* url_in, const char* dest, int background,
         }
 
         if (status == 200 && request) {
-            ULONGLONG expected = 0;
+            ULONGLONG expected = known_size;
             ULONGLONG received = 0;
+            int last_filled = -1;
             DWORD header_size = 0;
             if (WinHttpQueryHeaders(request, WINHTTP_QUERY_CONTENT_LENGTH,
                     WINHTTP_HEADER_NAME_BY_INDEX, NULL, &header_size,
@@ -254,13 +259,18 @@ static int http_download(const char* url_in, const char* dest, int background,
                     memset(header, 0, header_size + 1);
                     if (WinHttpQueryHeaders(request, WINHTTP_QUERY_CONTENT_LENGTH,
                             WINHTTP_HEADER_NAME_BY_INDEX, header, &header_size,
-                            WINHTTP_NO_HEADER_INDEX))
-                        expected = _strtoui64(header, NULL, 10);
+                            WINHTTP_NO_HEADER_INDEX)) {
+                        ULONGLONG header_size_value = _strtoui64(header, NULL, 10);
+                        if (header_size_value > 0) expected = header_size_value;
+                    }
                     free(header);
                 }
             }
 
-            print_progress(0, background);
+            /* Content-Length wins over the Release API asset size; when
+             * neither is available the percentage stays unknown instead of
+             * being fabricated. */
+            if (expected > 0) print_progress(0, 0, background);
             char chunk[16384];
             DWORD n = 0;
             while (WinHttpReadData(request, chunk, (DWORD)sizeof(chunk), &n) && n > 0) {
@@ -271,12 +281,16 @@ static int http_download(const char* url_in, const char* dest, int background,
                 }
                 received += n;
                 if (expected > 0) {
-                    int filled = (int)((received * FT_BAR_WIDTH) / expected);
-                    print_progress(filled, background);
+                    int percent = (int)((received * 100 + expected / 2) / expected);
+                    int filled = (int)((received * FT_BAR_WIDTH + expected / 2) / expected);
+                    if (filled != last_filled) {
+                        print_progress(filled, percent, background);
+                        last_filled = filled;
+                    }
                 }
             }
             ok = status == 200;
-            if (ok) print_progress(FT_BAR_WIDTH, background);
+            if (ok && expected > 0) print_progress(FT_BAR_WIDTH, 100, background);
         } else if (status >= 301 && status <= 308 && request) {
             DWORD size = 0;
             WinHttpQueryHeaders(request, WINHTTP_QUERY_LOCATION, L"Location",
@@ -333,6 +347,21 @@ static void json_copy(const char* start, char* out, size_t len) {
     out[n] = '\0';
 }
 
+/* Read a numeric JSON field that appears after `start`; used for asset size. */
+static const char* json_number_after(const char* start, const char* key) {
+    if (!start) return NULL;
+    char pat[80];
+    snprintf(pat, sizeof(pat), "\"%s\"", key);
+    const char* p = strstr(start, pat);
+    if (!p) return NULL;
+    p += strlen(pat);
+    while (isspace((unsigned char)*p)) p++;
+    if (*p != ':') return NULL;
+    p++;
+    while (isspace((unsigned char)*p)) p++;
+    return isdigit((unsigned char)*p) ? p : NULL;
+}
+
 /* Find the nearest JSON key at or before start, used to associate an asset
  * name with its preceding API asset URL without a full JSON parser. */
 static const char* find_previous_key(const char* start, const char* key,
@@ -346,8 +375,10 @@ static const char* find_previous_key(const char* start, const char* key,
 
 /* Prefer api.github.com/.../assets/<id>, because the browser_download_url
  * host github.com may time out even when the API host remains reachable. */
-static int extract_setup_asset_api(const char* body, char* out, size_t len) {
+static int extract_setup_asset_api(const char* body, char* out, size_t len,
+                                   ULONGLONG* asset_size) {
     out[0] = '\0';
+    if (asset_size) *asset_size = 0;
     const char* p = body;
     while ((p = strstr(p, ".setup.exe")) != NULL) {
         const char* name_key = find_previous_key(p, "\"name\"", body);
@@ -357,7 +388,13 @@ static int extract_setup_asset_api(const char* body, char* out, size_t len) {
         const char* value = url_key ? json_value(url_key, "url") : NULL;
         if (value && strstr(name, "windows") && strstr(name, ".setup.exe")) {
             json_copy(value, out, len);
-            if (out[0] && strstr(out, "/releases/assets/")) return 0;
+            if (out[0] && strstr(out, "/releases/assets/")) {
+                if (asset_size) {
+                    const char* size_value = json_number_after(name_key, "size");
+                    if (size_value) *asset_size = _strtoui64(size_value, NULL, 10);
+                }
+                return 0;
+            }
         }
         p++;
     }
@@ -400,8 +437,8 @@ static int current_from_sibling(int v[3]) {
 }
 
 /* Keep one notification per discovered release so a one-minute task does not
- * toast on every wake. The state file is user-specific and never touches the
- * installation folder. */
+ * show the alert on every wake. The state file is user-specific and never
+ * touches the installation folder. */
 static void notified_path(char* out, size_t len) {
     const char* dir = getenv("LOCALAPPDATA");
     if (dir && *dir) {
@@ -445,38 +482,24 @@ static void mark_notified(const char* latest) {
     }
 }
 
-/* Use the built-in Windows PowerShell toast channel; PowerShell itself is part
- * of Windows, so this adds no third-party dependency. Failures are ignored:
- * the read-only check still returns the newer-version exit code. */
-static void show_update_toast(const char* current, const char* latest) {
-    char cmd[2048];
-    snprintf(cmd, sizeof(cmd),
-        "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "
-        "\"[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType=WindowsRuntime]|Out-Null;"
-        "[Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument, ContentType=WindowsRuntime]|Out-Null;"
-        "$x=New-Object Windows.Data.Xml.Dom.XmlDocument;"
-        "$x.LoadXml('<toast activationType='protocol' launch='https://github.com/SuiYe-18/FileTgie/releases/latest'>"
-        "<visual><binding template='ToastText02'>"
-        "<text id='1'>FileTgie update available</text>"
-        "<text id='2'>%s is available; current %s. Click to open the release page.</text>"
-        "</binding></visual></toast>');"
-        "$t=[Windows.UI.Notifications.ToastNotification]::new($x);"
-        "[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\\WindowsPowerShell\\v1.0\\powershell.exe').Show($t)\"",
-        latest, current);
+/* Show a visible, foregrounded alert when the scheduled check finds a release.
+ * PowerShell/WinRT toast channels can be suppressed or fail silently under Task
+ * Scheduler, so the direct MessageBox is the reliable fallback; it needs no
+ * third-party runtime and stays visible until the user responds. */
+static void show_update_alert(const char* current, const char* latest) {
+    char text[768];
+    snprintf(text, sizeof(text),
+        "FileTgie update available\n\n"
+        "Current version: %s\n"
+        "New version: %s\n\n"
+        "Choose OK to open the release page, or Cancel to stay here.",
+        current, latest);
 
-    STARTUPINFOA si;
-    PROCESS_INFORMATION pi;
-    ZeroMemory(&si, sizeof(si));
-    si.cb = sizeof(si);
-    si.dwFlags = STARTF_USESHOWWINDOW;
-    si.wShowWindow = SW_HIDE;
-    ZeroMemory(&pi, sizeof(pi));
-    if (CreateProcessA(NULL, cmd, NULL, NULL, FALSE, CREATE_NO_WINDOW,
-                       NULL, NULL, &si, &pi)) {
-        WaitForSingleObject(pi.hProcess, 3000);
-        CloseHandle(pi.hThread);
-        CloseHandle(pi.hProcess);
-    }
+    int choice = MessageBoxA(NULL, text, "FileTgie Update",
+                             MB_OKCANCEL | MB_ICONINFORMATION | MB_TOPMOST |
+                             MB_SETFOREGROUND | MB_SYSTEMMODAL);
+    if (choice == IDOK)
+        ShellExecuteA(NULL, "open", FT_RELEASE_URL, NULL, NULL, SW_SHOWNORMAL);
 }
 
 int main(int argc, char** argv) {
@@ -503,12 +526,13 @@ int main(int argc, char** argv) {
 
     int latest[3] = {-1,-1,-1};
     char asset[2048] = "";
+    ULONGLONG asset_size = 0;
     if (gh_ok && gh.data) {
         char tag[64];
         json_copy(json_value(gh.data, "tag_name"), tag, sizeof(tag));
         int gv[3];
         if (parse_semver(tag, gv) && (latest[0] < 0 || cmp_semver(gv, latest) > 0)) memcpy(latest, gv, sizeof(latest));
-        if (extract_setup_asset_api(gh.data, asset, sizeof(asset)) != 0) {
+        if (extract_setup_asset_api(gh.data, asset, sizeof(asset), &asset_size) != 0) {
             const char* p = gh.data;
             while ((p = json_value(p, "browser_download_url")) != NULL) {
                 char url[2048];
@@ -549,7 +573,7 @@ int main(int argc, char** argv) {
             else
                 snprintf(current_s, sizeof(current_s), "unknown");
             if (!notified_already(latest_s)) {
-                show_update_toast(current_s, latest_s);
+                show_update_alert(current_s, latest_s);
                 mark_notified(latest_s);
             }
         }
@@ -577,9 +601,9 @@ int main(int argc, char** argv) {
     char download_error[512] = "Unknown download failure.";
     if (!background) {
         printf("Downloading installer...\n");
-        print_progress(0, background);
+        if (asset_size > 0) print_progress(0, 0, background);
     }
-    if (!http_download(asset, dest, background, download_error, sizeof(download_error))) {
+    if (!http_download(asset, dest, background, asset_size, download_error, sizeof(download_error))) {
         if (!background) fputc('\n', stderr);
         fprintf(stderr, "Installer download failed: %s\n", download_error);
         buf_free(&gh); buf_free(&site);

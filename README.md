@@ -1,4 +1,4 @@
-# FileTgie v0.5.4
+# FileTgie v0.5.5
 
 > A lightweight, read-only, zero-dependency file statistics and search CLI written in pure C.
 > One source tree builds for Windows and Linux; every command only reads and never modifies your files.
@@ -12,10 +12,10 @@
 | Package | Link |
 | --- | --- |
 | Official website | https://suiye-18.github.io/filetgie-official-website/ |
-| Windows installer | [FileTgie.windows.0.5.4.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.4.setup.exe) |
-| Windows portable ZIP | [FileTgie.windows.0.5.4.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.4.portable.zip) |
+| Windows installer | [FileTgie.windows.0.5.5.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.5.setup.exe) |
+| Windows portable ZIP | [FileTgie.windows.0.5.5.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.5.portable.zip) |
 | Linux x86_64 glibc | Verified unchanged [v0.4.0 tarball](https://github.com/SuiYe-18/FileTgie/releases/download/v0.4.0/FileTgie.linux.0.4.0.tar.gz); other distributions build from source with `make` |
-| Source archive | [FileTgie.source.0.5.4.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.4.zip) |
+| Source archive | [FileTgie.source.0.5.5.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.5.zip) |
 
 ## Highlights
 
@@ -67,7 +67,16 @@ FileTgie run examples\demo.ftg
 * **patch（.x）**：只用于小补丁、小插曲（修小问题、文案微调），不进入
   minor 的进位序列。
 
-当前版本为 `0.5.4`：完善 `help-<命令>` 逐命令详细帮助——帮助内容来自逐命令注册表，
+当前版本为 `0.5.5`：修复独立更新器的两处体验问题。一是下载进度条改为严格 20 段、
+每段 5% 的实时进度条：0% 时显示 20 个白色 `=`，绿色 `>` 表示已接收字节、白色 `=`
+表示剩余，按 received/total 在下载过程中实时推进，段号变化才重绘；总大小优先取响应头
+Content-Length，缺失时改用 Release API asset 的 `size` 字段，两者都没有时不伪造百分比。
+二是把计划任务下容易被静默吞掉的 PowerShell/WinRT toast 换成可见的前台 Windows 弹窗
+（MessageBoxA，TOPMOST/SETFOREGROUND/SYSTEMMODAL）：OK 打开 Release 页面，Cancel
+关闭，每个 Release 只提醒一次（notified.txt 去重）；计划任务动作仍是只读 `--check --notify`，
+提醒路径绝不自动安装。
+
+`0.5.4` 完善 `help-<命令>` 逐命令详细帮助——帮助内容来自逐命令注册表，
 在当前 `--lang` 语言下打印目标命令自身的格式（Format）、用法（Usage）与示例
 （Examples），不再是所有命令共用的通用模板；`.ftg` 运行器错误更清晰：未知变量明确
 报错 `Unknown variable: %s`（不再把 `$名称` 原样透传给命令），非法 `set` 写法、未闭合
@@ -106,7 +115,7 @@ build.bat
 
 ```
 gcc -O2 -Wall -Wextra -o FileTgie.exe src\main.c src\commands.c src\port.c src\util.c src\i18n.c src\update.c -lwinhttp -lshell32
-gcc -O2 -Wall -Wextra -o FileTgieUpdater.exe src\updater_main.c -lwinhttp -lshell32
+gcc -O2 -Wall -Wextra -o FileTgieUpdater.exe src\updater_main.c -lwinhttp -lshell32 -luser32
 ```
 
 `build.bat` 同时产出 `FileTgie.exe` 与 Windows 专用 `FileTgieUpdater.exe`，要求 `-O2 -Wall -Wextra` 零警告；Linux `make` 不构建 Windows 更新器。
@@ -379,7 +388,7 @@ Use `fd -u` when the candidate set must include hidden files and paths ignored b
 
 ## 便携包与安装程序
 
-* **Windows 绿色便携包**（`FileTgie.windows.0.5.4.portable.zip`）：含
+* **Windows 绿色便携包**（`FileTgie.windows.0.5.5.portable.zip`）：含
   `FileTgie.exe`、`FileTgieUpdater.exe`、`README.md`、`User Manual.txt`、`LICENSE`、
   `COPYING` 与 `examples\demo.ftg`。便携模式不写注册表、不写入 Program Files，除 exe 旁自身的
   `filetgie.log` 外不写用户位置，解压即用、删文件夹即卸载。
@@ -390,7 +399,7 @@ Use `fd -u` when the candidate set must include hidden files and paths ignored b
   请用 `make` 从源码构建。
 
 * **安装程序**：提供 Inno Setup 6 脚本 `installer\installer.iss`，编译出
-  `FileTgie.windows.0.5.4.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
+  `FileTgie.windows.0.5.5.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
   /桌面（默认不勾选）快捷方式、标准卸载项，以及默认勾选的“覆盖安装”选项；安装前
   检测已注册的 FileTgie、App Paths 与旧版残留文件，不勾选覆盖时需另选目录。覆盖时
   先把旧的 `FileTgie.exe`、`FileTgieUpdater.exe` 和文档移动到安装目录 `.old` 备份，
