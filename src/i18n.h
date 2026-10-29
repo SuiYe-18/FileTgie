@@ -225,13 +225,20 @@ typedef struct {
     const char* run_line_error;     /* line %d failed: %s                 */
     const char* run_unknown_var;    /* unknown variable: %s               */
 
-    /* --- v0.5.3: per-command detail help `help-<command>` (appended; keep 4 packs in sync) --- */
+    /* --- v0.5.3: per-command detail help `help-<command>` (appended; keep 4 packs in sync) ---
+     * Section headings are localized; the per-command format/usage/example
+     * body lives in the language-neutral HELP_REGISTRY in commands.c. */
     const char* h_helpprefix;  /* help-<command> short table description   */
     const char* hp_title;       /* "Command: %s" header for the target     */
-    const char* hp_usage;        /* generic usage line for the target        */
-    const char* hp_example;      /* example invocation line                  */
+    const char* hp_h_format;     /* "Format:" section heading               */
+    const char* hp_h_usage;       /* "Usage:" section heading                */
+    const char* hp_h_examples;    /* "Examples:" section heading              */
     const char* hp_missing;      /* bare "help-" with no target              */
     const char* hp_unknown;      /* unknown target command: %s               */
+
+    /* --- v0.5.4: .ftg runner hardening (appended; keep 4 packs in sync) --- */
+    const char* run_empty;       /* script has no executable lines           */
+    const char* run_bad_lang;    /* invalid in-script lang code               */
 } LangPack;
 
 /* 按语言码（cn/en/ja/ru）返回对应包，无法识别时回退到 cn。

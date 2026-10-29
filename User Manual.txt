@@ -736,14 +736,16 @@ Direct:  FileTgie examples\demo.ftg
 
 63) help-<command>
 Syntax: help-<command>
-EN: Print the localized detailed help (description, usage and example) of
-one registered command in the current --lang language. The target name after
-the hyphen matches case-insensitively. A bare "help-" with no target, or an
-unknown target, prints a clear localized error and returns a non-zero exit
-code; a known target returns 0.
-CN: 在当前 --lang 语言下打印指定已注册命令的本地化详细帮助（说明、用法与示例）。
-连字符后的目标命令名大小写不敏感匹配；help- 后缺目标或目标不存在时打印清晰的
-本地化错误并返回非零退出码；已知目标返回 0。
+EN: From a per-command registry, print the target command's own Format, Usage
+and Examples in the current --lang language (section headings localized; the
+body is command-specific, not a shared generic template). The target name
+after the hyphen matches case-insensitively. A bare "help-" with no target, an
+unknown target, or extra arguments prints a clear localized error and returns
+a non-zero exit code; a known target returns 0.
+CN: 按逐命令注册表，在当前 --lang 语言下打印目标命令自身的格式/用法/示例
+（分段标题本地化，正文为该命令专属，非共享通用模板）。连字符后的目标命令名
+大小写不敏感匹配；help- 后缺目标、目标不存在或带多余参数时打印清晰的本地化
+错误并返回非零退出码；已知目标返回 0。
 Example: FileTgie help-lines
 Case-insensitive: FileTgie --lang en help-LINES
 Missing target:  FileTgie help-        (rc=1)
