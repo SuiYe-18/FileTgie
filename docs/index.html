@@ -787,6 +787,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         ["checkupdate", "checkupdate", "Query GitHub for the latest release and compare versions without installing."],
         ["update", "update", "On Windows check GitHub and the website, download the newer installer, and launch the silent overwrite; on Linux print manual upgrade steps."],
         ["reminder", "reminder on [every N|daily HH:MM|hourly] | status | off", "Enable, query or remove the optional Windows user-level task; default checks every 1 minute, with one notification per new version; Linux prints manual cron guidance."],
+        ["rollback", "rollback <version>", "Downgrade to a named older tagged Release; back up the current new build into FileTgie.new next to the executable, verify the old installer Release-body SHA256, then silent-overwrite; only a version strictly below current is accepted; Linux prints manual source-build steps."],
         ["run", "run <script.ftg>", "Run a simple plain-text .ftg script line by line: # comments, set name = value, $name/${name}, echo, lang cn|en|ja|ru, exit [code]; missing script, unclosed quote, invalid set, unknown variable, extra arguments, invalid exit code or invalid language fail non-zero."],
         ["stat", "stat <path>", "Detailed file or directory info: size and three timestamps."],
         ["count", "count <dir>", "Recursively count files and folders."],
@@ -855,6 +856,7 @@ h1, h2, h3 { font-weight: 700; line-height: 1.2; }
         ["checkupdate", "checkupdate", "Query GitHub for the latest release and compare versions without installing."],
         ["update", "update", "On Windows download and launch the newer installer; on Linux print manual upgrade steps."],
         ["reminder", "reminder on [daily HH:MM|hourly] | status | off", "Enable, query or remove the optional user-level scheduled update-check reminder; Linux prints manual cron guidance."],
+        ["rollback", "rollback <version>", "Downgrade to a named older tagged Release; back up the current new build into FileTgie.new next to the executable, verify the old installer Release-body SHA256, then silent-overwrite; only a version strictly below current is accepted; Linux prints manual source-build steps."],
         ["run", "run <script.ftg>", "Run a simple plain-text .ftg script line by line; supports comments, variables, echo, lang and exit."]
       ]
     },

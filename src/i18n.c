@@ -185,7 +185,19 @@ static const LangPack ZH = {
     "未知命令「%s」，输入 help 查看命令列表",
     /* v0.5.4 .ftg runner hardening */
     "脚本为空：没有可执行的命令行（0 行或全部为 # 注释），未执行任何命令。",
-    "脚本内 lang 语言码无效：只能写 lang cn|en|ja|ru，未知语言不会静默回退。"
+    "脚本内 lang 语言码无效：只能写 lang cn|en|ja|ru，未知语言不会静默回退。",
+    /* v0.5.6 rollback / downgrade */
+    "倒退到指定的旧版本：先把当前新版本备份到安装目录的 FileTgie.new 文件夹，再下载旧版覆盖安装",
+    "rollback <版本号>，如 rollback 0.5.5",
+    "版本号格式无效：%s（应为 主.次.补丁，如 0.5.5）",
+    "只能倒退到低于当前 v%s 的版本；目标 v%s 不满足（不能升级或装同版）。",
+    "该版本的 GitHub Release 没有 Windows 安装包。",
+    "当前新版本已备份到：%s",
+    "无法创建备份目录：%s",
+    "正在下载 v%s 旧版安装包...",
+    "旧版安装包 SHA256 不符，临时文件已删除并拒绝安装。",
+    "已启动旧版静默覆盖安装；完成后打开新终端运行 version 查看版本。",
+    "Linux 不直接替换二进制：请到 Release 列表下载指定旧版源码，make 编译后手动替换。"
 };
 
 /* ------------------------------------------------------------------ */
@@ -358,7 +370,19 @@ static const LangPack EN = {
     "Unknown command '%s'; type help for the command list",
     /* v0.5.4 .ftg runner hardening */
     "Empty script: no executable lines (0 lines or only # comments); nothing was run.",
-    "Invalid language code in script: only lang cn|en|ja|ru is allowed; an unknown code is not silently fallen back to."
+    "Invalid language code in script: only lang cn|en|ja|ru is allowed; an unknown code is not silently fallen back to.",
+    /* v0.5.6 rollback / downgrade */
+    "Roll back to a named older version: back up the current new build into the FileTgie.new folder next to the install, then download the old build and overwrite-install",
+    "rollback <version>, for example rollback 0.5.5",
+    "Invalid version format: %s (expected major.minor.patch, e.g. 0.5.5)",
+    "Can only roll back to a version below current v%s; target v%s does not qualify (no upgrade or same version).",
+    "That version's GitHub Release has no Windows installer.",
+    "Current new build backed up to: %s",
+    "Cannot create backup folder: %s",
+    "Downloading v%s old installer...",
+    "Old installer SHA256 mismatch; temporary file was removed and install was refused.",
+    "Silent downgrade install launched; open a new terminal and run version when it finishes.",
+    "Linux never replaces the binary directly: download the named old source from the Release list, build with make, and replace manually."
 };
 
 /* ------------------------------------------------------------------ */
@@ -531,7 +555,19 @@ static const LangPack JA = {
     "不明なコマンド「%s」。help でコマンド一覧を表示",
     /* v0.5.4 .ftg runner hardening */
     "空のスクリプト: 実行可能な行がありません（0 行または # コメントのみ）。何も実行されませんでした。",
-    "スクリプト内の lang コードが不正です: lang cn|en|ja|ru のみ使用可能。不明な言語には黙ってフォールバックしません。"
+    "スクリプト内の lang コードが不正です: lang cn|en|ja|ru のみ使用可能。不明な言語には黙ってフォールバックしません。",
+    /* v0.5.6 rollback / downgrade */
+    "指定した旧バージョンへ戻す: 現在の新ビルドをインストール先の FileTgie.new フォルダに退避し、旧ビルドをダウンロードして上書きインストール",
+    "rollback <バージョン>、例: rollback 0.5.5",
+    "バージョン形式が不正です: %s（major.minor.patch、例 0.5.5）",
+    "現在の v%s より下のバージョンにのみ戻せます。対象 v%s は条件を満たしません（アップグレードや同版は不可）。",
+    "そのバージョンの GitHub Release に Windows インストーラがありません。",
+    "現在の新ビルドを退避しました: %s",
+    "バックアップフォルダを作成できません: %s",
+    "旧バージョン v%s のインストーラをダウンロード中...",
+    "旧インストーラの SHA256 が不一致です。一時ファイルを削除し、インストールを拒否しました。",
+    "旧バージョンの静默上書きインストールを開始しました。完了後、新しいターミナルで version を実行してください。",
+    "Linux はバイナリを直接置き換えません: Release 一覧から指定旧版のソースを取得し、make でビルドして手動で置き換えてください。"
 };
 
 /* ------------------------------------------------------------------ */
@@ -704,7 +740,19 @@ static const LangPack RU = {
     "Неизвестная команда '%s'; наберите help для списка команд",
     /* v0.5.4 .ftg runner hardening */
     "Пустой скрипт: нет исполняемых строк (0 строк или только комментарии #); ничего не выполнено.",
-    "Неверный код языка в скрипте: разрешён только lang cn|en|ja|ru; неизвестный код не заменяется молча на cn."
+    "Неверный код языка в скрипте: разрешён только lang cn|en|ja|ru; неизвестный код не заменяется молча на cn.",
+    /* v0.5.6 rollback / downgrade */
+    "Откат на указанную старую версию: текущая новая сборка сохраняется в папку FileTgie.new рядом с установкой, затем скачивается старая сборка и ставится поверх",
+    "rollback <версия>, например rollback 0.5.5",
+    "Неверный формат версии: %s (ожидается major.minor.patch, например 0.5.5)",
+    "Откат возможен только на версию ниже текущей v%s; цель v%s не подходит (без обновления и без той же версии).",
+    "В Release этой версии нет установщика Windows.",
+    "Текущая новая сборка сохранена в: %s",
+    "Не удалось создать папку резервной копии: %s",
+    "Загрузка установщика старой версии v%s...",
+    "SHA256 старого установщика не совпал; временный файл удалён, установка отклонена.",
+    "Запущена тихая установка старой версии поверх; по завершении откройте новый терминал и выполните version.",
+    "Linux не заменяет бинарник напрямую: возьмите исходники указанной старой версии из списка Release, соберите make и замените вручную."
 };
 
 /* 全部语言包的注册表，顺序即 lang_list_all 的输出顺序。

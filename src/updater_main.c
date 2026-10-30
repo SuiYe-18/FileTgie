@@ -72,21 +72,47 @@ static int cmp_semver(const int a[3], const int b[3]) {
     return 0;
 }
 
+static void normalize_host(const char* raw, char* out, size_t len) {
+    size_t n = 0;
+    for (const char* p = raw; *p && *p != ':' && n + 1 < len; p++)
+        out[n++] = (char)tolower((unsigned char)*p);
+    out[n] = '\0';
+}
+
+static int check_host_allowed(const char* host) {
+    char norm[256];
+    normalize_host(host, norm, sizeof(norm));
+    return strcmp(norm, "api.github.com") == 0 ||
+           strcmp(norm, "github.com") == 0 ||
+           strcmp(norm, "suiye-18.github.io") == 0;
+}
+
+static int download_host_allowed(const char* host) {
+    char norm[256];
+    normalize_host(host, norm, sizeof(norm));
+    static const char* exact[] = {
+        "api.github.com",
+        "github.com",
+        "objects.githubusercontent.com",
+        "release-assets.githubusercontent.com"
+    };
+    for (size_t i = 0; i < sizeof(exact) / sizeof(exact[0]); i++)
+        if (strcmp(norm, exact[i]) == 0) return 1;
+    size_t suffix_len = strlen("githubusercontent.com");
+    return strlen(norm) > suffix_len + 1 &&
+           norm[strlen(norm) - suffix_len - 1] == '.' &&
+           strcmp(norm + strlen(norm) - suffix_len, "githubusercontent.com") == 0;
+}
+
 static int split_https(const char* url, char* host, size_t hlen, char* path, size_t plen) {
-    const char* p = strstr(url, "://");
-    if (!p) return -1;
-    p += 3;
+    if (strncmp(url, "https://", 8) != 0) return -1;
+    const char* p = url + 8;
     const char* slash = strchr(p, '/');
-    if (!slash) {
-        snprintf(host, hlen, "%s", p);
-        snprintf(path, plen, "/");
-        return 0;
-    }
-    size_t n = (size_t)(slash - p);
-    if (n >= hlen) return -1;
+    size_t n = slash ? (size_t)(slash - p) : strlen(p);
+    if (n == 0 || n >= hlen) return -1;
     memcpy(host, p, n);
     host[n] = '\0';
-    snprintf(path, plen, "%s", slash);
+    snprintf(path, plen, "%s", slash ? slash : "/");
     return 0;
 }
 
@@ -104,7 +130,8 @@ static int http_get(const char* url_in, Buf* out) {
     snprintf(url, sizeof(url), "%s", url_in);
     for (int hop = 0; hop < 5; hop++) {
         char host[256], path[2048];
-        if (split_https(url, host, sizeof(host), path, sizeof(path)) != 0) return 0;
+        if (split_https(url, host, sizeof(host), path, sizeof(path)) != 0 ||
+            !check_host_allowed(host)) return 0;
 
         HINTERNET session = WinHttpOpen(L"FileTgieUpdater/0.2",
             WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME,
@@ -209,8 +236,9 @@ static int http_download(const char* url_in, const char* dest, int background,
     int ok = 0;
     for (int hop = 0; hop < 5; hop++) {
         char host[256], path[2048];
-        if (split_https(url, host, sizeof(host), path, sizeof(path)) != 0) {
-            set_error(err, err_len, "Invalid installer download URL.");
+        if (split_https(url, host, sizeof(host), path, sizeof(path)) != 0 ||
+            !download_host_allowed(host)) {
+            set_error(err, err_len, "Installer download URL is outside GitHub's trusted hosts.");
             break;
         }
 
@@ -292,7 +320,11 @@ static int http_download(const char* url_in, const char* dest, int background,
                     }
                 }
             }
-            ok = status == 200;
+            ok = status == 200 && (expected == 0 || received == expected);
+            if (!ok && expected > 0 && received != expected)
+                set_error(err, err_len,
+                          "Installer size mismatch: expected %llu bytes, received %llu bytes.",
+                          expected, received);
             if (ok && expected > 0) print_progress(FT_BAR_WIDTH, 100, background);
         } else if (status >= 301 && status <= 308 && request) {
             DWORD size = 0;
@@ -379,8 +411,10 @@ static const char* find_previous_key(const char* start, const char* key,
 /* Prefer api.github.com/.../assets/<id>, because the browser_download_url
  * host github.com may time out even when the API host remains reachable. */
 static int extract_setup_asset_api(const char* body, char* out, size_t len,
-                                   ULONGLONG* asset_size) {
+                                    char* asset_name, size_t name_len,
+                                    ULONGLONG* asset_size) {
     out[0] = '\0';
+    if (asset_name && name_len > 0) asset_name[0] = '\0';
     if (asset_size) *asset_size = 0;
     const char* p = body;
     while ((p = strstr(p, ".setup.exe")) != NULL) {
@@ -392,6 +426,8 @@ static int extract_setup_asset_api(const char* body, char* out, size_t len,
         if (value && strstr(name, "windows") && strstr(name, ".setup.exe")) {
             json_copy(value, out, len);
             if (out[0] && strstr(out, "/releases/assets/")) {
+                if (asset_name && name_len > 0)
+                    snprintf(asset_name, name_len, "%s", name);
                 if (asset_size) {
                     const char* size_value = json_number_after(name_key, "size");
                     if (size_value) *asset_size = _strtoui64(size_value, NULL, 10);
@@ -402,6 +438,56 @@ static int extract_setup_asset_api(const char* body, char* out, size_t len,
         p++;
     }
     return -1;
+}
+
+/* Locate the 64-hex SHA256 listed beside the installer name in the Release
+ * body. The body is GitHub-controlled markdown; only the hex token is copied. */
+static int extract_release_sha256(const char* body, const char* asset_name,
+                                 char out[65]) {
+    out[0] = '\0';
+    if (!body || !asset_name || !*asset_name) return -1;
+    const char* start = strstr(body, asset_name);
+    if (!start) return -1;
+    const char* end = start + strlen(asset_name);
+    const char* limit = start + 4096;
+    if (limit > body + strlen(body)) limit = body + strlen(body);
+    for (const char* p = end; p < limit; p++) {
+        int hex = 1;
+        for (int i = 0; i < 64; i++) {
+            if (!isxdigit((unsigned char)p[i])) { hex = 0; break; }
+        }
+        if (hex) {
+            for (int i = 0; i < 64; i++) out[i] = (char)tolower((unsigned char)p[i]);
+            out[64] = '\0';
+            return 0;
+        }
+    }
+    return -1;
+}
+
+/* Use the built-in Windows certutil only for a read-only hash comparison;
+ * it never launches the installer. */
+static int file_sha256_matches(const char* path, const char* expected) {
+    char cmd[4096];
+    snprintf(cmd, sizeof(cmd), "certutil.exe -hashfile \"%s\" SHA256", path);
+    FILE* f = _popen(cmd, "r");
+    if (!f) return 0;
+    char line[512];
+    int ok = 0;
+    while (fgets(line, sizeof(line), f)) {
+        char hex[65];
+        int n = 0;
+        for (char* p = line; *p && n < 64; p++) {
+            if (isxdigit((unsigned char)*p)) hex[n++] = (char)tolower((unsigned char)*p);
+        }
+        if (n == 64) {
+            hex[64] = '\0';
+            if (strcmp(hex, expected) == 0) ok = 1;
+            break;
+        }
+    }
+    _pclose(f);
+    return ok;
 }
 
 static int website_version(const char* html, int v[3]) {
@@ -529,19 +615,24 @@ int main(int argc, char** argv) {
 
     int latest[3] = {-1,-1,-1};
     char asset[2048] = "";
+    char asset_name[256] = "";
+    char expected_sha256[65] = "";
     ULONGLONG asset_size = 0;
     if (gh_ok && gh.data) {
         char tag[64];
         json_copy(json_value(gh.data, "tag_name"), tag, sizeof(tag));
         int gv[3];
         if (parse_semver(tag, gv) && (latest[0] < 0 || cmp_semver(gv, latest) > 0)) memcpy(latest, gv, sizeof(latest));
-        if (extract_setup_asset_api(gh.data, asset, sizeof(asset), &asset_size) != 0) {
+        if (extract_setup_asset_api(gh.data, asset, sizeof(asset),
+                                    asset_name, sizeof(asset_name), &asset_size) != 0) {
             const char* p = gh.data;
             while ((p = json_value(p, "browser_download_url")) != NULL) {
                 char url[2048];
                 json_copy(p, url, sizeof(url));
                 if (strstr(url, "windows") && strstr(url, ".setup.exe")) {
                     snprintf(asset, sizeof(asset), "%s", url);
+                    const char* slash = strrchr(url, '/');
+                    snprintf(asset_name, sizeof(asset_name), "%s", slash ? slash + 1 : url);
                     break;
                 }
                 p += strlen(url);
@@ -589,6 +680,12 @@ int main(int argc, char** argv) {
         buf_free(&gh); buf_free(&site);
         return 1;
     }
+    if (!gh_ok || !gh.data ||
+        extract_release_sha256(gh.data, asset_name, expected_sha256) != 0) {
+        fprintf(stderr, "Release body does not list a verifiable SHA256 for the installer.\n");
+        buf_free(&gh); buf_free(&site);
+        return 1;
+    }
 
     char tmp[MAX_PATH];
     DWORD n = GetTempPathA(MAX_PATH, tmp);
@@ -609,6 +706,13 @@ int main(int argc, char** argv) {
     if (!http_download(asset, dest, background, asset_size, download_error, sizeof(download_error))) {
         if (!background) fputc('\n', stderr);
         fprintf(stderr, "Installer download failed: %s\n", download_error);
+        buf_free(&gh); buf_free(&site);
+        return 1;
+    }
+
+    if (!file_sha256_matches(dest, expected_sha256)) {
+        DeleteFileA(dest);
+        fprintf(stderr, "Installer SHA256 mismatch; temporary file was removed and launch was refused.\n");
         buf_free(&gh); buf_free(&site);
         return 1;
     }

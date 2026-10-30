@@ -239,6 +239,19 @@ typedef struct {
     /* --- v0.5.4: .ftg runner hardening (appended; keep 4 packs in sync) --- */
     const char* run_empty;       /* script has no executable lines           */
     const char* run_bad_lang;    /* invalid in-script lang code               */
+
+    /* --- v0.5.6: rollback / downgrade to an older tagged Release (appended; keep 4 packs in sync) --- */
+    const char* h_rollback;        /* rollback short table description        */
+    const char* rb_usage;           /* rollback <version> syntax               */
+    const char* rb_bad_version;    /* invalid semver: %s                      */
+    const char* rb_not_lower;      /* target not below current: cur %s, target %s */
+    const char* rb_no_asset;       /* target Release has no Windows installer  */
+    const char* rb_backup_dir;     /* current new version backed up to: %s     */
+    const char* rb_backup_fail;   /* cannot create backup dir: %s             */
+    const char* rb_download;        /* downloading v%s installer               */
+    const char* rb_hash_mismatch;  /* old installer SHA256 mismatch; refused   */
+    const char* rb_done;           /* rollback installer launched guidance    */
+    const char* rb_linux_manual;   /* Linux manual downgrade note              */
 } LangPack;
 
 /* 按语言码（cn/en/ja/ru）返回对应包，无法识别时回退到 cn。

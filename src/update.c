@@ -118,9 +118,11 @@ static const char* find_previous_key(const char* start, const char* key,
 
 /* Prefer the reachable GitHub API asset endpoint; browser_download_url points
  * at github.com, which can time out on networks where api.github.com works. */
-static int extract_asset(const char* body, const char* suffix, char* out, size_t len) {
+static int extract_asset(const char* body, const char* suffix, char* out, size_t len,
+                         char* asset_name, size_t name_len) {
     const char* p = body;
     out[0] = '\0';
+    if (asset_name && name_len > 0) asset_name[0] = '\0';
     while ((p = strstr(p, suffix)) != NULL) {
         const char* name_key = find_previous_key(p, "\"name\"", body);
         char name[256];
@@ -133,6 +135,7 @@ static int extract_asset(const char* body, const char* suffix, char* out, size_t
             json_copy_string(value, url, sizeof(url));
             if (url[0] && strstr(url, "/releases/assets/")) {
                 snprintf(out, len, "%s", url);
+                if (asset_name && name_len > 0) snprintf(asset_name, name_len, "%s", name);
                 return 0;
             }
         }
@@ -146,6 +149,10 @@ static int extract_asset(const char* body, const char* suffix, char* out, size_t
         json_copy_string(p, url, sizeof(url));
         if (url[0] && strstr(url, "windows") && strstr(url, suffix)) {
             snprintf(out, len, "%s", url);
+            if (asset_name && name_len > 0) {
+                const char* slash = strrchr(url, '/');
+                snprintf(asset_name, name_len, "%s", slash ? slash + 1 : url);
+            }
             return 0;
         }
         p += strlen(url);
@@ -165,21 +172,84 @@ static int check_no_extra(const LangPack* L, int argc, char** argv) {
 
 #ifdef _WIN32
 /* Split https://host/path?query into host and path buffers. */
-static int split_https_url(const char* url, char* host, size_t hlen, char* path, size_t plen) {
-    const char* p = strstr(url, "://");
-    if (!p) return -1;
-    p += 3;
-    const char* slash = strchr(p, '/');
-    if (!slash) {
-        snprintf(host, hlen, "%s", p);
-        snprintf(path, plen, "/");
-        return 0;
+/* Keep update traffic on GitHub's own API/CDN namespaces. Redirects to an
+ * unrelated host are rejected before the request is made. */
+static int github_host_allowed(const char* host) {
+    char norm[256];
+    size_t n = 0;
+    for (const char* p = host; *p && *p != ':' && n + 1 < sizeof(norm); p++)
+        norm[n++] = (char)tolower((unsigned char)*p);
+    norm[n] = '\0';
+
+    static const char* exact[] = {
+        "api.github.com",
+        "github.com",
+        "objects.githubusercontent.com",
+        "release-assets.githubusercontent.com"
+    };
+    for (size_t i = 0; i < sizeof(exact) / sizeof(exact[0]); i++)
+        if (strcmp(norm, exact[i]) == 0) return 1;
+
+    size_t suffix_len = strlen("githubusercontent.com");
+    return n > suffix_len + 1 && norm[n - suffix_len - 1] == '.' &&
+           strcmp(norm + n - suffix_len, "githubusercontent.com") == 0;
+}
+
+static int extract_body_sha256(const char* body, const char* asset_name, char out[65]) {
+    out[0] = '\0';
+    if (!body || !asset_name || !*asset_name) return -1;
+    const char* start = strstr(body, asset_name);
+    if (!start) return -1;
+    const char* limit = start + 4096;
+    const char* body_end = body + strlen(body);
+    if (limit > body_end) limit = body_end;
+    for (const char* p = start + strlen(asset_name); p < limit; p++) {
+        int hex = 1;
+        for (int i = 0; i < 64; i++) {
+            if (!isxdigit((unsigned char)p[i])) { hex = 0; break; }
+        }
+        if (hex) {
+            for (int i = 0; i < 64; i++) out[i] = (char)tolower((unsigned char)p[i]);
+            out[64] = '\0';
+            return 0;
+        }
     }
-    size_t n = (size_t)(slash - p);
-    if (n >= hlen) return -1;
+    return -1;
+}
+
+static int file_sha256_matches(const char* path, const char* expected) {
+    char cmd[4096];
+    snprintf(cmd, sizeof(cmd), "certutil.exe -hashfile \"%s\" SHA256", path);
+    FILE* f = _popen(cmd, "r");
+    if (!f) return 0;
+    char line[512];
+    int ok = 0;
+    while (fgets(line, sizeof(line), f)) {
+        char hex[65];
+        int n = 0;
+        for (char* p = line; *p && n < 64; p++) {
+            if (isxdigit((unsigned char)*p)) hex[n++] = (char)tolower((unsigned char)*p);
+        }
+        if (n == 64) {
+            hex[64] = '\0';
+            if (strcmp(hex, expected) == 0) ok = 1;
+            break;
+        }
+    }
+    _pclose(f);
+    return ok;
+}
+
+static int split_https_url(const char* url, char* host, size_t hlen, char* path, size_t plen) {
+    if (strncmp(url, "https://", 8) != 0) return -1;
+    const char* p = url + 8;
+    const char* slash = strchr(p, '/');
+    size_t n = slash ? (size_t)(slash - p) : strlen(p);
+    if (n == 0 || n >= hlen) return -1;
     memcpy(host, p, n);
     host[n] = '\0';
-    snprintf(path, plen, "%s", slash);
+    if (!github_host_allowed(host)) return -1;
+    snprintf(path, plen, "%s", slash ? slash : "/");
     return 0;
 }
 
@@ -272,9 +342,13 @@ static int win_http_download(const char* url_in, const char* dest) {
     if (!f) return 0;
 
     int ok = 0;
+    ULONGLONG expected_size = 0;
+    ULONGLONG received = 0;
     for (int hop = 0; hop < 5; hop++) {
         char host[256], path[2048];
         if (split_https_url(url, host, sizeof(host), path, sizeof(path)) != 0) break;
+        expected_size = 0;
+        received = 0;
 
         HINTERNET session = WinHttpOpen(L"FileTgie/0.2",
             WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME,
@@ -299,11 +373,27 @@ static int win_http_download(const char* url_in, const char* dest) {
         }
 
         if (status == 200 && request) {
+            DWORD header_size = 0;
+            if (WinHttpQueryHeaders(request, WINHTTP_QUERY_CONTENT_LENGTH,
+                    WINHTTP_HEADER_NAME_BY_INDEX, NULL, &header_size,
+                    WINHTTP_NO_HEADER_INDEX) && header_size > 0) {
+                char* header = (char*)malloc(header_size + 1);
+                if (header) {
+                    memset(header, 0, header_size + 1);
+                    if (WinHttpQueryHeaders(request, WINHTTP_QUERY_CONTENT_LENGTH,
+                            WINHTTP_HEADER_NAME_BY_INDEX, header, &header_size,
+                            WINHTTP_NO_HEADER_INDEX))
+                        expected_size = _strtoui64(header, NULL, 10);
+                    free(header);
+                }
+            }
             char chunk[16384];
             DWORD n = 0;
-            while (WinHttpReadData(request, chunk, (DWORD)sizeof(chunk), &n) && n > 0)
+            while (WinHttpReadData(request, chunk, (DWORD)sizeof(chunk), &n) && n > 0) {
                 if (fwrite(chunk, 1, n, f) != n) { status = 0; break; }
-            ok = (status == 200);
+                received += n;
+            }
+            ok = (status == 200 && (expected_size == 0 || received == expected_size));
         } else if (status >= 301 && status <= 308 && request) {
             DWORD size = 0;
             WinHttpQueryHeaders(request, WINHTTP_QUERY_LOCATION, L"Location",
@@ -355,13 +445,16 @@ static int linux_http_text(ft_buf_t* out) {
 #endif
 
 /* Shared release fetch + compare. Returns 1 on hard failure, 0 otherwise. */
-static int fetch_release(const LangPack* L, char* tag, size_t tag_len, char* setup, size_t setup_len) {
+static int fetch_release(const LangPack* L, char* tag, size_t tag_len, char* setup, size_t setup_len,
+                         char* expected_sha, size_t sha_len) {
     ft_buf_t body = { NULL, 0, 0 };
 #ifdef _WIN32
     int status = win_http_text(FT_API_URL, &body);
 #else
     (void)setup;
     (void)setup_len;
+    (void)expected_sha;
+    (void)sha_len;
     int status = linux_http_text(&body);
     if (status == 2) {
         printf("%s", L->upd_curl_missing);
@@ -387,7 +480,14 @@ static int fetch_release(const LangPack* L, char* tag, size_t tag_len, char* set
         return 1;
     }
 #ifdef _WIN32
-    extract_asset(body.data, ".setup.exe", setup, setup_len);
+    char asset_name[256] = "";
+    extract_asset(body.data, ".setup.exe", setup, setup_len, asset_name, sizeof(asset_name));
+    if (asset_name[0] && expected_sha && sha_len > 0) {
+        extract_body_sha256(body.data, asset_name, expected_sha);
+    }
+#else
+    (void)expected_sha;
+    (void)sha_len;
 #endif
     free(body.data);
     return 0;
@@ -416,18 +516,18 @@ static int report_versions(const LangPack* L, const char* latest_tag, int* newer
 
 int cmd_checkupdate(const LangPack* L, int argc, char** argv) {
     if (check_no_extra(L, argc, argv)) return 1;
-    char tag[64], setup[2048];
+    char tag[64], setup[2048], expected_sha[65] = "";
     setup[0] = '\0';
-    if (fetch_release(L, tag, sizeof(tag), setup, sizeof(setup))) return 1;
+    if (fetch_release(L, tag, sizeof(tag), setup, sizeof(setup), expected_sha, sizeof(expected_sha))) return 1;
     int newer = 0;
     return report_versions(L, tag, &newer);
 }
 
 int cmd_update(const LangPack* L, int argc, char** argv) {
     if (check_no_extra(L, argc, argv)) return 1;
-    char tag[64], setup[2048];
+    char tag[64], setup[2048], expected_sha[65] = "";
     setup[0] = '\0';
-    if (fetch_release(L, tag, sizeof(tag), setup, sizeof(setup))) return 1;
+    if (fetch_release(L, tag, sizeof(tag), setup, sizeof(setup), expected_sha, sizeof(expected_sha))) return 1;
 
     int newer = 0;
     report_versions(L, tag, &newer);
@@ -478,6 +578,11 @@ int cmd_update(const LangPack* L, int argc, char** argv) {
     if (!win_http_download(setup, dest)) {
         printf("%s", L->upd_network);
         printf("\n");
+        return 1;
+    }
+    if (!expected_sha[0] || !file_sha256_matches(dest, expected_sha)) {
+        ft_remove_file(dest);
+        printf("Installer SHA256 mismatch; temporary file was removed and launch was refused.\n");
         return 1;
     }
     printf(L->upd_downloaded, dest);
@@ -675,6 +780,148 @@ int cmd_reminder(const LangPack* L, int argc, char** argv) {
     if (ft_strcase_eq(mode, "daily")) printf(L->rem_on_daily, time);
     else if (ft_strcase_eq(mode, "hourly")) printf("%s", L->rem_on_hourly);
     else printf(L->rem_on_every, minutes);
+    printf("\n");
+    return 0;
+#endif
+}
+
+/* ---- v0.5.6 rollback: downgrade to a named older tagged Release ----
+ * rollback <major.minor.patch>: back up the current new build into the
+ * FileTgie.new folder next to the executable, fetch the named older Release,
+ * verify its installer SHA256, then silent-overwrite-install the old build.
+ * Linux only prints manual source-build guidance and never replaces the binary. */
+int cmd_rollback(const LangPack* L, int argc, char** argv) {
+    if (argc != 2) {
+        printf("%s", L->rb_usage);
+        printf("\n");
+        return 1;
+    }
+
+    /* Strict semver: optional leading v/V, exactly three numeric fields, and
+     * nothing trailing (rejects 0.5.5.0, 0.5.5abc, negatives). */
+    const char* rp = argv[1];
+    while (*rp == 'v' || *rp == 'V') rp++;
+    int major = -1, minor = -1, patch = -1;
+    char extra[16] = "";
+    int scanned = sscanf(rp, "%d.%d.%d%15s", &major, &minor, &patch, extra);
+    int target[3], cur[3];
+    if (scanned != 3 || major < 0 || minor < 0 || patch < 0 || extra[0] != '\0') {
+        printf(L->rb_bad_version, argv[1]);
+        printf("\n");
+        return 1;
+    }
+    target[0] = major; target[1] = minor; target[2] = patch;
+    if (!parse_semver(FILETGIE_VERSION, cur) || compare_semver(target, cur) >= 0) {
+        printf(L->rb_not_lower, FILETGIE_VERSION, argv[1]);
+        printf("\n");
+        return 1;
+    }
+
+#ifndef _WIN32
+    (void)target;
+    printf("%s", L->rb_linux_manual);
+    printf("\n");
+    printf(L->upd_release_url, "https://github.com/SuiYe-18/FileTgie/releases");
+    printf("\n");
+    return 0;
+#else
+    char tag_url[512];
+    snprintf(tag_url, sizeof(tag_url),
+        "https://api.github.com/repos/SuiYe-18/FileTgie/releases/tags/v%d.%d.%d",
+        target[0], target[1], target[2]);
+
+    ft_buf_t body = { NULL, 0, 0 };
+    int status = win_http_text(tag_url, &body);
+    if (status != 200 || !body.data || body.len == 0) {
+        printf("%s", L->upd_network);
+        printf("\n");
+        free(body.data);
+        return 1;
+    }
+
+    char setup[2048], asset_name[256] = "", expected_sha[65] = "";
+    setup[0] = '\0';
+    if (extract_asset(body.data, ".setup.exe", setup, sizeof(setup),
+                      asset_name, sizeof(asset_name)) != 0 || !setup[0]) {
+        printf("%s", L->rb_no_asset);
+        printf("\n");
+        free(body.data);
+        return 1;
+    }
+    if (asset_name[0])
+        extract_body_sha256(body.data, asset_name, expected_sha);
+    free(body.data);
+
+    /* Back up the current new build into <exe-dir>/FileTgie.new before overwrite. */
+    char self[MAX_PATH], dir[MAX_PATH], backup_dir[MAX_PATH + 32];
+    if (GetModuleFileNameA(NULL, self, MAX_PATH) == 0) {
+        printf("%s", L->upd_network);
+        printf("\n");
+        return 1;
+    }
+    snprintf(dir, sizeof(dir), "%s", self);
+    char* slash = strrchr(dir, '\\');
+    if (slash) *slash = '\0';
+    snprintf(backup_dir, sizeof(backup_dir), "%s\\FileTgie.new", dir);
+    if (CreateDirectoryA(backup_dir, NULL) == 0 && GetLastError() != ERROR_ALREADY_EXISTS) {
+        printf(L->rb_backup_fail, backup_dir);
+        printf("\n");
+        return 1;
+    }
+
+    char dst_exe[MAX_PATH + 64], dst_up[MAX_PATH + 64];
+    snprintf(dst_exe, sizeof(dst_exe), "%s\\FileTgie.exe", backup_dir);
+    snprintf(dst_up, sizeof(dst_up), "%s\\FileTgieUpdater.exe", backup_dir);
+    /* A running exe can be read-copied; CopyFile fails only on a locked/destination issue. */
+    if (!CopyFileA(self, dst_exe, FALSE)) {
+        printf(L->rb_backup_fail, dst_exe);
+        printf("\n");
+        return 1;
+    }
+    char src_up[MAX_PATH + 32];
+    snprintf(src_up, sizeof(src_up), "%s\\FileTgieUpdater.exe", dir);
+    if (GetFileAttributesA(src_up) != INVALID_FILE_ATTRIBUTES)
+        CopyFileA(src_up, dst_up, FALSE);
+    printf(L->rb_backup_dir, backup_dir);
+    printf("\n");
+
+    /* Download the old installer to a temp file, enforce SHA256, then silent overwrite. */
+    char tmp[MAX_PATH];
+    DWORD n = GetTempPathA(MAX_PATH, tmp);
+    if (n == 0 || n >= MAX_PATH) {
+        printf("%s", L->upd_network);
+        printf("\n");
+        return 1;
+    }
+    char dest[MAX_PATH + 64];
+    snprintf(dest, sizeof(dest), "%sfiletgie-rollback-setup.exe", tmp);
+    ft_remove_file(dest);
+
+    printf(L->rb_download, argv[1]);
+    printf("\n");
+    if (!win_http_download(setup, dest)) {
+        printf("%s", L->upd_network);
+        printf("\n");
+        return 1;
+    }
+    if (!expected_sha[0] || !file_sha256_matches(dest, expected_sha)) {
+        ft_remove_file(dest);
+        printf("%s", L->rb_hash_mismatch);
+        printf("\n");
+        return 1;
+    }
+
+    printf("%s", L->upd_launch);
+    printf("\n");
+    HINSTANCE h = ShellExecuteA(NULL, "runas", dest,
+        "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /CLOSEAPPLICATIONS /FORCECLOSEAPPLICATIONS /MERGETASKS=overwrite",
+        NULL, SW_SHOWNORMAL);
+    if ((INT_PTR)h <= 32) {
+        printf("%s", L->upd_network);
+        printf("\n");
+        return 1;
+    }
+    printf("%s", L->rb_done);
     printf("\n");
     return 0;
 #endif

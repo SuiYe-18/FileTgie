@@ -23,6 +23,7 @@ int cmd_help(const LangPack* L, int argc, char** argv);
 int cmd_checkupdate(const LangPack* L, int argc, char** argv);
 int cmd_update(const LangPack* L, int argc, char** argv);
 int cmd_reminder(const LangPack* L, int argc, char** argv);
+int cmd_rollback(const LangPack* L, int argc, char** argv);
 
 /* 命令表条目：命令名、处理函数指针，以及帮助文案在 LangPack 内的字段偏移。
  * Command entry: name, handler, and the h_xxx description offset inside
@@ -45,7 +46,7 @@ extern int g_dellog_cleared;
 /* 版本号唯一来源，version 命令与帮助横幅都读取它，不在别处硬编码。
  * Single source of truth for the version; read by version and the help banner. */
 #ifndef FILETGIE_VERSION
-#define FILETGIE_VERSION "0.5.5"
+#define FILETGIE_VERSION "0.5.6"
 #endif
 
 #ifdef __cplusplus

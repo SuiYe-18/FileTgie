@@ -262,6 +262,10 @@ static const HelpDetail HELP_DETAIL[] = {
       "reminder off\nreminder status\nreminder on\nreminder on every [N]\nreminder on daily HH:MM\nreminder on hourly",
       "Windows: manage the optional FileTgieReminder user-level scheduled task. 'off' deletes it; 'status' reports whether it exists; 'on' defaults to every 1 minute; 'every N' sets a read-only interval of 1 to 1439 minutes; 'daily HH:MM' sets a fixed time (default 09:00, HH:MM 24-hour); 'hourly' runs once an hour. An unknown schedule prints the invalid-schedule error, rc=1. Linux only prints manual cron guidance and never changes crontab.",
       "FileTgie reminder status\nFileTgie reminder on every 5\nFileTgie reminder on daily 09:00\nFileTgie reminder off" },
+    { "rollback",
+      "rollback <version>",
+      "Windows: downgrade to a named older tagged Release (major.minor.patch, strictly below the current version). The current new build is first copied into the FileTgie.new folder next to the executable; the named old installer is downloaded from GitHub, its Release-body SHA256 is verified with certutil, and only then is the silent overwrite install launched. A missing/mismatched SHA256 deletes the temp file and refuses elevation. Linux only prints manual source-build downgrade steps and never replaces the binary.",
+      "FileTgie --lang en rollback 0.5.5" },
     { "run",
       "run <script.ftg>\n<script.ftg>   (bare .ftg path also works)",
       "Execute a simple plain-text .ftg script top to bottom: # whole-line comments, set name = value, $name/${name} substitution, echo, in-script lang cn|en|ja|ru, exit [code], quoted paths, and delegation to existing commands only. Missing script, invalid set, unknown variable, unclosed quote, invalid lang code and non-integer exit code all stop the script with a clear error (rc=1); a failing delegated line stops with its line number. An empty (0-line or all-comment) script prints a friendly note and exits 0.",
@@ -1207,16 +1211,37 @@ static int cmd_findext(const LangPack* L, int argc, char** argv) {
     if (need(L, argc, 3, "findext <dir> <ext>")) return 1;
     if (check_extra(L, argc, 3, argv)) return 1;
     if (check_dir(L, argv[1])) return 1;
-    ExtCtx c = { argv[2], L, 0 };
+    const char* ext = argv[2];
+    while (*ext == '.') ext++;
+    ExtCtx c = { ext, L, 0 };
     if (walk_check(L, argv[1], 1, cb_findext, &c)) return 1;
     if (c.hits == 0) printf("%s\n", L->msg_no_match);
     return 0;
 }
 
 typedef struct { const char* text; long long hits; } ContentCtx;
+
+/* Known binary/compressed/media extensions are skipped before opening the
+ * file; unknown extensions still go through looks_text, so the heuristic does
+ * not change support for rare text formats. */
+static int has_binary_extension(const char* name) {
+    char ex[64];
+    file_extension(name, ex, sizeof(ex));
+    static const char* known[] = {
+        "exe", "dll", "so", "obj", "o", "lib", "a", "bin",
+        "zip", "rar", "7z", "tar", "gz", "bz2", "xz", "iso",
+        "msi", "mp3", "wav", "flac", "ogg", "m4a", "mp4", "mkv", "avi",
+        "mov", "wmv", "flv", "jpg", "jpeg", "png", "gif", "bmp", "webp",
+        "ico", "ttf", "otf", "woff", "woff2", "class", "jar", "pyc"
+    };
+    for (size_t i = 0; i < sizeof(known) / sizeof(known[0]); i++)
+        if (ft_strcase_eq(ex, known[i])) return 1;
+    return 0;
+}
+
 static void cb_findcontent(const ft_entry_t* e, void* u) {
     ContentCtx* c = (ContentCtx*)u;
-    if (e->is_dir || !looks_text(e->full)) return;
+    if (e->is_dir || has_binary_extension(e->name) || !looks_text(e->full)) return;
     int n; char** lines = read_lines(e->full, &n);
     if (!lines) return;
     for (int i = 0; i < n; i++) {
@@ -1974,7 +1999,7 @@ static int cmd_nonblank(const LangPack* L, int argc, char** argv) {
 typedef struct { const char* text; long long hits; } MatchCx;
 static void cb_matchlines(const ft_entry_t* e, void* u) {
     MatchCx* m = u;
-    if (e->is_dir || !looks_text(e->full)) return;
+    if (e->is_dir || has_binary_extension(e->name) || !looks_text(e->full)) return;
     int n; char** lines = read_lines(e->full, &n);
     if (!lines) return;
     for (int i = 0; i < n; i++)
@@ -2162,23 +2187,39 @@ static int cmd_findrange(const LangPack* L, int argc, char** argv) {
     if (c.hits == 0) printf("%s\n", L->msg_no_match);
     return 0;
 }
-typedef struct { const char* list; int hits; } ExtsCtx;
+#define FT_MAX_EXTS 16
+typedef struct { char exts[FT_MAX_EXTS][64]; int n; int hits; } ExtsCtx;
 static void cb_exts(const ft_entry_t* e, void* u) {
     ExtsCtx* c = u;
     if (e->is_dir) return;
-    char ex[64]; file_extension(e->name, ex, sizeof(ex));
-    char buf[256]; snprintf(buf, sizeof(buf), "%s", c->list);
-    char* save = NULL;
-    for (char* tok = strtok_r(buf, ",", &save); tok; tok = strtok_r(NULL, ",", &save)) {
-        while (*tok == ' ') tok++;
-        if (ft_strcase_eq(ex, tok)) { printf("%s\n", e->full); c->hits++; break; }
+    char ex[64];
+    file_extension(e->name, ex, sizeof(ex));
+    for (int i = 0; i < c->n; i++) {
+        if (ft_strcase_eq(ex, c->exts[i])) {
+            printf("%s\n", e->full);
+            c->hits++;
+            return;
+        }
     }
 }
 static int cmd_findexts(const LangPack* L, int argc, char** argv) {
     if (need(L, argc, 3, "findexts <dir> <ext1,ext2,...>")) return 1;
     if (check_extra(L, argc, 3, argv)) return 1;
     if (check_dir(L, argv[1])) return 1;
-    ExtsCtx c = { argv[2], 0 };
+
+    ExtsCtx c = {0};
+    char buf[256];
+    snprintf(buf, sizeof(buf), "%s", argv[2]);
+    char* save = NULL;
+    for (char* tok = strtok_r(buf, ",", &save); tok && c.n < FT_MAX_EXTS; tok = strtok_r(NULL, ",", &save)) {
+        while (*tok == ' ' || *tok == '.') tok++;
+        size_t len = strlen(tok);
+        while (len > 0 && (tok[len - 1] == ' ' || tok[len - 1] == '\t')) tok[--len] = '\0';
+        if (!*tok) continue;
+        snprintf(c.exts[c.n], sizeof(c.exts[c.n]), "%s", tok);
+        c.n++;
+    }
+    if (c.n == 0) { printf("%s\n", L->msg_no_match); return 0; }
     if (walk_check(L, argv[1], 1, cb_exts, &c)) return 1;
     if (c.hits == 0) printf("%s\n", L->msg_no_match);
     return 0;
@@ -2218,6 +2259,7 @@ const CommandEntry CMD_TABLE[] = {
     { "checkupdate", cmd_checkupdate, OFF(h_checkupdate) },
     { "update",      cmd_update,      OFF(h_update) },
     { "reminder",    cmd_reminder,    OFF(h_reminder) },
+    { "rollback",    cmd_rollback,    OFF(h_rollback) },
     { "run",         cmd_run,         OFF(h_run) },
     { "stat",        cmd_stat,       OFF(h_stat) },
     { "count",       cmd_count,       OFF(h_count) },
