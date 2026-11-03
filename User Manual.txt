@@ -1,11 +1,11 @@
 ﻿==============================================================
- FileTgie v0.5.6 - Beginner User Manual / 新手用户手册
+ FileTgie v0.5.7 - Beginner User Manual / 新手用户手册
 ==============================================================
 
 by SuiYe_TR (Suiye-18) - Single Author
 GitHub: https://github.com/Suiye-18
 License: LGPL-3.0-or-later
-Version: v0.5.6
+Version: v0.5.7
 
 This manual is written in English with a Chinese translation under
 each paragraph. Commands, options and numbers come only from the
@@ -116,6 +116,15 @@ PATH 修改需要管理员权限。
 
 Linux build / Linux 构建
 
+v0.5.7 adds the `codecount <file|dir>` command, which splits lines into total /
+code / blank / comment (whole-line comments only; trailing comments on a code
+line are not split out). Comment style is chosen by extension: C-like (// and
+/* */), # (py/sh/yml) or ; (asm/s); unknown extensions count every non-blank
+line as code. Every command now prints its wall-clock runtime in seconds after
+finishing. Traversal statistics use 64 KiB block buffering and skip known
+binary/debug/image extensions, so a ~1.96 GB, ~17k-file tree is walked in about
+8 seconds instead of minutes.
+
 v0.5.6 hardens the Windows update chain and speeds up lookup commands. The
 installer download accepts only GitHub API, GitHub main-site and GitHub CDN
 hosts; non-GitHub redirects are rejected. When Content-Length is present, the
@@ -160,6 +169,12 @@ checkupdate uses curl to query GitHub. The older verified x86_64 glibc
 prebuilt tarball remains the unchanged v0.4.0 Release package; build v0.5.6
 from source on Linux.
 
+v0.5.7 新增 `codecount <文件|目录>` 命令，把行数拆成 总数/代码/空行/注释（仅整行注释，
+代码行尾的注释不单独拆出）。注释风格按扩展名自动选择：C 系（`//` 与 `/* */`）、
+`#`（py/sh/yml 等）、`;`（asm/s 等）；无注释语法的扩展名把每个非空行计为代码。
+每条命令结束后以两位小数打印墙钟耗时（秒）。遍历统计改用 64KiB 块缓冲并跳过已知
+二进制/调试/镜像扩展名，约 1.96GB、1.7 万文件的目录从数分钟缩短到约 8 秒。
+
 v0.5.6 加固 Windows 更新链并提升查找命令速度。安装包下载只接受 GitHub API、GitHub
 主站与 GitHub CDN 信任主机，拒绝非 GitHub 重定向；存在 Content-Length 时强制比对最终
 字节数，大小不符会删除临时文件并拒绝提权启动；两条 Windows 下载路径都会从 Release 正文提取安装包
@@ -186,7 +201,7 @@ v0.5.4 完善 `help-<命令>` 逐命令详细帮助：帮助内容来自逐命�
 仍可执行 `make` 构建，然后运行 `./FileTgie --lang en help`，也可按需把 FileTgie 复制到
 PATH 目录。检查类命令不需要安装程序、管理员权限或网络；checkupdate 通过 curl 查询 GitHub。
 较早验证过的 x86_64 glibc 预编译包保持为未改动的 v0.4.0 Release 包；Linux 请从源码
-构建 v0.5.6。
+构建 v0.5.7。
 
 Building from source / 从源码构建
 
@@ -329,7 +344,7 @@ invalid exit code or invalid language code.
 
 
 ==============================================================
-5. Command Reference / 命令参考 (64 commands / 64 条命令)
+5. Command Reference / 命令参考 (65 commands / 65 条命令)
 ==============================================================
 
 Each entry gives: command name, syntax, one English-purpose line,
@@ -497,71 +512,78 @@ Syntax: linesdir <dir>
 EN: Recursively count the total lines of text files in a directory.
 CN: 递归统计目录内文本文件的总行数。
 Example: FileTgie --lang en linesdir ./src
+25) codecount
+Syntax: codecount <file|dir>
+EN: Break lines into total / code / blank / comment. Whole-line comments only; comment style is picked by extension (C // and slash-star block, # for py/sh/yml, ; for asm/s). A directory is walked recursively. A two-decimal elapsed time in seconds is printed after every command.
+CN: 把行数拆成 总数/代码/空行/注释（仅整行注释，不拆行尾注释），注释风格按扩展名自动判断；目录递归统计。每条命令结束后以两位小数打印耗时（秒）。
+Example: FileTgie --lang en codecount ./src
+Example: FileTgie codecount main.c
 
-25) head
+
+26) head
 Syntax: head <file> [N]
 EN: Show the first N lines; N defaults to 10.
 CN: 显示前 N 行；N 缺省为 10。
 Example: FileTgie head README.txt
 Example: FileTgie head README.txt 20
 
-26) tail
+27) tail
 Syntax: tail <file> [N]
 EN: Show the last N lines; N defaults to 10.
 CN: 显示末尾 N 行；N 缺省为 10。
 Example: FileTgie tail README.txt
 
-27) wc
+28) wc
 Syntax: wc <file>
 EN: Count lines, words and characters.
 CN: 统计行 / 词 / 字符数。
 Example: FileTgie wc essay.txt
 
-28) chars
+29) chars
 Syntax: chars <file>
 EN: UTF-8-aware character count.
 CN: UTF-8 感知的字符数。
 Example: FileTgie chars essay.txt
 
-29) longest
+30) longest
 Syntax: longest <file>
 EN: Report the length of the longest line.
 CN: 统计最长行的长度。
 Example: FileTgie longest essay.txt
 
-30) blank
+31) blank
 Syntax: blank <file>
 EN: Count blank (whitespace-only) lines.
 CN: 统计空行（仅含空白字符的行）。
 Example: FileTgie blank essay.txt
 
-31) nonblank
+32) nonblank
 Syntax: nonblank <file>
 EN: Count non-blank lines (lines containing at least one non-space
 character).
 CN: 统计非空行数（至少含一个非空白字符的行）。
 Example: FileTgie nonblank essay.txt
 
-32) matchlines
+33) matchlines
 Syntax: matchlines <dir> <text>
 EN: Recursively count lines matching the given text inside text files.
 CN: 递归统计文本文件中匹配指定文本的行数。
 Example: FileTgie matchlines ./src "TODO"
 
-33) avglen
+34) avglen
 Syntax: avglen <file>
 EN: Compute the average line length.
 CN: 计算平均行长度。
 Example: FileTgie avglen essay.txt
 
-34) findline
+35) findline
 Syntax: findline <file> <text>
 EN: For a single file, print the number and content of lines containing
 the text.
 CN: 对单个文件，输出含指定文本的行号与内容。
 Example: FileTgie findline essay.txt "hello"
 
-35) cjk
+36) cjk
 Syntax: cjk <file>
 EN: Count Chinese-Japanese-Korean (CJK) characters.
 CN: 统计中日韩汉字字符数。
@@ -571,32 +593,32 @@ Example: FileTgie cjk novel.txt
  Find / 查找
 --------------------------------------------------------------
 
-36) findname
+37) findname
 Syntax: findname <dir> <wildcard>
 EN: Find files by name using wildcards * and ?.
 CN: 按文件名查找，支持通配符 * 和 ?。
 Example: FileTgie findname D:\docs *.txt
 
-37) findext
+38) findext
 Syntax: findext <dir> <ext>
 EN: Find files by extension (for example txt).
 CN: 按扩展名查找（例如 txt）。
 Example: FileTgie findext D:\docs txt
 
-38) findcontent
+39) findcontent
 Syntax: findcontent <dir> <text>
 EN: Search text inside file contents and print file, line number and
 matching line.
 CN: 在文件内容中搜索文本，给出文件、行号与匹配行。
 Example: FileTgie findcontent ./src "TODO"
 
-39) findempty
+40) findempty
 Syntax: findempty <dir>
 EN: Find empty (0-byte) files.
 CN: 查找空文件（0 字节）。
 Example: FileTgie findempty D:\temp
 
-40) findlarge
+41) findlarge
 Syntax: findlarge <dir> <MB>
 EN: Find files larger than the threshold in MB (decimals allowed,
 e.g. 0.5); sorted by size descending, largest first.
@@ -604,38 +626,38 @@ CN: 查找大于阈值（MB，支持小数如 0.5）的文件，按大小降序�
 在前。
 Example: FileTgie findlarge D:\app\logs 50
 
-41) findold
+42) findold
 Syntax: findold <dir> <days>
 EN: Find files not modified for more than N days (decimals allowed).
 CN: 查找超过 N 天未修改的文件（天数支持小数）。
 Example: FileTgie findold D:\archive 30
 
-42) findnew
+43) findnew
 Syntax: findnew <dir> <days>
 EN: Find files modified within the last N days (decimals allowed).
 CN: 查找最近 N 天内修改过的文件（天数支持小数）。
 Example: FileTgie findnew D:\Downloads 7
 
-43) findfile
+44) findfile
 Syntax: findfile <dir> <exact-name>
 EN: Find files by exact file name (case-insensitive match).
 CN: 按精确文件名查找（大小写不敏感匹配）。
 Example: FileTgie findfile D:\Projects config.ini
 
-44) dupenames
+45) dupenames
 Syntax: dupenames <dir>
 EN: Find files that share the same name while living in different
 directories.
 CN: 查找位于不同目录下的同名文件。
 Example: FileTgie dupenames D:\Projects
 
-45) today
+46) today
 Syntax: today <dir>
 EN: Find files modified today (same local calendar day).
 CN: 查找今天（本地同一日历日）修改过的文件。
 Example: FileTgie today D:\Downloads
 
-46) findrange
+47) findrange
 Syntax: findrange <dir> <minMB> <maxMB>
 EN: Find files by size range in MB; bounds support decimals (e.g.
 0.4 0.6) and min must be <= max.
@@ -643,14 +665,14 @@ CN: 按大小区间（MB）查找文件；边界支持小数（如 0.4 0.6），
 必须小于等于最大。
 Example: FileTgie findrange D:\Photos 0.4 0.6
 
-47) findexts
+48) findexts
 Syntax: findexts <dir> <ext1,ext2,...>
 EN: Find files matching several extensions at once, separated by
 commas.
 CN: 按多个扩展名查找，扩展名以逗号分隔。
 Example: FileTgie findexts D:\docs txt,md,log
 
-48) findpath
+49) findpath
 Syntax: findpath <dir> <substring>
 EN: Find files whose full path contains the substring
 (case-insensitive).
@@ -661,63 +683,63 @@ Example: FileTgie findpath D:\Projects release
  Verify & Utilities / 校验与实用
 --------------------------------------------------------------
 
-49) hash
+50) hash
 Syntax: hash <file>
 EN: Compute the CRC32 checksum of a single file.
 CN: 计算单个文件的 CRC32 校验值。
 Example: FileTgie hash a.bin
 
-50) duplicates
+51) duplicates
 Syntax: duplicates <dir>
 EN: Find duplicate files by size plus CRC32.
 CN: 按大小加 CRC32 查找重复文件。
 Example: FileTgie duplicates D:\Photos
 
-51) checksum
+52) checksum
 Syntax: checksum <dir>
 EN: List every file in the directory together with its CRC32 and size.
 CN: 列出目录内所有文件及其 CRC32 与大小。
 Example: FileTgie checksum D:\backups
 
-52) encoding
+53) encoding
 Syntax: encoding <file>
 EN: Detect encoding: BOM / UTF-8 / UTF-16 / ANSI.
 CN: 检测编码：BOM / UTF-8 / UTF-16 / ANSI。
 Example: FileTgie encoding note.txt
 
-53) type
+54) type
 Syntax: type <file>
 EN: Guess the file type from its extension.
 CN: 按扩展名猜测文件类型。
 Example: FileTgie type photo.png
 
-54) istext
+55) istext
 Syntax: istext <file>
 EN: Tell whether a file is text or binary.
 CN: 判断文件是文本还是二进制。
 Example: FileTgie istext script.py
 
-55) exists
+56) exists
 Syntax: exists <path>
 EN: Check whether a path exists: file / directory / not found.
 CN: 判断路径是否存在：文件 / 目录 / 不存在。
 Example: FileTgie exists D:\docs
 
-56) compare
+57) compare
 Syntax: compare <fileA> <fileB>
 EN: Compare two files byte by byte and report the first differing
 byte offset; reports equal when identical.
 CN: 逐字节比较两个文件，报告首个差异字节偏移；完全一致时报告相同。
 Example: FileTgie compare a.bin b.bin
 
-57) whereis
+58) whereis
 Syntax: whereis <program>
 EN: Locate an executable program through the PATH environment
 variable.
 CN: 在 PATH 环境变量中查找可执行程序。
 Example: FileTgie whereis gcc
 
-58) dirdiff
+59) dirdiff
 Syntax: dirdiff <dirA> <dirB>
 EN: Compare two directories in grouped rows: file count, directory
 count, total size, exact bytes, average file size, text files, text
@@ -728,7 +750,7 @@ CN: 分组对比两个目录：文件数、目录数、总大小、精确字节�
 - 表示 B 更少，=0 表示没有变化。
 Example: FileTgie --lang en dirdiff ./old ./new
 
-59) checkupdate
+60) checkupdate
 Syntax: checkupdate
 EN: Query the GitHub latest release and compare it with the local
 version; it only reports current/latest status and never installs. Use
@@ -738,7 +760,7 @@ CN: 查询 GitHub 最新 Release 并与本地版本比较；只报告当前/最�
 不执行安装。需要同时检查 GitHub 与官网时使用 `update`。
 Example: FileTgie --lang en checkupdate
 
-60) update
+61) update
 Syntax: update
 EN: On Windows, launch the bundled FileTgieUpdater.exe; it checks GitHub
 and the website, downloads the newer installer, and starts the silent
@@ -764,10 +786,10 @@ Content-Length，缺失时改用 Release API asset 的 `size`，两者都没有�
 Example: FileTgie --lang en update
 Standalone check:   FileTgieUpdater.exe --check
 Notify-only check:  FileTgieUpdater.exe --check --notify
-Background mode:    FileTgieUpdater.exe --background --current=0.5.6
+Background mode:    FileTgieUpdater.exe --background --current=0.5.7
 Silent upgrade task: the installer uses /MERGETASKS=overwrite for the .old backup/replacement path.
 
-61) reminder
+62) reminder
 Syntax: reminder on [every N|daily HH:MM|hourly] | reminder status | reminder off
 EN: On Windows, optionally create or remove the FileTgieReminder user-level
 scheduled task. With no schedule, it checks every 1 minute; `every N` sets a
@@ -792,9 +814,9 @@ Daily:    FileTgie --lang en reminder on daily 09:00
 Status:   FileTgie --lang en reminder status
 Disable:  FileTgie --lang en reminder off
 Standalone updater: FileTgieUpdater.exe --check --notify
-Background mode:    FileTgieUpdater.exe --background --current=0.5.6
+Background mode:    FileTgieUpdater.exe --background --current=0.5.7
 
-62) rollback
+63) rollback
 Syntax: rollback <version>
 EN: Downgrade to a named older tagged Release. <version> must be major.minor.patch
 strictly below the current version (same or higher is rejected); a trailing extra
@@ -811,7 +833,7 @@ GitHub 取指定旧版安装包，强制比对 Release 正文的 64 位 SHA256�
 拒绝提权），通过后静默覆盖安装。Linux 只打印手动源码降级步骤，不替换二进制。
 Example: FileTgie --lang en rollback 0.5.5
 
-63) run
+64) run
 Syntax: run <script.ftg>
 EN: Execute a simple plain-text .ftg script line by line. Use # for comments,
 set name = value for variables, $name or ${name} for substitution, echo to
@@ -839,7 +861,7 @@ exit [退出码] 可提前结束。以 .ftg 结尾的路径也可以直接给出
 Example: FileTgie run examples\demo.ftg
 Direct:  FileTgie examples\demo.ftg
 
-64) help-<command>
+65) help-<command>
 Syntax: help-<command>
 EN: From a per-command registry, print the target command's own Format, Usage
 and Examples in the current --lang language (section headings localized; the

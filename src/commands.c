@@ -286,6 +286,10 @@ static const HelpDetail HELP_DETAIL[] = {
       "linesdir <dir>",
       "Recursively count the total lines of text files under <dir>. Traversal command: --exclude/--exclude-ext apply.",
       "FileTgie --lang en linesdir ./src" },
+    { "codecount",
+      "codecount <file|dir>",
+      "Break down lines into total / code / blank / comment. Whole-line comments only (no trailing-comment splitting). Comment style is picked by extension: C-like (// and /* */) for c/cpp/h/js/css/go..., '#' for py/sh/yml..., ';' for asm/s; unknown extensions count every non-blank line as code. A single file is analyzed directly; a directory is walked recursively. Traversal command: --exclude/--exclude-ext apply.",
+      "FileTgie --lang en codecount ./src\nFileTgie --lang en codecount main.c" },
     { "size",
       "size <file>",
       "Show a file's human-readable size (1024 binary units) together with exact bytes. <file> must be a regular file.",
@@ -899,14 +903,29 @@ static int cmd_lines(const LangPack* L, int argc, char** argv) {
     return 0;
 }
 
+static int has_binary_extension(const char* name);
+
 typedef struct { long long total; const LangPack* L; } LinesDirCtx;
 static void cb_linesdir(const ft_entry_t* e, void* u) {
     LinesDirCtx* c = (LinesDirCtx*)u;
-    if (e->is_dir || !looks_text(e->full)) return;
+    /* Known binary/archive/media extensions are skipped before opening;
+     * unknown extensions still fall through to the looks_text heuristic.
+     * 已知二进制/压缩/媒体扩展名先跳过；未知扩展名仍走文本启发式。 */
+    if (e->is_dir || has_binary_extension(e->name) || !looks_text(e->full)) return;
     FILE* f = ft_fopen(e->full, "rb");
     if (!f) return;
-    int ch, prev = '\n';
-    while ((ch = fgetc(f)) != EOF) { if (ch == '\n') c->total++; prev = ch; }
+    /* Count newlines in 64 KiB blocks instead of one fgetc per byte, which
+     * matters on large text trees. 按 64KiB 块数换行，避免逐字节读大文本树。 */
+    unsigned char buf[65536];
+    int prev = '\n';
+    for (;;) {
+        size_t n = fread(buf, 1, sizeof(buf), f);
+        if (n == 0) break;
+        for (size_t i = 0; i < n; i++) {
+            if (buf[i] == '\n') c->total++;
+            prev = buf[i];
+        }
+    }
     if (prev != '\n' && prev != EOF) c->total++;
     fclose(f);
 }
@@ -917,6 +936,138 @@ static int cmd_linesdir(const LangPack* L, int argc, char** argv) {
     LinesDirCtx c = {0, L};
     if (walk_check(L, argv[1], 1, cb_linesdir, &c)) return 1;
     printf("%s: %lld\n", L->lbl_lines, c.total);
+    return 0;
+}
+
+/* ===================== v0.5.7 codecount ===================== */
+/* Break a file's lines into total / code / blank / comment.
+ * 把一个文件的行拆成 总数/代码/空行/注释（整行注释口径）。 */
+typedef struct { long long total, code, blank, comment; } LineBreakdown;
+
+/* 0 = C-like double-slash line + slash-star block comment,
+ * 1 = hash line, 2 = semicolon line, 3 = no comment syntax. */
+static int comment_flavor(const char* name) {
+    char ex[64]; file_extension(name, ex, sizeof(ex));
+    static const char* cblock[] = {
+        "c","cc","cpp","cxx","h","hh","hpp","hxx","java","js","jsx","ts","tsx",
+        "css","cs","go","rs","php","sql","kt"
+    };
+    for (size_t i = 0; i < sizeof(cblock)/sizeof(cblock[0]); i++)
+        if (ft_strcase_eq(ex, cblock[i])) return 0;
+    static const char* hash[] = {
+        "py","rb","pl","pm","sh","bash","zsh","ksh","ps1","bat","cmd",
+        "yml","yaml","ini","cfg","conf","toml","properties"
+    };
+    for (size_t i = 0; i < sizeof(hash)/sizeof(hash[0]); i++)
+        if (ft_strcase_eq(ex, hash[i])) return 1;
+    static const char* semi[] = { "asm", "s", "nasm", "masm" };
+    for (size_t i = 0; i < sizeof(semi)/sizeof(semi[0]); i++)
+        if (ft_strcase_eq(ex, semi[i])) return 2;
+    return 3;
+}
+
+/* Classify every line of one already-open-eligible text file into out.
+ * 逐行统计单个文本文件；调用前已完成二进制/文本判断。 */
+static void classify_file(const char* path, const char* name, LineBreakdown* out) {
+    if (has_binary_extension(name) || !looks_text(path)) return;
+    FILE* f = ft_fopen(path, "rb");
+    if (!f) return;
+    int flavor = comment_flavor(name);
+    /* Fast path for files with no comment syntax (.txt/.log/md/json...):
+     * they have zero comments, so we only need total vs blank vs code,
+     * which a 64 KiB block scan does far faster than line-by-line fgets on
+     * large text trees. 无注释语法的文件走块扫描，大文本树更快。 */
+    if (flavor == 3) {
+        unsigned char buf[65536];
+        int has_content = 0, started = 0;
+        for (;;) {
+            size_t n = fread(buf, 1, sizeof(buf), f);
+            if (n == 0) break;
+            for (size_t i = 0; i < n; i++) {
+                started = 1;
+                unsigned char ch = buf[i];
+                if (ch == '\n') {
+                    out->total++;
+                    if (has_content) out->code++; else out->blank++;
+                    has_content = 0;
+                } else if (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\f' && ch != '\v') {
+                    has_content = 1;
+                }
+            }
+        }
+        if (started && has_content) { out->total++; out->code++; }
+        fclose(f);
+        return;
+    }
+    int in_block = 0;          /* true while a slash-star block comment is open */
+    char line[65536];
+    while (fgets(line, sizeof(line), f)) {
+        size_t L = strlen(line);
+        while (L && (line[L-1] == '\n' || line[L-1] == '\r')) line[--L] = '\0';
+        out->total++;
+        size_t s = 0;
+        while (s < L && (line[s] == ' ' || line[s] == '\t')) s++;
+        if (s == L) { out->blank++; continue; }
+        const char* t = line + s;
+        if (flavor == 0) {
+            if (in_block) {
+                out->comment++;
+                const char* close = strstr(t, "*/");
+                if (close) {
+                    in_block = 0;
+                    const char* tail = close + 2;
+                    size_t k = 0; while (tail[k] == ' ' || tail[k] == '\t') k++;
+                    if (tail[k] != '\0') out->code++;
+                }
+            } else if (t[0] == '/' && t[1] == '/') {
+                out->comment++;
+            } else if (t[0] == '/' && t[1] == '*') {
+                out->comment++;
+                if (!strstr(t + 2, "*/")) in_block = 1;
+            } else {
+                out->code++;
+            }
+        } else if (flavor == 1) {
+            if (t[0] == '#') out->comment++; else out->code++;
+        } else if (flavor == 2) {
+            if (t[0] == ';') out->comment++; else out->code++;
+        } else {
+            out->code++;
+        }
+    }
+    fclose(f);
+}
+
+typedef struct { LineBreakdown bd; const LangPack* L; } CodeCountCtx;
+static void cb_codecount(const ft_entry_t* e, void* u) {
+    CodeCountCtx* c = (CodeCountCtx*)u;
+    if (e->is_dir) return;
+    LineBreakdown b = {0, 0, 0, 0};
+    classify_file(e->full, e->name, &b);
+    c->bd.total += b.total;
+    c->bd.code += b.code;
+    c->bd.blank += b.blank;
+    c->bd.comment += b.comment;
+}
+
+static int cmd_codecount(const LangPack* L, int argc, char** argv) {
+    if (need(L, argc, 2, "codecount <file|dir>")) return 1;
+    if (check_extra(L, argc, 2, argv)) return 1;
+    ft_stat_t st;
+    if (ft_stat(argv[1], &st) != 0) { printf(L->err_notfound, argv[1]); printf("\n"); return 1; }
+    LineBreakdown bd = {0, 0, 0, 0};
+    if (st.is_dir) {
+        CodeCountCtx ctx = {{0,0,0,0}, L};
+        if (walk_check(L, argv[1], 1, cb_codecount, &ctx)) return 1;
+        bd = ctx.bd;
+    } else {
+        classify_file(argv[1], argv[1], &bd);
+    }
+    /* labels already carry a trailing colon, so no extra ':' here */
+    printf("%s %lld\n", L->cc_total, bd.total);
+    printf("%s %lld\n", L->cc_code, bd.code);
+    printf("%s %lld\n", L->cc_blank, bd.blank);
+    printf("%s %lld\n", L->cc_comment, bd.comment);
     return 0;
 }
 
@@ -964,14 +1115,19 @@ static void cb_dirstat(const ft_entry_t* e, void* u) {
     s->files++;
     s->bytes += e->size;
     if (e->hidden) s->hidden++;
-    if (!looks_text(e->full)) return;
+    if (has_binary_extension(e->name) || !looks_text(e->full)) return;
     s->text_files++;
     FILE* f = ft_fopen(e->full, "rb");
     if (!f) return;
-    int ch, prev = '\n';
-    while ((ch = fgetc(f)) != EOF) {
-        if (ch == '\n') s->text_lines++;
-        prev = ch;
+    unsigned char buf[65536];
+    int prev = '\n';
+    for (;;) {
+        size_t n = fread(buf, 1, sizeof(buf), f);
+        if (n == 0) break;
+        for (size_t i = 0; i < n; i++) {
+            if (buf[i] == '\n') s->text_lines++;
+            prev = buf[i];
+        }
     }
     if (prev != '\n' && prev != EOF) s->text_lines++;
     fclose(f);
@@ -1232,7 +1388,9 @@ static int has_binary_extension(const char* name) {
         "zip", "rar", "7z", "tar", "gz", "bz2", "xz", "iso",
         "msi", "mp3", "wav", "flac", "ogg", "m4a", "mp4", "mkv", "avi",
         "mov", "wmv", "flv", "jpg", "jpeg", "png", "gif", "bmp", "webp",
-        "ico", "ttf", "otf", "woff", "woff2", "class", "jar", "pyc"
+        "ico", "ttf", "otf", "woff", "woff2", "class", "jar", "pyc",
+        "gcno", "gcda", "gcov", "pdb", "exp", "ilk", "dmp", "dump",
+        "dbg", "map", "img", "iso", "vhd", "vhdx"
     };
     for (size_t i = 0; i < sizeof(known) / sizeof(known[0]); i++)
         if (ft_strcase_eq(ex, known[i])) return 1;
@@ -2265,6 +2423,7 @@ const CommandEntry CMD_TABLE[] = {
     { "count",       cmd_count,       OFF(h_count) },
     { "lines",       cmd_lines,       OFF(h_lines) },
     { "linesdir",    cmd_linesdir,    OFF(h_linesdir) },
+    { "codecount",   cmd_codecount,   OFF(h_codecount) },
     { "size",        cmd_size,        OFF(h_size) },
     { "du",          cmd_du,          OFF(h_du) },
     { "dirdiff",     cmd_dirdiff,     OFF(h_dirdiff) },

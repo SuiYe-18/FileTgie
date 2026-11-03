@@ -197,7 +197,13 @@ static const LangPack ZH = {
     "正在下载 v%s 旧版安装包...",
     "旧版安装包 SHA256 不符，临时文件已删除并拒绝安装。",
     "已启动旧版静默覆盖安装；完成后打开新终端运行 version 查看版本。",
-    "Linux 不直接替换二进制：请到 Release 列表下载指定旧版源码，make 编译后手动替换。"
+    "Linux 不直接替换二进制：请到 Release 列表下载指定旧版源码，make 编译后手动替换。",
+    "用时: %.2f 秒",
+    "统计代码/空行/注释行（仅整行注释）",
+    "总行数:",
+    "代码行:",
+    "空行:",
+    "注释行:"
 };
 
 /* ------------------------------------------------------------------ */
@@ -382,7 +388,13 @@ static const LangPack EN = {
     "Downloading v%s old installer...",
     "Old installer SHA256 mismatch; temporary file was removed and install was refused.",
     "Silent downgrade install launched; open a new terminal and run version when it finishes.",
-    "Linux never replaces the binary directly: download the named old source from the Release list, build with make, and replace manually."
+    "Linux never replaces the binary directly: download the named old source from the Release list, build with make, and replace manually.",
+    "Elapsed: %.2f s",
+    "Split total lines into code / blank / whole-line-comment",
+    "Total lines:",
+    "Code lines:",
+    "Blank lines:",
+    "Comment lines:"
 };
 
 /* ------------------------------------------------------------------ */
@@ -567,7 +579,13 @@ static const LangPack JA = {
     "旧バージョン v%s のインストーラをダウンロード中...",
     "旧インストーラの SHA256 が不一致です。一時ファイルを削除し、インストールを拒否しました。",
     "旧バージョンの静默上書きインストールを開始しました。完了後、新しいターミナルで version を実行してください。",
-    "Linux はバイナリを直接置き換えません: Release 一覧から指定旧版のソースを取得し、make でビルドして手動で置き換えてください。"
+    "Linux はバイナリを直接置き換えません: Release 一覧から指定旧版のソースを取得し、make でビルドして手動で置き換えてください。",
+    "経過時間: %.2f 秒",
+    "行数を コード/空行/コメント に内訳（全行コメントのみ）",
+    "総行数:",
+    "コード行:",
+    "空行:",
+    "コメント行:"
 };
 
 /* ------------------------------------------------------------------ */
@@ -752,7 +770,13 @@ static const LangPack RU = {
     "Загрузка установщика старой версии v%s...",
     "SHA256 старого установщика не совпал; временный файл удалён, установка отклонена.",
     "Запущена тихая установка старой версии поверх; по завершении откройте новый терминал и выполните version.",
-    "Linux не заменяет бинарник напрямую: возьмите исходники указанной старой версии из списка Release, соберите make и замените вручную."
+    "Linux не заменяет бинарник напрямую: возьмите исходники указанной старой версии из списка Release, соберите make и замените вручную.",
+    "Время: %.2f с",
+    "Строки: код / пустые / комментарии (только целые строки)",
+    "Всего строк:",
+    "Строк кода:",
+    "Пустых строк:",
+    "Строк комментариев:"
 };
 
 /* 全部语言包的注册表，顺序即 lang_list_all 的输出顺序。

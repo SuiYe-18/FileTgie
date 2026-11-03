@@ -75,6 +75,19 @@ static int neg_number_like(const char* s) {
     return 1;
 }
 
+/* 单调墙钟秒（不含系统时间回拨），用于命令完成耗时展示。
+ * Monotonic wall-clock seconds (immune to clock rollback) for the
+ * per-command elapsed readout. */
+static double ft_now_seconds(void) {
+#ifdef _WIN32
+    return (double)GetTickCount64() / 1000.0;
+#else
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+#endif
+}
+
 /* A bare *.ftg path is dispatched to run without typing the run command.
  * 直接给出 *.ftg 路径时，自动交给 run 执行。 */
 static int ends_with_ftg(const char* s) {
@@ -181,6 +194,7 @@ int main(int argc_raw, char** argv_raw) {
         cmd_help(Lfinal, 0, NULL);
         rc = 0;
     } else {
+        double t0 = ft_now_seconds();
         char* auto_args[3] = { NULL, NULL, NULL };
         char** dispatch = rest;
         int dn = n;
@@ -221,6 +235,15 @@ int main(int argc_raw, char** argv_raw) {
             printf(Lfinal->err_unknown, dispatch[0]);
             printf("\n");
             rc = 1;
+        }
+
+        /* 命令完成耗时（秒，两位小数），无论成功或报错都给出墙钟耗时。
+         * Wall-clock elapsed after dispatch (seconds, 2 decimals), printed
+         * whether the command succeeded or failed. */
+        {
+            double el = ft_now_seconds() - t0;
+            printf(Lfinal->elapsed_fmt, el);
+            printf("\n");
         }
     }
 

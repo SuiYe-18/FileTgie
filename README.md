@@ -1,4 +1,4 @@
-# FileTgie v0.5.6
+# FileTgie v0.5.7
 
 > A lightweight, read-only, zero-dependency file statistics and search CLI written in pure C.
 > One source tree builds for Windows and Linux; every command only reads and never modifies your files.
@@ -12,14 +12,14 @@
 | Package | Link |
 | --- | --- |
 | Official website | https://suiye-18.github.io/filetgie-official-website/ |
-| Windows installer | [FileTgie.windows.0.5.6.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.6.setup.exe) |
-| Windows portable ZIP | [FileTgie.windows.0.5.6.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.6.portable.zip) |
+| Windows installer | [FileTgie.windows.0.5.7.setup.exe](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.7.setup.exe) |
+| Windows portable ZIP | [FileTgie.windows.0.5.7.portable.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.windows.0.5.7.portable.zip) |
 | Linux x86_64 glibc | Verified unchanged [v0.4.0 tarball](https://github.com/SuiYe-18/FileTgie/releases/download/v0.4.0/FileTgie.linux.0.4.0.tar.gz); other distributions build from source with `make` |
-| Source archive | [FileTgie.source.0.5.6.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.6.zip) |
+| Source archive | [FileTgie.source.0.5.7.zip](https://github.com/SuiYe-18/FileTgie/releases/latest/download/FileTgie.source.0.5.7.zip) |
 
 ## Highlights
 
-- **64 built-in commands** for counting, line statistics, directory comparison, file search, checksums, encoding checks, duplicates, disk space, verification, optional update reminders, a named-version `rollback` downgrade, a simple `.ftg` script runner, and a `help-<command>` per-command detail help.
+- **65 built-in commands** for counting, line statistics, directory comparison, file search, checksums, encoding checks, duplicates, disk space, verification, optional update reminders, a named-version `rollback` downgrade, a simple `.ftg` script runner, and a `help-<command>` per-command detail help. New in 0.5.7: `codecount` splits lines into code / blank / whole-line-comment, and every command now prints its wall-clock runtime in seconds.
 - **Simple `.ftg` scripts:** save a repeatable sequence of FileTgie commands in a plain-text file with `set`, `$variable`, `echo`, `lang`, comments and `exit`; no programming experience is required.
 - **Read-only by default:** every inspection command only reads files; it never modifies, deletes or moves user data. The explicit `update` command and bundled `FileTgieUpdater.exe` only upgrade FileTgie itself; `reminder` creates or removes one FileTgie-owned scheduled task; on Linux they print manual steps and never replace the binary.
 - **Pure C, zero third-party dependency:** C standard library plus native Windows/POSIX APIs only.
@@ -67,7 +67,16 @@ FileTgie run examples\demo.ftg
 * **patch（.x）**：只用于小补丁、小插曲（修小问题、文案微调），不进入
   minor 的进位序列。
 
-当前版本为 `0.5.6`：加固 Windows 更新链并提升查找效率。更新下载只允许 GitHub API、
+当前版本为 `0.5.7`：新增 `codecount` 行数拆分命令，并为每条命令增加完成耗时显示。
+`codecount <文件|目录>` 把行数拆成 总数 / 代码 / 空行 / 注释 四类（仅统计整行注释，
+不拆分行尾注释），注释风格按扩展名自动选择：C 系（`//` 与 `/* */`，c/cpp/h/js/css/go 等）、
+`#`（py/sh/yml 等）、`;`（asm/s 等），无注释语法的扩展名把每个非空行计为代码。
+每条命令结束后以两位小数打印墙钟耗时（四语言：用时 / Elapsed / 経過時間 / Время），
+用单调时钟，不受系统时间回拨影响。同时 `linesdir`、`dirdiff` 等遍历统计改为 64KiB 块缓冲
+并按扩展名硬跳过已知二进制/调试/镜像文件——在约 1.96 GB、1.7 万文件的测试目录上，
+整目录行数统计从约 310 秒降到约 8 秒。
+
+`0.5.6` 加固 Windows 更新链并提升查找效率：更新下载只允许 GitHub API、
 GitHub 主站与 GitHub CDN 信任主机，拒绝非 GitHub 重定向；安装包收到 Content-Length
 时强制比对最终字节数，大小不符会删除临时文件并拒绝提权启动；两条 Windows 下载路径都会从 Release 正文提取安装包 SHA256，
 用系统 certutil 复核下载文件，哈希不符同样删除临时文件并拒绝提权启动。查找侧把 `findexts`
@@ -237,7 +246,7 @@ FileTgie -lang ja lines ./a.txt
 FileTgie -l ru disk
 ```
 
-## 命令一览（64 个；检查/统计类命令只读；`log` / `dellog` 只读写 FileTgie 自身日志；`update` 仅按用户显式触发更新 FileTgie 自身；`rollback` 先把当前新版本备份到 `FileTgie.new` 再按指定旧版覆盖；`reminder` 只创建/删除 FileTgie 自己的计划任务；`run` 只执行脚本中已有的只读/受控命令；`help-<命令>` 只打印指定命令的本地化详细帮助）
+## 命令一览（65 个；检查/统计类命令只读；`log` / `dellog` 只读写 FileTgie 自身日志；`update` 仅按用户显式触发更新 FileTgie 自身；`rollback` 先把当前新版本备份到 `FileTgie.new` 再按指定旧版覆盖；`reminder` 只创建/删除 FileTgie 自己的计划任务；`run` 只执行脚本中已有的只读/受控命令；`help-<命令>` 只打印指定命令的本地化详细帮助）
 
 
 
@@ -258,6 +267,7 @@ FileTgie -l ru disk
 | count       | `count <目录>`            | 递归统计文件数与文件夹数                |
 | lines       | `lines <文件>`            | 统计单个文件行数                    |
 | linesdir    | `linesdir <目录>`         | 递归统计文本文件总行数                 |
+| codecount   | `codecount <文件\|目录>`    | 把行数拆成 总数/代码/空行/注释（仅整行注释，注释风格按扩展名自动判断） |
 | size        | `size <文件>`             | 人类可读文件大小                    |
 | du          | `du <目录>`               | 汇总目录总大小                     |
 | dirdiff     | `dirdiff <目录A> <目录B>`    | 分组对比两个目录的文件数、目录数、大小、文本文件数、文本行数、隐藏文件数与平均文件大小；差值列为 B-A，`+` 更多、`-` 更少、`=0` 无变化 |
@@ -403,7 +413,7 @@ Use `fd -u` when the candidate set must include hidden files and paths ignored b
 
 ## 便携包与安装程序
 
-* **Windows 绿色便携包**（`FileTgie.windows.0.5.6.portable.zip`）：含
+* **Windows 绿色便携包**（`FileTgie.windows.0.5.7.portable.zip`）：含
   `FileTgie.exe`、`FileTgieUpdater.exe`、`README.md`、`User Manual.txt`、`LICENSE`、
   `COPYING` 与 `examples\demo.ftg`。便携模式不写注册表、不写入 Program Files，除 exe 旁自身的
   `filetgie.log` 外不写用户位置，解压即用、删文件夹即卸载。
@@ -414,7 +424,7 @@ Use `fd -u` when the candidate set must include hidden files and paths ignored b
   请用 `make` 从源码构建。
 
 * **安装程序**：提供 Inno Setup 6 脚本 `installer\installer.iss`，编译出
-  `FileTgie.windows.0.5.6.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
+  `FileTgie.windows.0.5.7.setup.exe`。脚本含 LGPL 许可页、可选开始菜单（默认勾选）
   /桌面（默认不勾选）快捷方式、标准卸载项，以及默认勾选的“覆盖安装”选项；安装前
   检测已注册的 FileTgie、App Paths 与旧版残留文件，不勾选覆盖时需另选目录。覆盖时
   先把旧的 `FileTgie.exe`、`FileTgieUpdater.exe` 和文档移动到安装目录 `.old` 备份，
@@ -472,7 +482,7 @@ FileTgie/
 │  └─ demo.ftg      # 简单 .ftg 顺序脚本示例
 └─ src/
    ├─ main.c         # 入口、--lang/--exclude 参数解析、分发、运行日志
-   ├─ commands.c    # 64 个子命令实现（含 log / dellog / checkupdate / update / reminder / rollback / run / help-）
+   ├─ commands.c    # 65 个子命令实现（含 log / dellog / checkupdate / update / reminder / rollback / run / help- / codecount）
    ├─ commands.h    # 命令表与 FILETGIE_VERSION 唯一版本来源
    ├─ update.c      # GitHub Release 手动更新检测、Windows 安装包更新与可选提醒任务
    ├─ update.h

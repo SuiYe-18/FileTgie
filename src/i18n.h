@@ -252,6 +252,18 @@ typedef struct {
     const char* rb_hash_mismatch;  /* old installer SHA256 mismatch; refused   */
     const char* rb_done;           /* rollback installer launched guidance    */
     const char* rb_linux_manual;   /* Linux manual downgrade note              */
+
+    /* --- elapsed runtime shown after a command (appended; keep 4 packs in sync) ---
+     * Takes the wall-clock seconds as %.2f; unit is seconds by default. */
+    const char* elapsed_fmt;       /* "Elapsed: %.2f s"                        */
+
+    /* --- v0.5.7: codecount line breakdown (appended; keep 4 packs in sync) ---
+     * total / code / blank / comment whole-line counts; whole-line comments only. */
+    const char* h_codecount;      /* codecount short table description         */
+    const char* cc_total;          /* "Total lines:"                            */
+    const char* cc_code;           /* "Code lines:"                             */
+    const char* cc_blank;          /* "Blank lines:"                            */
+    const char* cc_comment;        /* "Comment lines:"                          */
 } LangPack;
 
 /* 按语言码（cn/en/ja/ru）返回对应包，无法识别时回退到 cn。
